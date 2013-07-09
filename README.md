@@ -290,133 +290,7 @@ plugin.Show();
 
 ## Push Notification
 
-_AD fresca_를 통해 Push Notification을 보내고 받을 수 있습니다.
-
-SDK를 적용하기 이전에 구글의 ["GCM: Getting Started" ](http://developer.android.com/google/gcm/gs.html)가이드 문서를 읽어보시길 권장합니다.
-
-1) GCM Helper Library 설치하기.
-    - 구글에서 제공하는 [GCM Helper Library](http://code.google.com/p/gcm/source/browse/) 를 다운로드 받습니다. (Download zip 혹은 git clone을 이용)
-    - /gcm-client/dist/**gcm.jar** 파일을 프로젝트에 복사하여 설치합니다.
-    
-2) AndroidManifest.xml 확인하기.
-
-```xml
-<manifest>   
-  <application>
-      .........
-      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-      <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver"
-        android:permission="com.google.android.c2dm.permission.SEND">  
-        <intent-filter>
-          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-          <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-          <category android:name="your_app_package" />
-         </intent-filter>
-      </receiver>
-      <service android:name=".GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMIntentService 클래스를 구현해야 합니다 -->
-   </application>
-    ..........
-    <permission android:name="your_app_pakcage.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="your_app_package.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    ..........
-</manifest>
-```
-
-3) Registration ID를 등록하고 SDK에 셋팅하기.
-
-```java
-    /*
-    * GCM_SENDER_ID는 Google API project number를 의미 합니다.
-    * https://code.google.com/apis/console/#project:1234567890
-    */
-   final String GCM_SENDER_ID = "1234567890";
-   
-   GCMRegistrar.checkDevice(this);
-   GCMRegistrar.checkManifest(this);
-   
-   final String gcmDeviceId = GCMRegistrar.getRegistrationId(this);  
-   
-   if (regId.equals("")) {
-     GCMRegistrar.register(this, GCM_SENDER_ID);          
-   }
-   
-  AdFresca adfresca = AdFresca.getInstance(this);
-  adfresca.setPushRegistrationId(gcmDeviceId);
-  adfresca.startSession();
-```
-
-4) GCMIntentService 클래스 구현하기
-
-```java
-  public class GCMIntentService extends GCMBaseIntentService {
-
-    /*
-    * GCM_SENDER_ID는 Google API project number를 의미 합니다.
-    * https://code.google.com/apis/console/#project:1234567890
-    */
-    private static final String GCM_SENDER_ID = "1234567890";
-
-    public GCMIntentService() {
-      super(GCM_SENDER_ID);
-    }
-
-    @Override
-    protected void onRegistered(Context context, String registrationId) {
-     AdFresca.handlePushRegistration(registrationId);
-   }
-
-    @Override
-    protected void onUnregistered(Context context, String registrationId) {
-      AdFresca.handlePushRegistration(null);
-    }
-
-    @Override
-    protected void onMessage(Context context, Intent intent) {
-
-      // AD fresca를 통해서 수신한 notification인지 확입합니다.
-      if (AdFresca.isFrescaNotification(intent)) { 
-        String title = context.getString(R.string.app_name);
-        int icon = R.drawable.icon;
-        long when = System.currentTimeMillis();
-
-        // 수신 받은 notification을 status bar에 표시합니다.
-        // notification에 URI Schema가 설정된 경우, 해당 URI를 실행하며 기본적으로는 targetClass에 설정한 액티비티를 실행하여 줍니다. 
-        AdFresca.showNotification(context, intent, MainActivity.class, title, icon, when);
-
-      } 
-
-    }
-
-    @Override
-    protected void onError(Context context, String registrationId) {
-
-    }
-  }
-```
-
-### Custom Notification
-
-아래 코드는 Push Notification 을 만들고 직접 notify 하는 방법입니다.
-
-```java
-public class GCMIntentService extends GCMBaseIntentService {
-	@Override
-	protected void onMessage(Context context, Intent intent) {
-		if (AdFresca.isFrescaNotification(intent)) {
-			String title = context.getString(R.string.app_name);
-			int icon = R.drawable.icon;
-			long when = System.currentTimeMillis();
-			Notification notification = AdFresca.generateNotification(context, intent, DemoIntroActivity.class, title, icon, when);
-			notification.sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-			NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-			notificationManager.notify(0, notification);
-		}
-	}
-}
-```
+Push Notification 은 플랫폼 별로 세팅해야 하는 사항들이 있습니다. 자세한 사항은 각 플랫폼 별 가이드([Android](https://github.com/adfresca/sdk-android-sample#push-notification), [iOS](https://adfresca.zendesk.com/entries/21346861/#push-notification))를 참고해 주시기 바랍니다.
 
 * * *
 
@@ -428,7 +302,7 @@ _Incentivized Campaign_을 사용하여 , 사용자가 _Media App_에서 _Advert
 
 Media App에 SDK 적용하기:
 
-- AndroidManifest.xml 확인하기
+- /Plugins/Android/AndroidManifest.xml 확인하기
 
 ```xml
 <manifest>   

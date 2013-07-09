@@ -141,33 +141,20 @@ iOS의 경우는 Native SDK와 동일한 설치 작업을 거칩니다.  모든 
 #import <AdFresca/AdFrescaView.h>
 
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
     [AdFrescaView startSession:@"YOUR_API_KEY"];
-
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 이용할 경우 등록.      
-
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 이용할 경우 등록.
   } 
-
-  
 
   // Push Notification 기능을 사용할 경우 아래 코드를 삽입합니다. 자세한 내용은 '8. Push Notification 설정하기' 항목을 참고해 주세요.
 
   - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-
     [AdFrescaView registerDeviceToken:deviceToken];
-
   }
-
- 
-
+  
   - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-
     if ([AdFrescaView isFrescaNotification:userInfo] && [application applicationState] != UIApplicationStateActive) {
-
       [AdFrescaView handlePushNotification:userInfo];
-
     }
-
   } 
 ```
 
@@ -453,87 +440,52 @@ Media App에 SDK 적용하기:
 </manifest>
 ```
 
-- 아이템 지급을 원하는 위치에서 `getAvailableRewardItems()` 메소드를 통해 아이템 리스트를 받습니다. 
+- 아이템 지급을 원하는 위치에서 `GetAvailableRewardItems()` 메소드를 통해 아이템 리스트를 받습니다. 
 
-- Array에는 `AFRewardItem` 객체들이 포함되어 있으며 name, quantity, uniqueValue 프로퍼티 값을 가지고 있습니다.
+- Array에는 `AdFresca.RewardItem` 객체들이 포함되어 있으며 name, quantity, uniqueValue 프로퍼티 값을 가지고 있습니다.
 
-- `getAvailableRewardItems()` 메소드는 현재 지급이 가능한 아이템 리스트를 리턴하며, 아직 검사가 끝나지 않은 경우 이후 메소드 호출 시에 반영됩니다.
+- `GetAvailableRewardItems()` 메소드는 현재 지급이 가능한 아이템 리스트를 리턴하며, 아직 검사가 끝나지 않은 경우 이후 메소드 호출 시에 반영됩니다.
 
-```java
-@Override
-public void onStart() {
-  super.onStart();
-
-  AdFresca adfresca = AdFresca.getInstance(DemoIntroActivity.this);
-  List<AFRewardItem> items = adfresca.getAvailableRewardItems();
-
-  if (items.size() > 0) {
-    for (AFRewardItem item : items) {
-      Log.d(TAG,String.format("Get AFRewardItem: name=%s, quantity=%d, uniqueVlaue=%s", item.getName(), item.getQuantity(), item.getUniqueValue())));
-      // do something with tem.getName(), item.getQuantity(), item.getUniqueValue()
-    }
-    String itemNames = joinNameStringsByComma(items);
-    String alertMessage = String.format("You got the reward item(s)! (%s)", itemNames);
-    showAlert(alertMessage);
-  }
+```cs
+Plugin plugin = Plugin.Instance;
+IList<RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
+Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
+foreach(RewardItem rewardItem in rewardItemList)
+{
+    // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
+    Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
 }
 ```
 
 ###(Advanced) 더욱 빠르게 아이템 지급하기:
 
-`getAvailableRewardItems()` 메소드는 현재 지급 가능한 아이템 리스트를 리턴한 이후, 새롭게 지급 가능한 아이템들이 있는지 백그라운드로 검사를 진행하게 됩니다. 만약 앱 시작시에 미리 검사를 수동으로 진행하고 원하는 위치에서 `getAvailableRewardItems()` 메소드를 호출한다면, 사용자들에게 더욱 빠른 아이템 지급이 가능해집니다.
+`GetAvailableRewardItems()` 메소드는 현재 지급 가능한 아이템 리스트를 리턴한 이후, 새롭게 지급 가능한 아이템들이 있는지 백그라운드로 검사를 진행하게 됩니다. 만약 앱 시작시에 미리 검사를 수동으로 진행하고 원하는 위치에서 `GetAvailableRewardItems()` 메소드를 호출한다면, 사용자들에게 더욱 빠른 아이템 지급이 가능해집니다.
 
-```java
-@Override
-public void onStart() {
-  super.onStart();
-
-  AdFresca adfresca = AdFresca.getInstance(DemoIntroActivity.this);
-  adfresca.checkRewardItems();
+```cs
+void Start ()
+{
+    Plugin plugin = Plugin.Instance;
+    plugin.Init(API_KEY);
+    plugin.StartSession();
+    plugin.CheckRewardItems();
 }
 
-@Override
-public void onClick(View view) {
-  List<AFRewardItem> items = adfresca.getAvailableRewardItems();
-
-  if (items.size() > 0) {
-    for (AFRewardItem item : items) {
-      Log.d(TAG,String.format("Get AFRewardItem: name=%s, quantity=%d, uniqueVlaue=%s", item.getName(), item.getQuantity(), item.getUniqueValue())));
-      // do something with tem.getName(), item.getQuantity(), item.getUniqueValue()
+void OnGUI ()
+{
+    if (GUI.Button (new Rect (100, 100, 150, 150), "Reward")) {
+        Plugin plugin = Plugin.Instance;
+        IList<RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
+        Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
+        foreach(RewardItem rewardItem in rewardItemList)
+        {
+            // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
+            Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
+        }
     }
-    String itemNames = joinNameStringsByComma(items);
-    String alertMessage = String.format("You got the reward item(s)! (%s)", itemNames);
-    showAlert(alertMessage);
-  }
 }
 ```
 
-`checkRewardItems(synchronized)` 메소드를 Synchronized 모드로 실행하면,, SDK가 모든 검사를 완료할 때 까지 기다린 후 바로 아이템을 지급할 수도 있습니다.
-
-```java
-new AsyncTask<Void, Void, Void>() {
-  protected Void doInBackground(Void... params) {
-    AdFresca adfresca = AdFresca.getInstance(DemoIntroActivity.this);
-    adfresca.checkRewardItems(true);
-    return null;
-  }
-
-  protected void onPostExecute(Void param) {
-    AdFresca adfresca = AdFresca.getInstance(DemoIntroActivity.this);
-    List<AFRewardItem> items = adfresca.getAvailableRewardItems();
-
-    if (items.size() > 0) {
-      for (AFRewardItem item : items) {
-      Log.d(TAG,String.format("Get AFRewardItem: name=%s, quantity=%d, uniqueVlaue=%s", item.getName(), item.getQuantity(), item.getUniqueValue())));
-      // do something with tem.getName(), item.getQuantity(), item.getUniqueValue()
-      }
-      String itemNames = joinNameStringsByComma(items);
-      String alertMessage = String.format("You got the reward item(s)! (%s)", itemNames);
-      showAlert(alertMessage);
-    }
-  }
-}.execute();
-```
+**Tip:** `CheckRewardItems(synchronized)` 메소드를 Synchronized 모드로 실행하면,, _Plugin_이 모든 검사를 완료할 때 까지 기다린 후 바로 아이템을 지급할 수도 있습니다.
 
 * * *
 
@@ -548,20 +500,23 @@ _AD fresca_는 테스트 모드 기능을 지원하며 테스트에 사용할 �
 
 1. testDeviceId를 얻어와서 원하는 곳에 출력하는 방법
 
-```java
-AdFresca adfresca = AdFresca.getInstance(this);
-String deviceId = adfresca.getTestDeviceId();
-textView.setText(deviceId);
+```cs
+Plugin plugin = Plugin.Instance
+plugin.Init(API_KEY);
+plugin.StartSession();
+string testDeviceId = plugin.TestDeviceId();
+// draw text with testDeviceId
 ```
 
 2. printTestDeviceId Property를 설정하여 화면에 Device ID를 표시하는 방법
  
-```java
-  AdFresca adfresca = AdFresca.getInstance(this);
-  Log.d(TAG, "AD fresca Test Device ID is = " + adfresca.getTestDeviceId());
-  adfresca.setPrintTestDeviceId(true);
-  adfresca.load();
-  adfresca.show();
+```cs
+Plugin plugin = Plugin.Instance
+plugin.Init(API_KEY);
+plugin.StartSession();
+plugin.SetPrintTestDeviceId(true);
+plugin.Load();
+plugin.Show();
 ```
 
 ### Timeout Interval
@@ -570,11 +525,12 @@ textView.setText(deviceId);
 
 최소 1초 이상 지정이 가능하며, 지정하지 않을 시 기본 값으로 5초가 지정 됩니다.
 
-```java
-  AdFresca adfresca = AdFresca.getInstance(this);
-  AdFresca.setTimeoutInterval(5) // # 5 seconds
-  adfresca.load();
-  adfresca.show();
+```cs
+Plugin plugin = Plugin.Instance;
+plugin.Init(API_KEY);
+plugin.SetTimeoutInterval(5);
+plugin.Load();
+plugin.Show();
 ```
 
 * * *

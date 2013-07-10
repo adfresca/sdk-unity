@@ -183,7 +183,7 @@ public class AdFrescaUnitySample : MonoBehaviour
 	
 	void Start ()
 	{
-		Plugin plugin = Plugin.Instance;
+		AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 		plugin.Init(API_KEY);
 		plugin.StartSession();
 	}
@@ -191,7 +191,7 @@ public class AdFrescaUnitySample : MonoBehaviour
 	void OnGUI ()
 	{
 		if (GUI.Button (new Rect (100, 100, 150, 150), "Load & Show")) {
-			Plugin plugin = Plugin.Instance;
+			AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 			plugin.Load();
 			plugin.Show();
 		}
@@ -223,7 +223,7 @@ public class AdFrescaUnitySample : MonoBehaviour
 사용자가 In-App Purchase 를 구매한 횟수를  `AdFresca.Plugin` 객체의 `SetNumberOfInAppPurchases(int)` 메소드를 사용하여  설정해 주시면 간단히 적용이 가능합니다.
 
 ```cs
-Plugin plugin = Plugin.Instance;
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Init(API_KEY);
 plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
 plugin.StartSession();
@@ -246,7 +246,7 @@ _Unity Plugin_에서는 `SetCustomParameter` 메소드를 사용하여 각 커�
 (각 파라미터의 정보는 Admin 사이트를 접속하여 앱의 Overview 메뉴 -> 각 앱스토어의 Details 버튼을 눌러 설정 및 확인이 가능합니다.)
 
 ```cs
-Plugin plugin = Plugin.Instance;
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Init(API_KEY);
 plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
 plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
@@ -272,7 +272,7 @@ _(기존의 ['AD Slot 지정하기](https://adfresca.zendesk.com/entries/2335913
 **Example**:  사용자가 메인 페이지로 이동할 시에 설정한 컨텐츠를 노출
 
 ```cs
-Plugin plugin = Plugin.Instance;
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Load(EVENT_INDEX_MAIN_PAGE);  // 메인 페이지에 설정한  컨텐츠를 노출
 plugin.Show();
 ```
@@ -280,7 +280,7 @@ plugin.Show();
 **Example**: 사용자의 게임 캐릭터가 레벨업을 했을 때 설정한 컨텐츠를 노출
 
 ```cs
-Plugin plugin = Plugin.Instance;
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level); // 사용자 level 정보를 가장 최신으로 업데이트
 plugin.Load(EVENT_INDEX_LEVEL_UP); // 레벨업 이벤트에 설정한 컨텐츠를 노출
 plugin.Show();
@@ -321,10 +321,10 @@ Media App에 SDK 적용하기:
 - `GetAvailableRewardItems()` 메소드는 현재 지급이 가능한 아이템 리스트를 리턴하며, 아직 검사가 끝나지 않은 경우 이후 메소드 호출 시에 반영됩니다.
 
 ```cs
-Plugin plugin = Plugin.Instance;
-IList<RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+IList<AdFresca.RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
 Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
-foreach(RewardItem rewardItem in rewardItemList)
+foreach(AdFresca.RewardItem rewardItem in rewardItemList)
 {
     // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
     Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
@@ -338,7 +338,7 @@ foreach(RewardItem rewardItem in rewardItemList)
 ```cs
 void Start ()
 {
-    Plugin plugin = Plugin.Instance;
+    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
     plugin.Init(API_KEY);
     plugin.StartSession();
     plugin.CheckRewardItems();
@@ -347,10 +347,10 @@ void Start ()
 void OnGUI ()
 {
     if (GUI.Button (new Rect (100, 100, 150, 150), "Reward")) {
-        Plugin plugin = Plugin.Instance;
-        IList<RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
+        AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+        IList<AdFresca.RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
         Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
-        foreach(RewardItem rewardItem in rewardItemList)
+        foreach(AdFresca.RewardItem rewardItem in rewardItemList)
         {
             // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
             Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
@@ -359,7 +359,7 @@ void OnGUI ()
 }
 ```
 
-**Tip:** `CheckRewardItems(synchronized)` 메소드를 Synchronized 모드로 실행하면,, _Plugin_이 모든 검사를 완료할 때 까지 기다린 후 바로 아이템을 지급할 수도 있습니다.
+**Tip:** `CheckRewardItems(bool synchronized)` 메소드를 `synchronized=true` 로 실행하면, _Plugin_이 모든 검사를 완료할 때 까지 기다린 후 바로 아이템을 지급할 수도 있습니다.
 
 * * *
 
@@ -375,7 +375,7 @@ _AD fresca_는 테스트 모드 기능을 지원하며 테스트에 사용할 �
 1. testDeviceId를 얻어와서 원하는 곳에 출력하는 방법
 
 ```cs
-Plugin plugin = Plugin.Instance
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
 plugin.Init(API_KEY);
 plugin.StartSession();
 string testDeviceId = plugin.TestDeviceId();
@@ -385,7 +385,7 @@ string testDeviceId = plugin.TestDeviceId();
 2. printTestDeviceId Property를 설정하여 화면에 Device ID를 표시하는 방법
  
 ```cs
-Plugin plugin = Plugin.Instance
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
 plugin.Init(API_KEY);
 plugin.StartSession();
 plugin.SetPrintTestDeviceId(true);
@@ -400,7 +400,7 @@ plugin.Show();
 최소 1초 이상 지정이 가능하며, 지정하지 않을 시 기본 값으로 5초가 지정 됩니다.
 
 ```cs
-Plugin plugin = Plugin.Instance;
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Init(API_KEY);
 plugin.SetTimeoutInterval(5);
 plugin.Load();

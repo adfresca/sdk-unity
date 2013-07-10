@@ -39,16 +39,18 @@ Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니�
 
 아래의 구성 요소들이 Assets 폴더 아래에 복사되어야 합니다.
 
- 
+Assets/
 
-/AdFresca
+    LitJson.dll
+
+Assets/AdFresca/
 
     Plugin.cs 
     AndroidPlugin.cs
     IOSPlugin.cs
     Reward.cs
 
-/Plugins/Android
+Assets/Plugins/Android/
 
     AdFresca.jar 
     AdFrescaPlugin.jar 
@@ -56,7 +58,7 @@ Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니�
     assets 
     AndroidManifest.xml 
 
-/Plugins/iOS
+Assets/Plugins/iOS/
 
     AdFrescaPlugin.h
     AdFrescaPlugin.mm

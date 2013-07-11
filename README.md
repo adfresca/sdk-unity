@@ -302,7 +302,7 @@ _Incentivized Campaign_을 사용하여 , 사용자가 _Media App_에서 _Advert
 
 (현재 CPI  캠페인을 진행할 경우, _Advertising App_의 SDK 설치는 필수가 아닙니다. 하지만 이후 지원할 CPA 캠페인을 위해서 미리 SDK를 설치하는 것을 권장합니다.)
 
-Media App에 SDK 적용하기:
+**Media App에 SDK 적용하기**
 
 - /Plugins/Android/AndroidManifest.xml 확인하기
 
@@ -315,6 +315,18 @@ Media App에 SDK 적용하기:
    </application>
 </manifest>
 ```
+
+**Advertising App 설정하기(iOS)**
+
+Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+
+<img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
+
+위 경우 어드민 Dashboard에서 해당 앱의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
+
+iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 CPI 캠페인을 위해서는 최대한 Unique한 값을 선택해야 합니다.
+
+**Code**
 
 - 아이템 지급을 원하는 위치에서 `GetAvailableRewardItems()` 메소드를 통해 아이템 리스트를 받습니다. 
 

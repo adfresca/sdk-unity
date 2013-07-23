@@ -48,7 +48,7 @@ Assets/AdFresca/
     Plugin.cs 
     AndroidPlugin.cs
     IOSPlugin.cs
-    Reward.cs
+    RewardItem.cs
 
 Assets/Plugins/Android/
 

@@ -33,7 +33,7 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[AD fresca Unity Plugin v2.0.0  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.1.2, iOS SDK v1.3.0)
+[AD fresca Unity Plugin v2.0.1  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.1.3, iOS SDK v1.3.0)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -225,19 +225,26 @@ public class AdFrescaUnitySample : MonoBehaviour
 사용자가 In-App Purchase 를 구매한 횟수를  `AdFresca.Plugin` 객체의 `SetNumberOfInAppPurchases(int)` 메소드를 사용하여  설정해 주시면 간단히 적용이 가능합니다.
 
 ```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.Init(API_KEY);
-plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
-plugin.StartSession();
-plugin.Load();
-plugin.Show();
+void Start() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
+  plugin.StartSession();
+}
+
+.....
+
+void OnUserPurchasedItem() {
+  User.inAppPurchaseCount++;
+
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetNumberOfInAppPurchases(User.GetInAppPurchaseCount());
+  plugin.Load();
+  plugin.Show();
+}
 ```
 
-위와 같은 방식으로 호출이 가능합니다.
-
-정확한 기록을 위해 반드시 앱이 실행되었다고 판단되는 시점에서 호출하는 것을 권장합니다.
-
-추후 보다 편하게 해당 기능을 이용하실 수 있도록 지원해드릴 예정입니다.
+주의: SetNumberOfInAppPurchases() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다.
 
 ### Custom Parameter
 
@@ -248,15 +255,27 @@ _Unity Plugin_에서는 `SetCustomParameter` 메소드를 사용하여 각 커�
 (각 파라미터의 정보는 Admin 사이트를 접속하여 앱의 Overview 메뉴 -> 각 앱스토어의 Details 버튼을 눌러 설정 및 확인이 가능합니다.)
 
 ```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.Init(API_KEY);
-plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
-plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
-plugin.StartSession();
-plugin.Load();
-plugin.Show();
+void Start() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
+  plugin.StartSession();
+}
+
+  .....
+
+void onUserLevelChanged(int level) {
+  User.level = level
+  
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
+  plugin.Load(EVENT_INDEX_LEVEL_UP);
+  plugin.Show();
+}
 ```
+주의: SetCustomParameter() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 특히 startSession() 이전에는 반드시 모든 커스텀 파리미터 값들이 초기 설정될 수 있도록 합니다.
 
 ### Event
 
@@ -424,5 +443,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.0.1 _(07/26/2013 Updated)_
+    - Plugin에 포함된 GCMIntentService 클래스를 이용하는 경우, 앱이 완전히 종료된 상황에서 푸시 메시지 수신 시 크래쉬가 발생하는 버그를 수정하였습니다.
+    - AndroidPlugin.cs 파일의 기본 매개변수 설정을 삭제하였습니다. 
+    - 포함된 Android SDK를 2.1.3 버전으로 업데이트하였습니다.
 - v2.0.0 _(07/10/2013 Updated)_
     - _Incentivized CPI_캠페인을 위한 API 가 추가되었습니다.

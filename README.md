@@ -444,7 +444,7 @@ plugin.Show();
 
 ## Release Notes
 - v2.0.1 _(07/26/2013 Updated)_
-    - Plugin에 포함된 GCMIntentService 클래스를 이용하는 경우, 앱이 완전히 종료된 상황에서 푸시 메시지 수신 시 크래쉬가 발생하는 버그를 수정하였습니다.
+    - Plugin에 포함된 GCMIntentService 클래스를 이용하는 경우, 앱이 완전히 종료된 상황에서 푸시 메시지 수신 시 에러 메시지가 발생하는 버그를 수정하였습니다.
     - AndroidPlugin.cs 파일의 기본 매개변수 설정을 삭제하였습니다. 
     - 포함된 Android SDK를 2.1.3 버전으로 업데이트하였습니다.
 - v2.0.0 _(07/10/2013 Updated)_

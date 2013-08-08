@@ -33,7 +33,7 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[AD fresca Unity Plugin v2.0.1  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.1.3, iOS SDK v1.3.0)
+[AD fresca Unity Plugin v2.1.0  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.1, iOS SDK v1.3.0)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -78,30 +78,38 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.test.android" android:versionName="1.0" android:versionCode="1">	
 	<application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
 		<activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
+		  <intent-filter>
+		    <action android:name="android.intent.action.MAIN" />
+		    <category android:name="android.intent.category.LAUNCHER" />
+		  </intent-filter>
 		</activity>
 		
 		<service android:name="org.openudid.OpenUDID_service">
-	        <intent-filter>
-	          <action android:name="org.openudid.GETUDID" />
-	        </intent-filter>
+	          <intent-filter>
+	            <action android:name="org.openudid.GETUDID" />
+	          </intent-filter>
 		</service>
 		
+		<!-- Google Refererer Tracking 을 위한 Boradcast Receiver-->
+		<receiver android:name="com.adfresca.sdk.referer.AFRefererReciever" android:exported="true">
+    		  <intent-filter>
+      	 	    <action android:name="com.android.vending.INSTALL_REFERRER" />
+     		  </intent-filter>
+		</receiver>
+		
+		<!-- Incentivized Campaign 을 위한 액티비티-->
 		<activity android:name="com.adfresca.sdk.reward.AFRewardActivity" />
 		
-		<!-- If you need a push notification feature, add following codes -->
+		<!-- Push Notification 기능을 사용할 경우, 아래 내용을 추가합니다. -->
 		<activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-		<receiver android:name="com.adfresca.unity.GCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+		<receiver android:name="com.Company.ProductName.CustomGCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
 		  <intent-filter>
 		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 		    <category android:name="com.Company.ProductName" />
 		  </intent-filter>
 		</receiver>
-		<service android:name="com.adfresca.unity.GCMIntentService" />  <!-- You must create your own GCMIntentService class to handle GCM messages  -->	    	
+		<service android:name="com.Company.ProductName.CustomGCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 CustomGCMReceiver, CustomGCMIntentService 클래스를 구현해야 합니다.  -->    	
 	</application>
 	
 	<uses-feature android:glEsVersion="0x00020000" />
@@ -110,7 +118,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
  	<uses-permission android:name="android.permission.INTERNET"/>
  	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	
- 	<!-- If you need a push notification feature, add following permissions -->
+ 	<!-- Push Notification 기능을 사용할 경우, 아래 내용을 추가합니다. -->
  	<permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<uses-permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" />
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -443,6 +451,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.1.0 _(08/08/2013 Updated)_
+    - [Android SDK 2.2.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
+    - Android Platform 에서는 TestDeviceId() 메소드 대신 PrintTestDeviceIdByLog() 메소드를 사용하여 연결된 디바이스의 아이디를 확인하도록 변경 되었습니다.
 - v2.0.1 _(07/26/2013 Updated)_
     - Plugin에 포함된 GCMIntentService 클래스를 이용하는 경우, 앱이 완전히 종료된 상황에서 푸시 메시지 수신 시 에러 메시지가 발생하는 버그를 수정하였습니다.
     - AndroidPlugin.cs 파일의 기본 매개변수 설정을 삭제하였습니다. 

@@ -413,15 +413,19 @@ _AD fresca_는 테스트 모드 기능을 지원하며 테스트에 사용할 �
 테스트 기기 ID는 SDK를 통해 추출이 가능하며 2가지 방법을 지원 합니다.
 
 
-1. testDeviceId를 얻어와서 원하는 곳에 출력하는 방법
+1. testDeviceId 값을 직접 얻어와서 로그로 출력하는 방법
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance
 plugin.Init(API_KEY);
 plugin.StartSession();
-string testDeviceId = plugin.TestDeviceId();
-// draw text with testDeviceId
-```
+
+if(Application.platform == RuntimePlatform.Android) {
+  plugin.PrintTestDeviceIdByLog();
+} else {
+  string testDeviceId = plugin.TestDeviceId();
+  Debug.Log("testDeviceId = " + testDeviceId);
+}
 
 2. printTestDeviceId Property를 설정하여 화면에 Device ID를 표시하는 방법
  

@@ -252,7 +252,7 @@ void OnUserPurchasedItem() {
 }
 ```
 
-주의: SetNumberOfInAppPurchases() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다.
+**주의:** SetNumberOfInAppPurchases() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 만약 StartSession() 이전에 값이 설정되지 않은 경우, 사용자의 최초 앱 실행 시에는 값이 업데이트 되지 않으며 2회째 실행부터 SDK가 로컬 캐싱해둔 값으로 서버에 전달됩니다. (SDK 로컬 캐시 기능은 Android SDK 2.2.1, iOS SDK 1.3.1 버전부터 지원됩니다.)
 
 ### Custom Parameter
 
@@ -283,9 +283,9 @@ void onUserLevelChanged(int level) {
   plugin.Show();
 }
 ```
-_주의:_ SetCustomParameter() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 특히 startSession() 이전에는 반드시 모든 커스텀 파리미터 값들을 설정하고, 이후 변경되는 값들에 한하여 각 위치에 커스텀 파라미터를 설정합니다.
+**주의**_ SetCustomParameter() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 특히 startSession() 이전에는 반드시 모든 커스텀 파리미터 값들을 설정하고, 이후 변경되는 값들에 한하여 각 위치에 커스텀 파라미터를 설정합니다.
 
-만약 불가피하게 StartSession() 호출 시에 커스텀 파라미터 값을 설정할 수 없는 경우, 최초 실행한 사용자의 프로파일은 업데이트되지 않으며 해당 사용자의 2회째 앱 실행부터 SDK가 로컬에 캐싱해둔 값이 전달됩니다. 최초로 실행된 사용자의 프로파일까지 통계 및 타겟팅하기 위해서는 아래와 같이 초기 값 설정을 진행해야 합니다.
+만약 불가피하게 StartSession() 호출 시에 커스텀 파라미터 값을 설정할 수 없는 경우, 앱을 최초로 실행한 사용자의 프로파일은 업데이트되지 않으며 해당 사용자의 2회째 앱 실행부터 SDK가 로컬에 캐싱해둔 값이 전달됩니다. 최초로 실행된 사용자의 프로파일까지 통계 및 타겟팅하기 위해서는 아래와 같이 초기 값 설정을 진행해야 합니다.
 (SDK의 로컬 캐싱 기능은 Android SDK 2.2.0, iOS SDK 1.3.1 버전부터 지원합니다.)
 
 ```cs

@@ -294,9 +294,9 @@ void Start() {
   plugin.Init(API_KEY);
   if (isFirstRun)
   {
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, defaultLevel);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_STAGE, defaultStage);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, defaultFacebookFlag);
+    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, defaultLevel);
+    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_STAGE, defaultStage);
+    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, defaultFacebookFlag);
   }
   plugin.StartSession();
 }

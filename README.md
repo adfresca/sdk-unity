@@ -130,16 +130,6 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 
 기본적으로 Android SDK 가이드에 따라 필요한 permission과 service를 적용합니다. 'com.Company.ProductName'로 표기된 패키지명을 모두 알맞은 값으로 수정합니다.
 
- 
-#### 별도의 GCM GCMReceiver 및 GCMIntentService 적용하기 (Advanced)
-
-
-Android 용 플러그인에는 GCMReceiver, GCMIntentService 파일이 이미 포함이 되어 있습니다.
-
-만약 GCM 등록이나 메시지 핸들링을 직접 하고 싶은 경우, 별도로 클래스 파일을 생성하여 AndroidManifest.xml를 수정합니다.
-
-더 자세한 내용은 _Android SDK_ 가이드의 [Push Notification 설정하기- 4) GCMIntentService 클래스 구현하기](https://github.com/adfresca/sdk-android-sample#push-notification)를 참고하여 적용합니다.
-
 ### iOS
 
 iOS의 경우는 Native SDK와 동일한 설치 작업을 거칩니다.  모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 

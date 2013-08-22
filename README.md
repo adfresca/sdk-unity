@@ -34,7 +34,7 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[AD fresca Unity Plugin v2.1.1  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.2, iOS SDK v1.3.0)
+[AD fresca Unity Plugin v2.1.2  다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.2, iOS SDK v1.3.2)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -85,6 +85,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		  </intent-filter>
 		</activity>
 		
+		<!-- OpenUDID 서비스 등록 -->
 		<service android:name="org.openudid.OpenUDID_service">
 	          <intent-filter>
 	            <action android:name="org.openudid.GETUDID" />
@@ -101,7 +102,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		<!-- Incentivized Campaign 을 위한 액티비티-->
 		<activity android:name="com.adfresca.sdk.reward.AFRewardActivity" />
 		
-		<!-- Push Notification 기능을 사용할 경우, 아래 내용을 추가합니다. -->
+		<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
 		<activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
 		<receiver android:name="com.Company.ProductName.CustomGCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
 		  <intent-filter>
@@ -110,7 +111,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		    <category android:name="com.Company.ProductName" />
 		  </intent-filter>
 		</receiver>
-		<service android:name="com.Company.ProductName.CustomGCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 CustomGCMReceiver, CustomGCMIntentService 클래스를 구현해야 합니다.  -->    	
+		<service android:name="com.Company.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다.  -->    	
 	</application>
 	
 	<uses-feature android:glEsVersion="0x00020000" />
@@ -119,7 +120,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
  	<uses-permission android:name="android.permission.INTERNET"/>
  	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	
- 	<!-- Push Notification 기능을 사용할 경우, 아래 내용을 추가합니다. -->
+ 	<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
  	<permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<uses-permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" />
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
@@ -128,13 +129,14 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 </manifest>
 ```
 
-기본적으로 Android SDK 가이드에 따라 필요한 permission과 service를 적용합니다. 'com.Company.ProductName'로 표기된 패키지명을 모두 알맞은 값으로 수정합니다.
+위와 같이 SDK 적용에 필요한 permission과 service를 등록합니다. 'com.Company.ProductName'로 표기된 패키지명은 모두 알맞은 값으로 수정합니다.
+GCMReceiver, GCMIntentService 클래스의 구현은 아래의 [Push Notification](#push-notification) 항목에서 진행합니다.
 
 ### iOS
 
-iOS의 경우는 Native SDK와 동일한 설치 작업을 거칩니다.  모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 
+iOS의 경우는 Native SDK와 동일한 설치 작업을 진행합니다.  모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 
 
-우선, iOS  SDK 설치 가이드의 '1. SDK 설치' 항목을 따라서 설치 작업을 진행합니다.
+우선, iOS  SDK 설치 가이드의 ['1. SDK 설치'](https://adfresca.zendesk.com/entries/21346861#installation) 항목을 따라서 설치 작업을 진행합니다.
 
 그리고 아래의 내용을 AppController.mm 파일에 적용합니다.
 
@@ -143,10 +145,10 @@ iOS의 경우는 Native SDK와 동일한 설치 작업을 거칩니다.  모든 
 
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [AdFrescaView startSession:@"YOUR_API_KEY"];
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 이용할 경우 등록.
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 위하여 등록
   } 
 
-  // Push Notification 기능을 사용할 경우 아래 코드를 삽입합니다. 자세한 내용은 '8. Push Notification 설정하기' 항목을 참고해 주세요.
+  // Push Notification 기능을 위하여 아래 내용을 추가합니다.
 
   - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [AdFrescaView registerDeviceToken:deviceToken];
@@ -163,7 +165,7 @@ iOS 플러그인 설치가 완료 되었습니다.
 
 ### Code
 
-_Plugin_은 아래 코드 처럼 단 몇줄의 코드만으로도 캠페인을 시작할 수 있습니다.
+기본적으로 앱의 세션을 기록하고, 매칭되는 캠페인의 컨텐츠를 노출하기 위해서는 아래와 같이 코드를 적용합니다.
 
 ```cs
 public class AdFrescaUnitySample : MonoBehaviour
@@ -200,7 +202,7 @@ public class AdFrescaUnitySample : MonoBehaviour
 
 `plugin.Init(API_KEY);` API Key 를 설정합니다.
 
-`plugin.StartSession();` 세션이 시작됨을 서버에 알립니다. 어플리케이션이 시작될 때 **한번만** 실행되도록 합니다.
+`plugin.StartSession();` 세션이 시작됨을 서버에 알립니다. 어플리케이션이 시작될 때 **한 번만** 실행되도록 합니다.
 
 `plugin.Load();` 서버로부터 컨텐츠를 내려받습니다.
 
@@ -208,7 +210,7 @@ public class AdFrescaUnitySample : MonoBehaviour
 
 정상적으로 실행이 되면 다음과 같은 화면이 보여집니다.
 
-<img src="https://adfresca.zendesk.com/attachments/token/zngvftbmcccyajk/?name=device-2013-03-18-133517.png" width="240" />
+<img src="https://adfresca.zendesk.com/attachments/token/2fv9e76ptp7yo3h/?name=android-sample-p.png" width="240" />
 &nbsp;
 <img src="https://adfresca.zendesk.com/attachments/token/phn4fcpvbi2damx/?name=device-2013-03-18-133443.png" height="240" />
 * * *
@@ -280,7 +282,7 @@ void onUserLevelChanged(int level) {
 void Start() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.Init(API_KEY);
-  if (isFirstRun)
+  if (isFirstRunUser)
   {
     plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, defaultLevel);
     plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_STAGE, defaultStage);
@@ -342,6 +344,8 @@ Push Notification 은 플랫폼 별로 세팅해야 하는 사항들이 있습�
 ## Custom URL
 
 Announcement 캠페인의 Click URL, Push Notification 캠페인의 URL Schema 설정 시에 자신의 앱 URL Schema를 사용할 수 있습니다. 이를 통해 사용자가 콘텐츠를 클릭할 경우, 자신이 원하는 특정 앱 페이지로 이동하는 등의 액션을 지정할 수 있습니다.
+
+#### Android 환경에서 Custom URL 적용하기
 
 네이티브 애플리케이션 개발 환경에서는 AndroidManifest.xml 파일을 수정하여 원하는 액티비티에 scheme 정보를 추가하는 방식으로 적용이 됩니다.
 
@@ -467,8 +471,41 @@ public class MainActivity extends UnityPlayerActivity {
 }
 ```
 
-Unity 환경에서 Custom URL을 처리할 수 있는 모든 방법을 구현하였습니다.
+Android 플랫폼 환경에서 Custom URL을 처리할 수 있는 모든 방법을 구현하였습니다.
 
+#### iOS 환경에서 Custom URL 적용하기
+
+iOS의 경우 1개의 이벤트체서 모든 URL 처리가 가능하기 때문에 비교적 간단하게 적용할 수 있습니다.
+
+1) Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+
+Screen_Shot_2013-02-07_at_6.51.09_PM.png
+
+2) AppDelegate.m 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값에 따라 다른 페이지를 호출하도록 설정할 수 있습니다. 
+
+```m
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
+{  
+	if ([url.scheme isEqualToString:@"myapp"])
+	{
+    		NSString *frescaURL = [url absoluteString];
+    		UnitySendMessage("Fresca", "OnCustomURL", [frescaURL UTF8String]);
+	}
+	return YES;
+}
+```
+
+### Unity에서 url 값 확인 및 처리하기
+
+위 예제에서는 모두 'Fresca' 게임 오브젝트의 'OnCustomURL' 이벤트 메소드를 호출하여 값을 전달하였습니다. 이제 Unity 게임 상에서 그 값을 직접 받아 확인하고 처리할 수 있습니다.
+
+```java
+public void OnCustomURL(string url)
+{
+	Debug.Log("OnCustomURL = " + url); 
+	//ex) myapp://com.adfresca.custom?item=abc 값이 전달된 경우 item=abc 값을 파싱하여 아이템 지급
+}
+```
 
 * * *
 
@@ -604,7 +641,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
-- v2.1.1 _(08/12/2013 Updated)_ 
+- v2.1.2 _(08/19/2013 Updated)_ 
+    - [iOS SDK 1.3.2](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.
+- v2.1.1
     - [Android SDK 2.2.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.0 _(08/08/2013 Updated)_
     - [Android SDK 2.2.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.

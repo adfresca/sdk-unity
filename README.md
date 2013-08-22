@@ -8,7 +8,6 @@
     - [Custom Parameter](#custom-parameter)
     - [Event](#event)
 - [Push Notification](#push-notification)
-    - [Custom Notification](#custom-notification)
 - [Custom URL](#custom-url)
 - [Reward Item](#reward-item)
 - [Advanced Features](#advanced-features)
@@ -479,11 +478,11 @@ iOS의 경우 1개의 이벤트체서 모든 URL 처리가 가능하기 때문�
 
 1) Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
 
-Screen_Shot_2013-02-07_at_6.51.09_PM.png
+<img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
 
-2) AppDelegate.m 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값에 따라 다른 페이지를 호출하도록 설정할 수 있습니다. 
+2) AppController.mm 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값에 따라 다른 페이지를 호출하도록 설정할 수 있습니다. 
 
-```m
+```mm
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
 {  
 	if ([url.scheme isEqualToString:@"myapp"])

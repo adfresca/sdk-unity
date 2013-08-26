@@ -336,7 +336,161 @@ plugin.Show();
 
 ## Push Notification
 
-Push Notification 은 플랫폼 별로 세팅해야 하는 사항들이 있습니다. 자세한 사항은 각 플랫폼 별 가이드([Android](https://github.com/adfresca/sdk-android-sample#push-notification), [iOS](https://adfresca.zendesk.com/entries/21346861/#push-notification))를 참고해 주시기 바랍니다.
+AD fresca를 통해 Push Notification을 보내고 받을 수 있습니다.
+
+#### Android
+
+SDK를 적용하기 이전에 구글의 ["GCM: Getting Started"](http://developer.android.com/google/gcm/gs.html) 가이드 문서를 읽어보시길 권장합니다.
+
+1) AndroidManifest.xml 확인하기
+
+```xml
+<manifest>   
+  <application>
+      .........
+      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
+      <receiver android:name="com.Company.ProductName.CustomGCMReceiver"
+        android:permission="com.google.android.c2dm.permission.SEND">  
+        <intent-filter>
+          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+          <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+          <category android:name="com.Company.ProductName" />
+         </intent-filter>
+      </receiver>
+      <service android:name="com.Company.ProductName.GCMIntentService" />  
+   </application>
+    ..........
+    <permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    ..........
+</manifest>
+```
+
+2) GCMIntentService 클래스 구현하기
+
+```java
+  public class GCMIntentService extends GCMBaseIntentService {
+
+    public GCMIntentService() {
+    	super();
+    }
+    
+    @Override
+    protected String[] getSenderIds (Context context) {
+    	String[] ids = {AdFrescaPlugin.gcmSenderId};
+    	return ids;
+    }
+
+    @Override
+    protected void onRegistered(Context context, String registrationId) {
+        AdFresca.handlePushRegistration(registrationId);
+    }
+
+    @Override
+    protected void onUnregistered(Context context, String registrationId) {
+    	AdFresca.handlePushRegistration(null);
+    }
+
+    @Override
+    protected void onMessage(Context context, Intent intent) {
+    	// Check AD fresca notification
+        if (AdFresca.isFrescaNotification(intent)) {   	
+            String title = AdFrescaPlugin.getAppName(context);
+            int icon = R.drawable.app_icon;
+            long when = System.currentTimeMillis();
+            Class<?> targetActivityClass = null;
+            
+            if (UnityPlayer.currentActivity != null) {
+            	targetActivityClass = UnityPlayer.currentActivity.getClass();
+            } else {
+            	targetActivityClass = YourMainActivity.class; // or UnityPlayer.class
+            }
+            
+            AdFresca.showNotification(context, intent, targetActivityClass, title, icon, when);
+        }                
+    }
+    
+    @Override
+    protected void onError(Context context, String registrationId) {
+    
+    }
+  }
+```
+
+showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용하여 아무런 사운드 없이 메시지를 표시합니다. Notification에 사운드를 설정하거나, Big View와 같은 커스터마이징 작업이 필요한 경우 Android SDK 가이드의 ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#custom-notification) 내용을 참고하여 주시기 바랍니다.
+
+3) GCMReceiver 클래스 구현하기
+
+```java
+public class GCMReceiver extends GCMBroadcastReceiver { 
+   	@Override
+	protected String getGCMIntentServiceClassName(Context context) { 
+		return "com.Company.ProductName.CustomGCMIntentService"; 
+	} 
+}
+```
+
+4) Unity 환경에서 GCM 적용하기
+
+이제 유니티 클래스에서 GCM Sender ID 값을 플러그인에 적용합니다. Sender ID 값은 API Key 값과 다른 Project Number 값 입니다. 
+
+```cs
+#if UNITY_ANDROID
+private static string GCM_SENDER_ID = "12345678"; // Google API Proejct Number (ex: 12345678)
+#endif
+
+void Start ()
+{
+	AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+	plugin.Init(API_KEY);
+	
+	plugin.SetGCMSenderId(GCM_SENDER_ID);
+	plugin.StartSession();
+}
+```
+
+#### iOS
+
+SDK를 적용하기 이전에 애플의 ["Local and Push Notification Programming Guide"](https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html) 가이드 문서를 읽어보시길 권장합니다. 
+
+(현재 AD fresca의 iOS Push Notification 서비스는 APNS의 Production 환경만을 지원하며, 추후 업데이트를 통해 Development 환경을 추가로 지원할 예정입니다.)
+
+1)  Push Notification 인증서 파일을 생성하고 Admin 사이트에 등록합니다.
+- ["iOS Push Notification 인증서 설정 및 적용하기 가이드"](https://adfresca.zendesk.com/entries/21714780) 를 따라 Production용 Push Notification Certificate를 생성하고 설치합니다.
+- Keychain을 통해 export된 p12 파일을 AD fresca Admin 사이트에 등록 합니다. (해당 앱의 Overview -> iOS App Store Edit -> Push Authentication)
+
+2) Info.plast 확인하기 / Provision 확인하기
+- Info.plst 파일의 'aps-environment' 값을 'production' 으로 설정합니다. 
+- App Store / Ad Hoc release에 사용하는 Provision 인증서를 사용하여 빌드해야 합니다.
+
+3) AppController.mm 파일의 이벤트 확인하기
+
+```mm
+#import <AdFresca/AdFrescaView.h>
+
+  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [AdFrescaView startSession:@"YOUR_API_KEY"];
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 위하여 등록
+  } 
+
+  - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+    [AdFrescaView registerDeviceToken:deviceToken];
+  }
+  
+  - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    // AD fresca를 통해 전송된 메시지 여부를 확인하고 앱이 이미 실행 중인 경우에는 동작하지 않도록 합니다.
+    if ([AdFrescaView isFrescaNotification:userInfo] && [application applicationState] != UIApplicationStateActive) {
+      [AdFrescaView handlePushNotification:userInfo];
+    }
+  } 
+```
+
+iOS는 별도로 유니티에서 설정할 작업이 없습니다.
+
+이로써 Push Notification 기능을 위한 적용 작업이 모두 완료되었습니다.
 
 * * *
 

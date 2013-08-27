@@ -428,7 +428,7 @@ showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용�
 public class GCMReceiver extends GCMBroadcastReceiver { 
    	@Override
 	protected String getGCMIntentServiceClassName(Context context) { 
-		return "com.Company.ProductName.CustomGCMIntentService"; 
+		return "com.Company.ProductName.GCMIntentService"; 
 	} 
 }
 ```

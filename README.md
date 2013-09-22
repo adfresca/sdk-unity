@@ -634,7 +634,7 @@ iOS의 경우 1개의 이벤트체서 모든 URL 처리가 가능하기 때문�
 
 <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
 
-2) AppController.mm 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값에 따라 다른 페이지를 호출하도록 설정할 수 있습니다. 
+2) AppController.mm 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값을 유니티 게임 오브젝트에 전달합니다. 
 
 ```mm
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 

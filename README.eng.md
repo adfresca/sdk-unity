@@ -21,7 +21,7 @@
 
 To use _AD fresca SDK_ in Unity Engine, we provide a simple unity plugin.
 
-You can easily install all the components of plugin using Unity Package, and use SDK with following simple codes.
+You can easily install the components of plugin using Unity package file, and use SDK with following simple codes.
 
 All the codes of plugin are open so you can always check and modify as you want
 
@@ -66,7 +66,7 @@ Now, we start some installation works for each platform
 
 ### Android
 
-For Android, we have already done with most of installation from package file. Just modify your AndroidManifest.xml as below
+For Android, we have already done with most of installation from package file. You just need to modify AndroidManifest.xml as below
 
 #### Modify AndroidManifest.xml
 
@@ -128,7 +128,7 @@ For GCMReceiver and GCMIntentService class, check [Push Notification](#push-noti
 
 ### iOS
 
-For iOS, Unity requires to do the same installation work as the native project. After checking all the components from package file, build and export Xcode project form Unity.
+For iOS, Unity requires to do the same installation work as a native project. After checking all the components from package file, build and export Xcode project form Unity.
 
 Start to Install iOS SDK with following ['1. SDK Installation'](https://adfresca.zendesk.com/entries/21796143#installation) section of our iOS SDK guide.
 
@@ -155,7 +155,7 @@ Then add following codes in AppController.mm
   } 
 ```
 
-Now, we are done with Plugin Installation! 
+Now, we are done with Plugin installation! 
 
 ### Code
 
@@ -279,9 +279,9 @@ For defining events on Dashboard, see ['Event Guide (Korean)'](https://adfresca.
 
 After you finished defining events, you need 'Event Index' value for each event. The index value is an integer value like '1,2,3,4'. We recommend to manage these values with Constant or Enum types in your source code.
 
-To simply apply codes,  just pass event index into `AdFresca.load(int eventIndex)` method when the event occurs.
+To simply apply codes,  just pass event index into `plugin.Load(int eventIndex)` method when the event occurs.
 
-(If you don't specify event index on `plugin.Load(int eventIndex)`, a default value is set to 1)
+(If you don't specify event index on `plugin.Load(int eventIndex)`, a default index is set to 1)
 
 **Example**:   When user entered a main page
 
@@ -387,7 +387,7 @@ Before you start, we recommend reading ["GCM: Getting Started" ](http://develope
   }
 ```
 
-showNotification() method will show a simple notification view with message. but it has no sound. If you want to do some customization of view such as adding sound or using big view style ui, please check ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#custom-notification) section of Android SDK guide.
+showNotification() method will show a simple notification view with message, but it has no sound. If you want to do some customization of view such as adding sound or using big view style ui, please check ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#custom-notification) section of Android SDK guide.
 
 3) Implement GCMReceiver class
 
@@ -421,18 +421,18 @@ void Start ()
 
 #### iOS
 
-Before you start, we recommend reading  Local and Push Notification Programming Guide from Apple.
-(Currently, AD fresca only provides production environment of APNS. We wil support  development environment in the near future)  
+Before you start, we recommend reading  ["Local and Push Notification Programming Guide"](https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html) from Apple.
+(Currently, AD fresca only provides production environment of APNS. We wil support development environment in the near future)  
 
-1)  Creating Apple Push Notification Certificate (.p12) file and uploading on AD fresca Admin
+1) Creating Apple Push Notification Certificate (.p12) file and uploading on AD fresca Admin
 - Follow  ["iOS Push Notification Certificate Guide - KOR"](https://adfresca.zendesk.com/entries/21714780) to create push notification certificate.
 - After you export .p12 file from Keychain, you need to upload this file to our Admin site (Select App -> Overview -> iOS App Store Edit -> Push Authentication) 
 
-2)  Check Info.plast / Check Provisioning
+2) Check Info.plast / Check Provisioning
 - Check if a value of  'aps-environment' is set to 'production' in Info.plst
 - You should build your app with App Store or Ad Hoc Provisioning file to enable production mode
 
-3)  Add event codes to AppDelegate 
+3) Add event codes to AppController 
 - In your AppController.mm, check following methods and codes
 
 ```mm
@@ -457,7 +457,7 @@ Before you start, we recommend reading  Local and Push Notification Programming 
 ```
 
 For iOS, you don't need to add any codes of Unity
-So, we are now done with Push Notification Implementation!
+So, we are now done with Push Notification implementation!
 
 * * *
 
@@ -465,19 +465,19 @@ So, we are now done with Push Notification Implementation!
 
 You can set your own URL Schema for click url of Announcement Campaign and url schema of Push Notification Campaign. 
 
-So, you can navigate your users to the specific page or do some custom actions when user clicked the content view.
+So, you can navigate your users to the specific page or do some custom actions when user click the content view.
 
 #### Use Custom URL for Android
 
-In the native android application, you can simply add schema information to your AndroidManifest.xml to use custom url. However, unlike the native android application that uses multiple activities as its pages, Unity engine use only one activity and implements engine's own paginations internally. So, there is a problem to add schema information since you cannot set schema on UnityPlayer activity.
+In the native android application, you can simply add schema information to AndroidManifest.xml to use custom url. However, unlike the native android application that uses multiple activities as its pages, Unity engine uses only one player activity and implements engine's own paginations internally. So, there is a problem to add schema information since you cannot set schema on UnityPlayer activity.
 
 To solve this issue, you need to do some extra works as below.
 
 1) Override startActivity(intent) of UnityPlayer Activity to handle Custom URL for Announcement Campaign.
 
-Click URL from Announcement Campaign is always executed on in-game situation. It is never executed from outside of game like a push notification. Also, SDK uses startActivity() method to execute url. Therefore, you can manually handle urls by overriding startActivity() of UnityPlayer. 
+Click URL from Announcement Campaign is always executed on in-game situation. It is never executed from outside of game like a push notification. Also, SDK uses startActivity() method to execute url. Therefore, you can manually handle urls by overriding startActivity() of UnityPlayer activity. 
 
-Firstly, you should create a new Android Project in Eclipse and generate class named MainActivity and inherited from UnityPlayerActivity. Then, modify AndroidMenefest.xml as below.
+Firstly, you should create a new Android Project in Eclipse and generate a class named MainActivity and inherited from UnityPlayerActivity. Then, modify AndroidMenefest.xml as below.
 
 ```xml
 <application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
@@ -491,7 +491,7 @@ Firstly, you should create a new Android Project in Eclipse and generate class n
 </application>
 ```
 
-Now, you implements startActivity() method of MainActivity. if custom url with 'myapp://" schema is received, it will pass uri string value to your unity game object.
+Now, you implement startActivity() method of MainActivity. if custom url with 'myapp://" schema is received, it will pass uri string value to your unity game object.
 
 ```java
 public class MainActivity extends UnityPlayerActivity {
@@ -537,8 +537,8 @@ Firstly, create a new activity class named 'PushProxyActivity', and register the
 ```
 In this case, you should create custom url like myapp://com.adfresca.push?item=abc in your Push Notification Campaign. 
 
-Then, you should implement PushProxyActivity class. This class is a simple proxy-style activity which only handle url form Android OS and then quit itself. 
-However, there is a exceptional situation when notification is received and your application is not running. In that case, you can't handle custom url in the game engine, so you should manually start an application and pass urls as parameters as below.
+Then, you should implement PushProxyActivity class. This class is a simple proxy-style activity which only handles url form Android OS and then quits itself. 
+However, there is a exceptional situation when a notification is received and your application is not running. In that case, you can't handle custom url in the game engine, so you should manually start your game and pass url to MainActivity as below.
 
 ```java
 public class PushProxyActivity extends Activity {
@@ -574,7 +574,7 @@ public class PushProxyActivity extends Activity {
   }
 }
 ```
-Finally, you should handle url from PushProxyActivity on your MainActivity.
+Finally, you should handle url from PushProxyActivity in your MainActivity.
 
 ```java
 public class MainActivity extends UnityPlayerActivity {
@@ -601,7 +601,7 @@ For iOS, it is much easier to use custom url since there is only one event metho
 
 <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
 
-2) In AppController.mm, implement handleOpenURL method. You should pass string to your unity game object.
+2) In AppController.mm, implement handleOpenURL method. You should pass url string to your unity game object.
 
 ```mm
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
@@ -617,7 +617,7 @@ For iOS, it is much easier to use custom url since there is only one event metho
 
 ### Use custom url in Unity
 
-Both example codes above have passed url string to 'OnCustomURL' method of 'Fresca' game object. Now you can handle url values in Unity.
+Both example codes above have passed url strings to 'OnCustomURL' method of 'Fresca' game object. Now you can handle url values in Unity.
 
 ```java
 public void OnCustomURL(string url)
@@ -651,7 +651,7 @@ _Incentivzed Campaign_ makes it possible to give a reward to users who see an ad
 
 **Set Advertising App (only for iOS)**
 
-Set your url schemes to check app install in Info.plst as follows
+Set your own url schema to check app install in Info.plst as follows
 
 <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
 
@@ -661,7 +661,7 @@ For iOS, url schema value may be duplicated with other apps, so be careful to ch
 
 **Code**
 
-- Call GetAvailableRewardItems() method when you want to get item list.
+- Call GetAvailableRewardItems() method when you want to get an item list.
 
 - Array returned from GetAvailableRewardItems() contains objects of 'AdFresca.RewardItem' which has name, quantity and uniqueValue properties. You should use uniqueValue property of RewardItem object to give an item to your users. (ex: you may send an item request to your game server with user id and uniqueValue)
 
@@ -678,7 +678,7 @@ foreach(AdFresca.RewardItem rewardItem in rewardItemList)
 }
 ```
 
-###(Advanced) Giving a reward with faster way:
+###(Advanced) Giving a reward with a faster way:
 
 - Call `CheckRewardItems()` to check at the time of starting app or whenever you want.
 - Call `GetAvailableRewardItems()` to retrieve available reward items to give it to users.
@@ -707,7 +707,7 @@ void OnGUI ()
 }
 ```
 
-**Tip:** `If you use CheckRewardItems((bool synchronized) with synchronized=true option, _Plugin_ will wait until checking is done, and then you can give item immediately
+**Tip:** `If you use CheckRewardItems((bool synchronized) with synchronized=true option, _Plugin_ will wait until checking is done, and then you can give an item immediately
 
 * * *
 

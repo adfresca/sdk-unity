@@ -794,7 +794,7 @@ plugin.Show();
 * * *
 
 ## Release Notes
-- v2.1.2 _(10/01/2013 Updated)_ 
+- v2.1.3 _(10/01/2013 Updated)_ 
     - [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.2 _(08/19/2013 Updated)_ 
     - [iOS SDK 1.3.2](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.

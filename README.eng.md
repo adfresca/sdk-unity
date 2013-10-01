@@ -34,7 +34,7 @@ All the codes of plugin are open so you can always check and modify as you want
 
 Download _Unity Plugin_ at the following link.
 
-[AD fresca Unity Plugin v2.1.2  Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.2, iOS SDK v1.3.2)
+[AD fresca Unity Plugin v2.1.3  Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.3, iOS SDK v1.3.2)
 
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install following components below
 
@@ -365,7 +365,7 @@ Before you start, we recommend reading ["GCM: Getting Started" ](http://develope
     protected void onMessage(Context context, Intent intent) {
     	// Check AD fresca notification
         if (AdFresca.isFrescaNotification(intent)) {   	
-            String title = AdFrescaPlugin.getAppName(context);
+            String appName = AdFrescaPlugin.getAppName(context);
             int icon = R.drawable.app_icon;
             long when = System.currentTimeMillis();
             Class<?> targetActivityClass = null;
@@ -376,7 +376,7 @@ Before you start, we recommend reading ["GCM: Getting Started" ](http://develope
             	targetActivityClass = YourMainActivity.class; // or UnityPlayer.class
             }
             
-            AdFresca.showNotification(context, intent, targetActivityClass, title, icon, when);
+            AdFresca.showNotification(context, intent, targetActivityClass, appName, icon, when);
         }                
     }
     
@@ -761,6 +761,8 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.1.3 _(10/01/2013 Updated)_ 
+    - Added [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.2 _(08/19/2013 Updated)_ 
     - Added [iOS SDK 1.3.2](https://adfresca.zendesk.com/entries/21796143#release-notes)
 - v2.1.1

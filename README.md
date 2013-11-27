@@ -33,7 +33,7 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[AD fresca Unity Plugin v2.1.3 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.2.3, iOS SDK v1.3.2)
+[AD fresca Unity Plugin v2.1.4 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.1, iOS SDK v1.3.3)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -794,6 +794,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.1.4 _(11/27/2013 Updated)_ 
+    - [iOS SDK 1.3.3](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.
+    - [Android SDK 2.3.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.3 _(10/01/2013 Updated)_ 
     - [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.2 _(08/19/2013 Updated)_ 

@@ -82,6 +82,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		    <action android:name="android.intent.action.MAIN" />
 		    <category android:name="android.intent.category.LAUNCHER" />
 		  </intent-filter>
+		<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
 		</activity>
 		
 		<!-- OpenUDID 서비스 등록 -->

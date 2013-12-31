@@ -79,6 +79,7 @@ For Android, we have already done with most of installation from package file. Y
 		    <action android:name="android.intent.action.MAIN" />
 		    <category android:name="android.intent.category.LAUNCHER" />
 		  </intent-filter>
+		<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
 		</activity>
 		
     <!-- Service for OpenUDID -->

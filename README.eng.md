@@ -34,7 +34,7 @@ All the codes of plugin are open so you can always check and modify as you want
 
 Download _Unity Plugin_ at the following link.
 
-[AD fresca Unity Plugin v2.1.5  Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.1, iOS SDK v1.3.4)
+[AD fresca Unity Plugin v2.1.6  Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.2, iOS SDK v1.3.4)
 
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install following components below
 
@@ -762,6 +762,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.1.6 _(1/10/2014 Updated)_ 
+    - Added [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
+    - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option has been required to enable touch event. Please refer to [Installation](#installation) section for detailed installation guide.
 - v2.1.4 _(12/01/2013 Updated)_ 
     - Added [iOS SDK 1.3.4](https://adfresca.zendesk.com/entries/21796143#release-notes)
 - v2.1.4 _(11/27/2013 Updated)_ 

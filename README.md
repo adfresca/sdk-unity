@@ -9,6 +9,7 @@
     - [Event](#event)
 - [Push Notification](#push-notification)
 - [Custom URL](#custom-url)
+- [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
 - [Reward Item](#reward-item)
 - [Advanced Features](#advanced-features)
     - [Test Device ID](#test-device-id)
@@ -33,7 +34,9 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[AD fresca Unity Plugin v2.1.6 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.2, iOS SDK v1.3.4)
+[Unity Plugin v2.1.6 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.2, iOS SDK v1.3.4)
+
+[Unity Plugin with IAP Tracking BETA v2.2.0-beta1 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta2, iOS SDK v1.3.4)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -49,6 +52,7 @@ Assets/AdFresca/
     AndroidPlugin.cs
     IOSPlugin.cs
     RewardItem.cs
+    Purchase.cs // only for IAP BETA
 
 Assets/Plugins/Android/
 
@@ -663,6 +667,142 @@ public void OnCustomURL(string url)
 
 * * *
 
+
+## In-App Purchase Tracking (Beta)
+
+_**(현재 In-App-Purchase Tracking 기능은 Unity Plugin 2.2.0-beta1 버전, Android OS에서만 지원됩니다.)**_
+
+_In-App-Purchase Tracking_  기능을 통하여 현재 앱에서 발생하고 있는 모든 인-앱 결제를 분석하고 캠페인 타겟팅에 이용할 수 있습니다.
+
+AD fresca의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
+
+1. 실제 화폐를 통해 결제되는 Actual Item Purchase Tracking (예: USD $1.99를 결제하여 Gold 100개 아이템을 구입)
+2. 가상 화폐를 통해 결제되는 Virtual Item Purchase Tracking (예: Gold 10개를 이용하여 포션 아이템을 구입)
+
+위 2가지 유형의 데이터를 모두 Tracking 함으로써 앱의 매출뿐만 아니라 인-앱 사용자들의 아이템 구매 추이 분석까지 가능합니다.
+
+아이템 정보 등록을 위한 별도의 작업은 필요하지 않으며, 클라이언트에서 결제된 아이템 정보가 자동으로 대쉬보드에 등록되는 방식입니다. (아이템 리스트 확인은 대쉬보드 'Overview' 메뉴의 Settings - In App Items 페이지를 통해 확인할 수 있습니다.)
+
+아래의 적용 예제를 참고하여 간단히 In-App-Purchase Tracking 기능을 적용합니다.
+
+### Actual Item Tracking
+
+Actual Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다.
+
+적용 예제 1: 유니티 환경에서 결제 성공 이벤트 발생 시
+```cs
+AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
+	.WithItemId("gold100")
+	.WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+	.WithPrice(0.99)
+	.WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
+	.WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
+			
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+plugin.LogPurchase(purchase);
+```
+
+적용 예제 2: Android 네이티브 환경에서 Google Play 결제 모듈을 직접 구현하는 경우
+```java
+// Callback for when a purchase is finished
+IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+	public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+		Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+
+		if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
+			......
+			return;
+		}
+
+		Log.d(TAG, "Purchase successful.");
+		if (purchase.getPurchaseState() == 0) {
+			final SkuDetails detail = currentInventory.getSkuDetails(purchase.getSku());
+			final Purchase purchase0 = purchase;
+			
+			UnityPlayer.currentActivity.runOnUiThread(new Runnable(){
+				@Override
+				public void run() {
+					String itemId = purchase0.getSku();
+					String currencyCode = "KRW"; // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+					Double price =  parsePrice(detail.getPrice()); // For Google Play, you can get the price value from SkuDetails
+					Date purhcaseDate = new Date(purchase0.getPurchaseTime());
+					String orderId = purchase0.getOrderId();
+					String receiptData = purchase0.getOriginalJson();
+					String signature = purchase0.getSignature();
+
+					AFPurchase actualPurchase = new AFPurchase.Builder(AFPurchase.Type.ACTUAL_ITEM)
+															  .setItemId(itemId)
+															  .setCurrencyCode(currencyCode)
+															  .setPrice(price)
+															  .setPurchaseDate(purhcaseDate)
+															  .setReceipt(orderId, receiptData, signature)
+															  .build();
+
+					AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(actualPurchase);
+				}
+			});
+		}
+		
+		......
+    }
+};
+```
+
+위 예제는 Google Play 결제 라이브러리를 기준으로 작성되었지만 아마존이나 티스토어 등 모든 결제 라이브러리에서도 Purchase 객체에 필요한 값을 얻어올 수 있습니다.
+
+Actual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
+
+Method | Description
+------------ | ------------- | ------------
+WithItemId(string) | 결제한 아이템의 고유 식별 아이디를 설정합니다. 등록된 앱스토어에 상관 없이 앱내에서 고유한 식별 값을 이용하는 것을 권장합니다. AD fresca 대쉬보드에서 해당 값을 기준으로 아이템 목록이 생성됩니다. 
+WithCurrencyCode(string) | ISO 4217 표준 코드를 설정합니다. Google Play의 경우 'Default price' 에 설정되는 Currency Code 값을 이용하며 타 결제 라이브러리의 경우는 보통 이용 가능한 Currency Code가 고정되어 있습니다 (예: 아마존은 USD, 티스토어는 KRW). 또는 자체 백엔드 서버에서 결제하는 아이템의 Currency Code를 내려받아 설정할 수 있습니다.
+WithPrice(double) | 아이템의 가격을 설정합니다. 결제 라이브러리에서 주는 값을 이용하거나, 자체 백엔드 서버에서 가격을 내려받아 설정할 수 있습니다. 
+WithPurchaseDate(datetime) | 결제된 시간을 DateTime 객체 형태로 설정합니다. 값이 설정되지 않은 경우 AD fresca 서비스에 기록되는 시간이 결제 시간으로 자동 설정됩니다.
+WithReceipt(string, string, string) | 추후 Receipt Verficiation 기능을 위해 필요한 데이터를 설정합니다. 현재 버전의 SDK는 Google Play만 지원하며 타 결제 라이브러리의 경우는 값을 설정하지 않습니다.
+
+### Virtual Item Tracking
+
+Virtual Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경우를 의미합니다. 앱 내에서 가상 화폐를 이용한 결제 이벤트가 성공한 경우 아래 예제와 같이 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다.
+
+적용 예제: 
+```cs
+AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
+	.WithItemId("long_sword")
+	.WithCurrencyCode("gold") 
+	.WithPrice(100)
+	.WithPurchaseDate(purchaseDateTime);
+
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+plugin.LogPurchase(purchase);
+```
+
+Virtual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
+
+Method | Description
+------------ | ------------- | ------------
+WithItemId(string) | 결제한 아이템의 고유 식별 아이디를 설정합니다. 등록된 앱스토어에 상관 없이 앱내에서 고유한 식별 값을 이용하는 것을 권장합니다. AD fresca 대쉬보드에서 해당 값을 기준으로 아이템 목록이 생성됩니다. 
+WithCurrencyCode(string) | 결제에 사용한 가상화폐 고유 코드를 설정합니다. (예: gold)
+WithPrice(double) | 가상 화폐로 결제한 가격 정보를 설정합니다. (예: gold 10개의 경우 10 값을 설정)
+WithPurchaseDate(datetime) | 결제된 시간을 DateTime 객체 형태로 설정합니다. 값이 설정되지 않은 경우 AD fresca 서비스에 기록되는 시간이 결제 시간으로 자동 설정됩니다.
+
+### IAP Trouble Shooting
+
+LogPurchase() 메소드를 통해 기록된 Purchase 객체는 AD fresca 서비스에 업데이트되어 실시간으로 대쉬보드에 반영됩니다. 현재까지 등록된 아이템 리스트는 'Overview' 메뉴의 Settings - In App Items 페이지를 통해 확인할 수 있습니다.
+
+만약 아이템 리스트가 새로 갱신되지 않는 경우, Android SDK의 AFPurchaseExceptionListener 구현하여 혹시 에러가 발생하고 있지 않은지 확인해야 합니다. Purchase 객체의 값이 제대로 설정되지 않은 경우, AFPurchaseExceptionListener 통하여 에러 메시지가 표시됩니다.
+
+Unity Plugin의 경우는 이미 아래와 같은 코드가 적용되어 있습니다. 따라서 Purchase 객체가 제대로 생성되지 않은 경우 "AFPurchaseExceptionListener.onException = {error message}" 형태의 로그가 콘솔에 출력됩니다.
+
+```java
+......
+AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPurchaseExceptionListener(){
+	public void onException(AFPurchase purchase, AFException e) {
+		Log.e("AdFresca", "AFPurchaseExceptionListener.onException = " + e.getMessage());
+	}
+});
+```
+
+* * *
 ## Reward Item
 
 _Incentivized Campaign_을 사용하여 , 사용자가 _Media App_에서 _Advertising App_의 광고를 보고 앱을 설치하였을 때 보상으로 _Media App_의 아이템을 지급할 수 있습니다.
@@ -795,6 +935,9 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.2.0-beta1 _(1/14/2014 Updated)_ 
+    - 앱 내에서 발생하는 In-App Purchase 데이터를 트랙킹할 수 있는 기능이 추가되었습니다. 자세한 내용은 [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta) 항목을 참고하여 주세요.
+    - [Android SDK 2.4.0-beta2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.6 _(1/10/2014 Updated)_ 
     - [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - Unity 4.3.x for Android 버전에서 ForwardNativeEventsToDalvik 옵션이 설정되지 않은 경우 터치 이벤트가 동작하지 않습니다. 이를 해결하기 위한 자세한 적용 방법은 [Installation](#installation) 항목을 참고하여 주세요.

@@ -34,9 +34,9 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[Unity Plugin v2.1.6 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.2, iOS SDK v1.3.4)
+[Unity Plugin v2.1.7 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.3, iOS SDK v1.3.4)
 
-[Unity Plugin with IAP Tracking BETA v2.2.0-beta1 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta2, iOS SDK v1.3.4)
+[Unity Plugin with IAP Tracking BETA v2.2.0-beta2 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta3, iOS SDK v1.3.4)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -79,8 +79,8 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.test.android" android:versionName="1.0" android:versionCode="1">	
-	<application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.MyCompany.ProductName" android:versionName="1.0" android:versionCode="1">	
+	<application android:icon="@drawable/app_icon" android:label="@string/app_name">
 		<activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name">
 		  <intent-filter>
 		    <action android:name="android.intent.action.MAIN" />
@@ -108,14 +108,14 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		
 		<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
 		<activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-		<receiver android:name="com.Company.ProductName.CustomGCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+		<receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
 		  <intent-filter>
 		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-		    <category android:name="com.Company.ProductName" />
+		    <category android:name="com.MyCompany.ProductName" />
 		  </intent-filter>
 		</receiver>
-		<service android:name="com.Company.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다.  -->    	
+		<service android:name="com.MyCompany.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다.  -->    	
 	</application>
 	
 	<uses-feature android:glEsVersion="0x00020000" />
@@ -125,15 +125,18 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
  	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	
  	<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
- 	<permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" />
+ 	<permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
 	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+	<uses-permission android:name="android.permission.VIBRATE" />
 </manifest>
 ```
 
-위와 같이 SDK 적용에 필요한 permission과 service를 등록합니다. 'com.Company.ProductName'로 표기된 패키지명은 모두 알맞은 값으로 수정합니다.
+위와 같이 SDK 적용에 필요한 permission과 service를 등록합니다. 'com.MyCompany.ProductName'로 표기된 패키지명은 모두 알맞은 값으로 수정합니다.
 GCMReceiver, GCMIntentService 클래스의 구현은 아래의 [Push Notification](#push-notification) 항목에서 진행합니다.
 
 ### iOS
@@ -354,22 +357,25 @@ SDK를 적용하기 이전에 구글의 ["GCM: Getting Started"](http://develope
   <application>
       .........
       <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-      <receiver android:name="com.Company.ProductName.CustomGCMReceiver"
+      <receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">  
         <intent-filter>
           <action android:name="com.google.android.c2dm.intent.RECEIVE" />
           <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-          <category android:name="com.Company.ProductName" />
+          <category android:name="com.MyCompany.ProductName" />
          </intent-filter>
       </receiver>
-      <service android:name="com.Company.ProductName.GCMIntentService" />  
+      <service android:name="com.MyCompany.ProductName.GCMIntentService" />  
    </application>
     ..........
-    <permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="com.Company.ProductName.permission.C2D_MESSAGE" />
+    <permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+    <uses-permission android:name="android.permission.VIBRATE" />
     ..........
 </manifest>
 ```
@@ -425,7 +431,9 @@ SDK를 적용하기 이전에 구글의 ["GCM: Getting Started"](http://develope
   }
 ```
 
-showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용하여 아무런 사운드 없이 메시지를 표시합니다. Notification에 사운드를 설정하거나, Big View와 같은 커스터마이징 작업이 필요한 경우 Android SDK 가이드의 ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#custom-notification) 내용을 참고하여 주시기 바랍니다.
+showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용하여 아무런 사운드 없이 메시지를 표시합니다. Notification에 알람이나 사운드 파일 설정 같은 커스터마이징 작업이 필요한 경우 Android SDK 가이드의 ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#custom-notification) 내용을 참고하여 주시기 바랍니다.
+
+또한, Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드의 ["Image Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#image-notification) 내용을 참고하여 주시기 바랍니다.
 
 3) GCMReceiver 클래스 구현하기
 
@@ -433,7 +441,7 @@ showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용�
 public class GCMReceiver extends GCMBroadcastReceiver { 
    	@Override
 	protected String getGCMIntentServiceClassName(Context context) { 
-		return "com.Company.ProductName.GCMIntentService"; 
+		return "com.MyCompany.ProductName.GCMIntentService"; 
 	} 
 }
 ```
@@ -519,7 +527,7 @@ Annoucnement 캠페인을 통해 전달되는 Click URL은 항상 인게임 상�
 
 ```xml
 <application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
-	<activity android:name="com.Company.ProductName.MainActivity" android:label="@string/app_name">
+	<activity android:name="com.MyCompany.ProductName.MainActivity" android:label="@string/app_name">
 		<intent-filter>
 			<action android:name="android.intent.action.MAIN" />
 			<category android:name="android.intent.category.LAUNCHER" />
@@ -935,9 +943,13 @@ plugin.Show();
 * * *
 
 ## Release Notes
+- v2.2.0-beta2 _(1/31/2014 Updated)_ 
+    - [Android SDK 2.4.0-beta3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.2.0-beta1 _(1/14/2014 Updated)_ 
     - 앱 내에서 발생하는 In-App Purchase 데이터를 트랙킹할 수 있는 기능이 추가되었습니다. 자세한 내용은 [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta) 항목을 참고하여 주세요.
     - [Android SDK 2.4.0-beta2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
+- v2.1.7 _(1/31/2014 Updated)_ 
+    - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.6 _(1/10/2014 Updated)_ 
     - [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - Unity 4.3.x for Android 버전에서 ForwardNativeEventsToDalvik 옵션이 설정되지 않은 경우 터치 이벤트가 동작하지 않습니다. 이를 해결하기 위한 자세한 적용 방법은 [Installation](#installation) 항목을 참고하여 주세요.

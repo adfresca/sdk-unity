@@ -81,7 +81,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.MyCompany.ProductName" android:versionName="1.0" android:versionCode="1">	
 	<application android:icon="@drawable/app_icon" android:label="@string/app_name">
-		<activity android:name="com.unity3d.player.UnityPlayerActivity" android:label="@string/app_name">
+		<activity android:name="com.unity3d.player.UnityPlayerProxyActivity" android:label="@string/app_name">
 		  <intent-filter>
 		    <action android:name="android.intent.action.MAIN" />
 		    <category android:name="android.intent.category.LAUNCHER" />
@@ -417,7 +417,7 @@ SDK를 적용하기 이전에 구글의 ["GCM: Getting Started"](http://develope
             if (UnityPlayer.currentActivity != null) {
             	targetActivityClass = UnityPlayer.currentActivity.getClass();
             } else {
-            	targetActivityClass = YourMainActivity.class; // or UnityPlayer.class
+            	targetActivityClass = UnityPlayerProxyActivity.class; // or YourUnityPlayerProxyActivity.class
             }
             
             AdFresca.showNotification(context, intent, targetActivityClass, title, icon, when);

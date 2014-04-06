@@ -66,7 +66,6 @@ Assets/Plugins/Android/
     AdFrescaPlugin.jar 
     gcm.jar 
     assets 
-    AndroidManifest.xml 
 
 Assets/Plugins/iOS/
 
@@ -90,6 +89,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		    <action android:name="android.intent.action.MAIN" />
 		    <category android:name="android.intent.category.LAUNCHER" />
 		  </intent-filter>
+		<!-- Enable ForwardNativeEventsToDalvik -->
 		<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
 		</activity>
 		
@@ -125,6 +125,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 	<uses-feature android:glEsVersion="0x00020000" />
 	<uses-sdk android:minSdkVersion="6" android:targetSdkVersion="16" />
 	
+	<!-- Permission 추가 -->
  	<uses-permission android:name="android.permission.INTERNET"/>
  	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	

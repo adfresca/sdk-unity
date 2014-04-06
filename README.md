@@ -3,24 +3,30 @@
 - [Quick Start](#quick-start)
     - [Installation](#installation)
     - [Code](#code)
-- [Basic Features](#basic-features)
-    - [In-App-Purchase Count](#in-app-purchase-count)
-    - [Custom Parameter](#custom-parameter)
-    - [Event](#event)
+- [Test Device ID](#test-device-id)
+- [Custom Parameter](#custom-parameter)
+- [Marketing Event](#marketing-event)
+- [In-App-Purchase Count](#in-app-purchase-count)
 - [Push Notification](#push-notification)
 - [Custom URL](#custom-url)
 - [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
+- [CPI Identifier](#cpi-identifier)
 - [Reward Item](#reward-item)
 - [Advanced Features](#advanced-features)
-    - [Test Device ID](#test-device-id)
     - [Timeout Interval](#timeout-interval)
+- [Proguard Configuration](#proguard-configuration)
+- [Trouble Shooting](#trouble-shooting)
 - [Release Notes](#release-notes)
 
 * * *
 
 ## Introduction
 
-Unity 엔진에서 _AD fresca SDK_를 사용할 수 있도록 공식 플러그인을 제공합니다.  
+AD fresca는 게임 운영자나 마케터가 앱 내 사용자 특성을 실시간으로 파악하여  더 자주, 더 오래 플레이하고, 더 많이 결제하도록 유도하는 라이브 서비스 운영 툴을 제공합니다.
+
+게임 운영자나 마케터는 [Dashboard](https://admin.adfresca.com) 사이트를 통해 실시간으로 타겟팅한 사용자에게 메시지를 전달할 수 있으며, 이를 실제 앱에 적용하기 위하여 게임 개발팀에서는 아래 제공되는 SDK를 손쉽게 설치하고 가이드에 따라 코드를 적용합니다.
+
+Unity 엔진의 경우 기존의 Native SDK를 연동하여 사용할 수 있도록 공식 플러그인을 제공합니다.  
 
 Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있으며, 아래 적용 가이드에 따라 간단한 코드만으로  Unity 환경에서도 SDK 적용이 가능하게 되었습니다.
 
@@ -34,9 +40,9 @@ Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있�
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[Unity Plugin v2.1.7 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.3, iOS SDK v1.3.4)
+[Unity Plugin v2.1.8 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.4, iOS SDK v1.3.5)
 
-[Unity Plugin with IAP Tracking BETA v2.2.0-beta2 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta3, iOS SDK v1.3.4)
+[Unity Plugin with IAP Tracking BETA v2.2.0-beta3 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta4, iOS SDK v1.3.5)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -66,8 +72,6 @@ Assets/Plugins/iOS/
 
     AdFrescaPlugin.h
     AdFrescaPlugin.mm
-
- 
 
 이제 각 플랫폼에 맞게 설치 작업을 진행합니다.
 
@@ -115,7 +119,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
 		    <category android:name="com.MyCompany.ProductName" />
 		  </intent-filter>
 		</receiver>
-		<service android:name="com.MyCompany.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다.  -->    	
+		<service android:name="com.MyCompany.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다. (Push Notification 항목 참고) -->    	
 	</application>
 	
 	<uses-feature android:glEsVersion="0x00020000" />
@@ -143,11 +147,11 @@ GCMReceiver, GCMIntentService 클래스의 구현은 아래의 [Push Notificatio
 
 iOS의 경우는 Native SDK와 동일한 설치 작업을 진행합니다.  모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 
 
-우선, iOS  SDK 설치 가이드의 ['1. SDK 설치'](https://adfresca.zendesk.com/entries/21346861#installation) 항목을 따라서 설치 작업을 진행합니다.
+우선, iOS  SDK 설치 가이드의 ['Installation'](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 따라서 설치 작업을 진행합니다.
 
 그리고 아래의 내용을 AppController.mm 파일에 적용합니다.
 
-```mm
+```objective-c
 #import <AdFresca/AdFrescaView.h>
 
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -172,7 +176,7 @@ iOS 플러그인 설치가 완료 되었습니다.
 
 ### Code
 
-기본적으로 앱의 세션을 기록하고, 매칭되는 캠페인의 컨텐츠를 노출하기 위해서는 아래와 같이 코드를 적용합니다.
+AD fresca SDK 통해 사용자에게 메시지를 전달하기 위한 주요 코드를 적용합니다. 아래의 코드만으로도 게임 운영자 / 마케터가 지정한 캠페인의 콘텐츠를 화면에 표시할 수 있습니다.
 
 ```cs
 public class AdFrescaUnitySample : MonoBehaviour
@@ -188,77 +192,78 @@ public class AdFrescaUnitySample : MonoBehaviour
 	private static string GCM_SENDER_ID = null;
 	#endif
 
-	
 	void Start ()
 	{
 		AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 		plugin.Init(API_KEY);
 		plugin.StartSession();
-	}
-
-	void OnGUI ()
-	{
-		if (GUI.Button (new Rect (100, 100, 150, 150), "Load & Show")) {
-			AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-			plugin.Load();
-			plugin.Show();
-		}
+    plugin.Load();
+    plugin.Show();
 	}
 }
 ```
 
-`plugin.Init(API_KEY);` API Key 를 설정합니다.
+`plugin.Init(API_KEY);` API Key 를 설정합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 앱 추가 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다.
 
 `plugin.StartSession();` 세션이 시작됨을 서버에 알립니다. 어플리케이션이 시작될 때 **한 번만** 실행되도록 합니다.
 
-`plugin.Load();` 서버로부터 컨텐츠를 내려받습니다.
+`plugin.Load();` 서버로부터 매칭되는 캠페인의 콘텐츠를 내려받습니다. 
 
-`plugin.Show();` 내려받은 컨텐츠를 보여줍니다.
+`plugin.Show();` 내려받은 콘텐츠를 화면에 표시합니다.
 
-정상적으로 실행이 되면 다음과 같은 화면이 보여집니다.
+앱이 실행 되면 다음과 같은 화면이 보여집니다. 정상적으로 콘텐츠 뷰가 화면에 표시되고, 터치 시 앱스토어 페이지로 이동하는지 확인합니다.
 
 <img src="https://adfresca.zendesk.com/attachments/token/2fv9e76ptp7yo3h/?name=android-sample-p.png" width="240" />
 &nbsp;
 <img src="https://adfresca.zendesk.com/attachments/token/phn4fcpvbi2damx/?name=device-2013-03-18-133443.png" height="240" />
+
 * * *
 
-## Basic Features
+### Test Device ID
 
-### In-App Purchase Count
+AD fresca는 테스트 모드 기능을 지원하여 테스트를 원하는 디바이스에만 지정한 캠페인의 콘텐츠를 화면에 표시하고 푸시 메시지를 전송할 수 있습니다. 이로 인해 SDK가 적용된 앱이 이미 앱스토어에 출시된 경우, 게임 운영팀 혹은 개발팀에게만 새로운 메시지를 전달할 수 있도록 지원합니다.
 
-사용자가 In-App Purchase를 구매한 경우, _AD fresca_에 해당 정보를 기록하여 관리하실 수 있습니다.
+테스트 기기 등록을 위한 아이디 값은 SDK를 통해 추출이 가능하며 2가지 방법을 지원 합니다.
 
-사용자가 In-App Purchase 를 구매한 횟수를  `AdFresca.Plugin` 객체의 `SetNumberOfInAppPurchases(int)` 메소드를 사용하여  설정해 주시면 간단히 적용이 가능합니다.
+1. testDeviceId 값을 직접 얻어와서 로그로 출력하는 방법
 
 ```cs
-void Start() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Init(API_KEY);
-  plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
-  plugin.StartSession();
-}
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
+plugin.Init(API_KEY);
+plugin.StartSession();
 
-.....
-
-void OnUserPurchasedItem() {
-  User.inAppPurchaseCount++;
-
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetNumberOfInAppPurchases(User.GetInAppPurchaseCount());
-  plugin.Load();
-  plugin.Show();
+if(Application.platform == RuntimePlatform.Android) {
+  plugin.PrintTestDeviceIdByLog();
+} else {
+  string testDeviceId = plugin.TestDeviceId();
+  Debug.Log("testDeviceId = " + testDeviceId);
 }
 ```
 
-**주의:** SetNumberOfInAppPurchases() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 만약 StartSession() 이전에 값이 설정되지 않은 경우, 사용자의 최초 앱 실행 시에는 값이 업데이트 되지 않으며 2회째 실행부터 SDK가 로컬 캐싱해둔 값으로 서버에 전달됩니다. (SDK 로컬 캐시 기능은 Android SDK 2.2.0, iOS SDK 1.3.1 버전부터 지원됩니다.)
+2. SetPrintTestDeviceId() 메소드를 사용하여 화면에 Device ID를 표시하는 방법
+ 
+```cs
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
+plugin.Init(API_KEY);
+plugin.StartSession();
+plugin.SetPrintTestDeviceId(true);
+plugin.Load();
+plugin.Show();
+```
 
-### Custom Parameter
+* * *
 
-_AD fresca_는 앱 사용자의 특수한 정보들 (레벨, 스테이지, 성별, 나이 등)을 입력 받아 타겟팅 및 분석 기능을 제공 합니다.
+## Custom Parameter
 
-_Unity Plugin_에서는 `SetCustomParameter` 메소드를 사용하여 각 커스텀 파라미터의 인덱스 번호에 맞게 값을 설정하면 됩니다.
+커스텀 파라미터는 캠페인 진행 시, 타겟팅을 위해 사용할 사용자의 상태 값을 의미합니다.
 
-(각 파라미터의 정보는 Admin 사이트를 접속하여 앱의 Overview 메뉴 -> 각 앱스토어의 Details 버튼을 눌러 설정 및 확인이 가능합니다.)
+AD fresca SDK는 기본적으로 '국가, 언어, 앱 버전, 실행 횟수 등'의 디바이스 고유 데이터를 수집하며, 동시에 각 앱 내에서 고유하게 사용되는 특수한 상태 값들(예: 캐릭터 레벨, 보유 포인트, 스테이지 등)을 커스텀 파라미터로 정의하고 수집하여 분석 및 타겟팅 기능을 제공합니다.
+
+커스텀 파라미터 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
+
+SDK 적용을 위해서는 Dashboard에서 지정된 각 커스텀 파라미터의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
+
+Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, *SetCustomParameter** 메소드를 사용하여 각 인덱스 값에 맞게 상태 값을 설정합니다.
 
 ```cs
 void Start() {
@@ -281,9 +286,10 @@ void onUserLevelChanged(int level) {
   plugin.Show();
 }
 ```
+
 **주의**_ SetCustomParameter() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 특히 StartSession() 이전에는 반드시 모든 커스텀 파리미터 값들을 설정하고, 이후 변경되는 값들에 한하여 각 위치에 커스텀 파라미터를 설정합니다.
 
-만약 불가피하게 StartSession() 호출 시에 커스텀 파라미터 값을 설정할 수 없는 경우, 앱을 최초로 실행한 사용자의 프로파일은 업데이트되지 않으며 해당 사용자의 2회째 앱 실행부터 SDK가 로컬에 캐싱해둔 값이 전달됩니다. 최초로 실행된 사용자의 프로파일까지 통계 및 타겟팅하기 위해서는 아래와 같이 초기 값 설정을 진행해야 합니다. (SDK의 로컬 캐싱 기능은 Android SDK 2.2.0, iOS SDK 1.3.1 버전부터 지원합니다.)
+만약 불가피하게 StartSession() 호출 시에 커스텀 파라미터 값을 설정할 수 없는 경우, 앱을 최초로 실행한 사용자의 프로파일은 업데이트되지 않으며 해당 사용자의 2회째 앱 실행부터 SDK가 로컬에 캐싱해둔 값이 전달됩니다. 최초로 실행된 사용자의 프로파일까지 통계 및 타겟팅하기 위해서는 아래와 같이 초기 값 설정을 진행합니다. 또한, 사용자의 로그인 이벤트 이후 모든 커스텀 파라미터의 값을 설정할 수 있도록 구현합니다.
 
 ```cs
 void Start() {
@@ -310,25 +316,26 @@ void onUserSignedIn() {
 }
 ```
 
-### Event
+## Marketing Event
 
-Event 기능을 사용하면 앱에서 일어나는 다양한 사용자들의 활동, 페이지 이동 등에 Event를 설정한 후 그러한 Event 발생 시에 그에 적합한 공지사항, 컨텐츠 등을 노출할 수 있습니다.
+마케팅 이벤트는 유저에게 메세지를 전달하고자 하는 상황을 의미합니다. (예: 캐릭터 레벨 업, 퀘스트 달성, 스토어 페이지 진입)
 
-Event 설정은 Admin 을 통해 가능하며 '[Event 설정하기](https://adfresca.zendesk.com/entries/23359141)' 가이드를 참고해주시기 바랍니다.
+마케팅 이벤트 기능을 사용하여 지정된 상황에 알맞는 캠페인이 노출되도록 할 수 있습니다.
 
-Event 설정하신 후, _Plugin_ 적용을 위해서는 각 Event 'Index' 값이 필요합니다. Index 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 미리 입력하여 이용하시는 것을 권장합니다.
+마케팅 이벤트 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Marketing Events 버튼을 클릭하여 확인할 수 있습니다.
 
-각 Event 발생 시, load() 메소드에 원하는 Event의  Index 값을 인자로 넘겨주시면 간단히 적용이 완료됩니다.
+SDK 적용을 위해서는 Dashboard에서 지정된 각 마케팅 이벤트의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
 
-_(기존의 ['AD Slot 지정하기](https://adfresca.zendesk.com/entries/23359131)' 기능은 Deprecated 되어 현재 Event로 대체 되었습니다. 자세한 내용은 SDK Changed Log를 확인하여 주세요. )_
+각 이벤트 발생 시, Load() 메소드에 원하는 이벤트 인덱스 값을 인자로 넘겨주시면 간단히 적용이 완료됩니다.
 
+(Load() 메소드에 인덱스를 설정하지 않은 경우, 인덱스 값은 '1' 값이 자동으로 지정됩니다.)
 
 **Example**:  사용자가 메인 페이지로 이동할 시에 설정한 컨텐츠를 노출
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Load(EVENT_INDEX_MAIN_PAGE);  // 메인 페이지에 설정한  컨텐츠를 노출
-plugin.Show();
+plugin.Show(EVENT_INDEX_MAIN_PAGE);
 ```
 
 **Example**: 사용자의 게임 캐릭터가 레벨업을 했을 때 설정한 컨텐츠를 노출
@@ -337,7 +344,33 @@ plugin.Show();
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level); // 사용자 level 정보를 가장 최신으로 업데이트
 plugin.Load(EVENT_INDEX_LEVEL_UP); // 레벨업 이벤트에 설정한 컨텐츠를 노출
-plugin.Show();
+plugin.Show(EVENT_INDEX_LEVEL_UP);
+```
+
+* * *
+
+## In-App Purchase Count
+
+앱에서 IAP 기능을 사용하는 경우, 현재까지 사용자가 구매한 누적 횟수를 SDK에 설정하여 분석 및 타겟팅에 이용할 수 있습니다. 
+
+**setNumberOfInAppPurchases(int)** 메소드를 사용하여 현재까지 사용자가 구매한 누적 횟수 값을 SDK에 설정합니다. 커스텀 파라미터와 마찬가지로 앱 실행 혹은 사용자 로그인 이후에 값을 지정하고, IAP 결제가 일어난 직후에 갱신된 누적 구매 횟수 값을 설정합니다.
+
+```cs
+void Start() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
+  plugin.StartSession();
+}
+
+.....
+
+void OnUserPurchasedItem() {
+  User.inAppPurchaseCount++;
+
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetNumberOfInAppPurchases(User.GetInAppPurchaseCount());
+}
 ```
 
 * * *
@@ -348,7 +381,11 @@ AD fresca를 통해 Push Notification을 보내고 받을 수 있습니다.
 
 #### Android
 
-SDK를 적용하기 이전에 구글의 ["GCM: Getting Started"](http://developer.android.com/google/gcm/gs.html) 가이드 문서를 읽어보시길 권장합니다.
+SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/console) 사이트에서 프로젝트를 생성하고, [Dashboard](https://admin.adfresca.com) 사이트에 설정할 GCM API Key 및 SDK 적용에 필요한 GCM_SENDER_ID (Project Number) 값을 얻어야 합니다.
+
+'[Android Push Notification 설정 및 적용하기 (GCM)](https://adfresca.zendesk.com/entries/28526764)' 가이드를 참고하여 필요한 값들을 얻습니다.
+
+이제 SDK 적용을 시작합니다.
 
 1) AndroidManifest.xml 확인하기
 
@@ -471,9 +508,8 @@ SDK를 적용하기 이전에 애플의 ["Local and Push Notification Programmin
 
 (현재 AD fresca의 iOS Push Notification 서비스는 APNS의 Production 환경만을 지원하며, 추후 업데이트를 통해 Development 환경을 추가로 지원할 예정입니다.)
 
-1)  Push Notification 인증서 파일을 생성하고 Admin 사이트에 등록합니다.
-- ["iOS Push Notification 인증서 설정 및 적용하기 가이드"](https://adfresca.zendesk.com/entries/21714780) 를 따라 Production용 Push Notification Certificate를 생성하고 설치합니다.
-- Keychain을 통해 export된 p12 파일을 AD fresca Admin 사이트에 등록 합니다. (해당 앱의 Overview -> iOS App Store Edit -> Push Authentication)
+1) Push Notification 인증서 파일을 생성하고 Dashboard 사이트에 등록합니다.
+  - [iOS Push Notification 인증서 설정 및 적용하기](https://adfresca.zendesk.com/entries/21714780) 가이드 를 따라 Production용 Push Notification Certificate를 생성하고 [Dashboard](https://admin.adfresca.com) 사이트에 등록합니다.
 
 2) Info.plast 확인하기 / Provision 확인하기
 - Info.plst 파일의 'aps-environment' 값을 'production' 으로 설정합니다. 
@@ -811,15 +847,63 @@ AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPu
 ```
 
 * * *
+
+## CPI Identifier
+
+Incentivized CPI 캠페인 기능을 사용하여, 사용자가 Media App에서 Advertising App의 광고를 보고 앱을 설치하였을 때 보상으로 Media App의 아이템을 지급할 수 있습니다.
+
+- Medial App: 다른 앱의 광고를 노출하고, 광고 대상의 앱을 설치한 사용자들에게 보상을 지급하는 앱
+- Advertising: Media App에 광고가 노출되는 앱.
+
+Incentivized CPI 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [Incentivized CPI 캠페인 관리하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
+
+SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
+
+#### Advertising App 설정하기:
+  1. Android
+
+  Android 플랫폼의 경우 앱의 패키지 이름을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 패키지 이름을 확인하고 CPI Identifier로 사용합니다.
+
+  AndroidManifest.xml 파일을 열어 패키지 이름을 확인합니다.
+
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.adfresca.demo">
+    <application>
+    .....
+    </application>
+  </manifest>
+  ```
+
+  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
+
+  2. iOS
+
+  iOS 플랫폼의 경우 URL Schema 값을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 URL Schema을 설정하고 CPI Identifier로 사용합니다.
+
+  Xcode 프로젝트의 Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+
+  <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
+
+  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
+  iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 CPI 캠페인을 위해서는 최대한 Unique한 값을 선택해야 합니다.
+
+  (현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 Android의 패키지 이름확인 및 iOS의 URL Schema 설정만 진행되면 됩니다. 하지만 이후 지원할 CPA 캠페인을 위해서 미리 SDK를 설치하는 것을 권장합니다.)
+
+#### Media App SDK 적용하기:
+
+  Media App에서 보상 지급 여부를 확인하고, 사용자에게 아이템을 지급하기 위해서는 SDK 가이드의 [Reward Item](#reward-item) 항목의 내용을 구현합니다.
+
+* * *
+
 ## Reward Item
 
-_Incentivized Campaign_을 사용하여 , 사용자가 _Media App_에서 _Advertising App_의 광고를 보고 앱을 설치하였을 때 보상으로 _Media App_의 아이템을 지급할 수 있습니다.
+Reward Item 기능을 적용하여 현재 사용자에게 지급 가능한 보상 아이템이 있는지 확인하고, 지정된 보상 아이템을 사용자에게 지급할 수 있습니다.
 
-(현재 CPI  캠페인을 진행할 경우, _Advertising App_의 SDK 설치는 필수가 아닙니다. 하지만 이후 지원할 CPA 캠페인을 위해서 미리 SDK를 설치하는 것을 권장합니다.)
+Annoucnement 캠페인의 'Reward Item' 항목을 설정했거나, Incentivized CPI 캠페인의 'Incentive Item' 을 설정한 경우 사용자에게 아이템이 지급되어야 합니다.
 
-**Media App에 SDK 적용하기**
-
-- /Plugins/Android/AndroidManifest.xml 확인하기
+먼저 AndroidManifest.xml 내용을 확인합니다.
 
 ```xml
 <manifest>   
@@ -831,100 +915,71 @@ _Incentivized Campaign_을 사용하여 , 사용자가 _Media App_에서 _Advert
 </manifest>
 ```
 
-**Advertising App 설정하기(iOS)**
+이제 구현을 위해서 아래 코드를 사용합니다.
+- CheckRewardItems(): 현재 지급 가능한 보상 아이템이 있는지 검사합니다. 사용자가 앱을 실행할 호출하는 것을 권장합니다.
+- SetAndroidRewardItemListener(): 아이템 지급 조건이 만족되면 onReward 이벤트가 발생하도록 설정할 수 있습니다. 이벤트를 발생시킬 게임 오브젝트와 이벤트 메소드 이름을 지정합니다. Android에 한해서 제공되며 iOS의 경우 아래와 같이 AFRewardItemDelegate를 네이티브 상에서 구현하여 유니티로 이벤트를 넘겨줍니다.
 
-Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+**iOS에서 AFRewardItemDelegate 구현하기**
 
-<img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
+```objective-c
+// UnityAppController.h
 
-위 경우 어드민 Dashboard에서 해당 앱의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
-
-iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 CPI 캠페인을 위해서는 최대한 Unique한 값을 선택해야 합니다.
-
-**Code**
-
-- 아이템 지급을 원하는 위치에서 `GetAvailableRewardItems()` 메소드를 통해 아이템 리스트를 받습니다. 
-
-- Array에는 `AdFresca.RewardItem` 객체들이 포함되어 있으며 name, quantity, uniqueValue 프로퍼티 값을 가지고 있습니다.
-
-- `GetAvailableRewardItems()` 메소드는 현재 지급이 가능한 아이템 리스트를 리턴하며, 아직 검사가 끝나지 않은 경우 이후 메소드 호출 시에 반영됩니다.
-
-```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-IList<AdFresca.RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
-Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
-foreach(AdFresca.RewardItem rewardItem in rewardItemList)
+@interface UnityAppController : NSObject<UIApplicationDelegate, AFRewardItemDelegate>
 {
-    // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
-    Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
+  ...
 }
+
 ```
 
-###(Advanced) 더욱 빠르게 아이템 지급하기:
+```objective-c
+// UnityAppController.mm
 
-`GetAvailableRewardItems()` 메소드는 현재 지급 가능한 아이템 리스트를 리턴한 이후, 새롭게 지급 가능한 아이템들이 있는지 백그라운드로 검사를 진행하게 됩니다. 만약 앱 시작시에 미리 검사를 수동으로 진행하고 원하는 위치에서 `GetAvailableRewardItems()` 메소드를 호출한다면, 사용자들에게 더욱 빠른 아이템 지급이 가능해집니다.
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
+{
+  [AdFrescaView startSession:@"YOUR_API_KEY"];
+  [[AdFrescaView shardAdView] setRewardDelegate:self];
+}
+
+- (void)itemRewarded:(AFRewardItem *)item 
+{
+  UnitySendMessage("YourGameObject", "OnReward", [[item JSON] UTF8String]);
+}
+
+```
+
+**Unity 코드 적용하기**
 
 ```cs
 void Start ()
 {
-    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-    plugin.Init(API_KEY);
-    plugin.StartSession();
-    plugin.CheckRewardItems();
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.SetGCMSenderId(GCM_SENDER_ID);    
+  plugin.StartSession();
+
+  plugin.SetAndroidRewardItemListener("YourGameObject", "OnReward");
+  plugin.CheckRewardItems();
 }
 
-void OnGUI ()
+public void OnReward(string json)
 {
-    if (GUI.Button (new Rect (100, 100, 150, 150), "Reward")) {
-        AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-        IList<AdFresca.RewardItem> rewardItemList = plugin.GetAvailableRewardItems();
-        Debug.Log ("GetAvailableRewardItems = " + rewardItemList.Count);
-        foreach(AdFresca.RewardItem rewardItem in rewardItemList)
-        {
-            // do something with rewardItem.name, rewardItem.quantity, rewardItem.uniqueValue
-            Debug.Log ("name: " + rewardItem.name + ", quantity: " + rewardItem.quantity + ", uniqueValue: " + rewardItem.uniqueValue);
-        }
-    }
+  RewardItem rewardItem = LitJson.JsonMapper.ToObject<RewardItem>(json);
+ 
+  Debug.Log ("rewardItem.name: " + rewardItem.name);
+  Debug.Log ("rewardItem.uniqueValue: " + rewardItem.uniqueValue);
+
+  // 아이템 고유 값 'uniqueValue'을 이용하여 사용자에게 아이템 지급
+  SendItemToUser(rewardItem.uniqueValue);
 }
 ```
 
-**Tip:** `CheckRewardItems(bool synchronized)` 메소드를 `synchronized=true` 로 실행하면, _Plugin_이 모든 검사를 완료할 때 까지 기다린 후 바로 아이템을 지급할 수도 있습니다.
+Incentivized CPI 캠페인의 경우는 사용자의 앱 설치가 확인된 후 onReward 이벤트가 발생하며, Annoucnement 캠페인의 경우는 캠페인이 앱 사용자에게 매칭되어 노출될 때 onReward 이벤트가 발생합니다. 만일 디바이스의 네트워크 단절 상항이 발생한 경우 SDK가 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
+
+(기존의 GetAvailableRewardItems 메소드는 Deprecated 상태로 변경되었지만, 호환성을 보장하여 정상적으로 동작하고 있습니다.)
 
 * * *
 
 ## Advanced Features
-
-### Test Device ID
-
-_AD fresca_는 테스트 모드 기능을 지원하며 테스트에 사용할 수 있는 기기를 별도로 등록하여 관리할 수 있습니다.
-
-테스트 기기 ID는 SDK를 통해 추출이 가능하며 2가지 방법을 지원 합니다.
-
-
-1. testDeviceId 값을 직접 얻어와서 로그로 출력하는 방법
-
-```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance
-plugin.Init(API_KEY);
-plugin.StartSession();
-
-if(Application.platform == RuntimePlatform.Android) {
-  plugin.PrintTestDeviceIdByLog();
-} else {
-  string testDeviceId = plugin.TestDeviceId();
-  Debug.Log("testDeviceId = " + testDeviceId);
-}
-```
-2. printTestDeviceId Property를 설정하여 화면에 Device ID를 표시하는 방법
- 
-```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance
-plugin.Init(API_KEY);
-plugin.StartSession();
-plugin.SetPrintTestDeviceId(true);
-plugin.Load();
-plugin.Show();
-```
 
 ### Timeout Interval
 
@@ -942,13 +997,84 @@ plugin.Show();
 
 * * *
 
+## Proguard Configuration
+
+안드로이드에서 Proguard 툴을 이용하여 APK 파일을 보호하는 경우 몇 가지 예외 처리 작업을 진행해야 합니다. AD fresca SDK와 SDK에 포함된 OpenUDID 및 Google Gson에 대한 예외 처리를 아래와 같이 적용합니다.
+
+```java
+-keep class com.adfresca.** {*;} 
+-keep class com.google.gson.** {*;} 
+-keep class org.openudid.** {*;} 
+-keep class sun.misc.Unsafe { *; }
+-keepattributes Signature 
+```
+
+* * *
+
+## Trouble Shooting
+
+콘텐츠가 화면에 제대로 출력되지 않거나, 에러가 발생하는 경우 SDK에서 에러 정보를 확인할 수 있습니다. 현재 Unity 코드로 에러 정보를 출력하는 방법은 아직 지원되지 않고 있으며, 각 플랫폼 코드에서 직접 로그를 출력할 수 있습니다.
+
+**Android**
+
+UnityPlayerActivity 클래스를 오버라이드해서 사용하고 있거나, 다른 자바 플러그인을 이용하는 있는 경우 아래 코드를 적용하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
+
+```java
+AdFresca.setExceptionListener(new AFExceptionListener(){
+  @Override
+  public void onExceptionCaught(AFException e) {
+    Log.w("TAG", e.getCode() + ":" + e.getLocalizedMessage());
+  }
+});
+```
+
+**iOS**
+
+Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
+
+```objective-c
+// UnityAppController.h
+@interface UnityAppController : NSObject<UIApplicationDelegate, AdFrescaViewDelegate>
+{
+  .....
+}
+```
+
+```objective-c
+// UnityAppController.mm
+
+- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
+{
+  [AdFrescaView startSession:@"YOUR_API_KEY"];
+  [[AdFrescaView shardAdView] setDelegate:self];
+}
+
+- (void)fresca:(AdFrescaView *)fresca didFailToReceiveAdWithException:(AdException *)error {  
+  NSLog(@"AdException message : %@", [error message]);
+}
+```
+
+* * *
+
 ## Release Notes
+- **v2.2.0-beta3 _(4/6/2014 Updated)_** 
+    - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
+    - v2.1.8에서 적용된 'Annoucnemnt 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
+    - v2.1.8에서 개선된 [Reward Item](#reward-item) 기능이 적용되었습니다. 
+    - [Android SDK 2.4.0-beta4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
+    - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.
 - v2.2.0-beta2 _(1/31/2014 Updated)_ 
     - [Android SDK 2.4.0-beta3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.2.0-beta1 _(1/14/2014 Updated)_ 
     - 앱 내에서 발생하는 In-App Purchase 데이터를 트랙킹할 수 있는 기능이 추가되었습니다. 자세한 내용은 [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta) 항목을 참고하여 주세요.
     - [Android SDK 2.4.0-beta2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
-- v2.1.7 _(1/31/2014 Updated)_ 
+- **v2.1.8 _(4/6/2014 Updated)_** 
+   - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
+   - Annoucnemnt 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
+   - SetAndroidRewardItemListener 구현 기능이 추가되어, 지급 가능한 아이템이 발생할 시에 자동으로 이벤트가 발생합니다. 보다 자세한 내용은 [Reward Item](#reward-item) 항목을 참고하여 주세요.
+    - [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
+    - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.
+- v2.1.7 _(1/31/2014 Updated)_
     - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.6 _(1/10/2014 Updated)_ 
     - [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.

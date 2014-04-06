@@ -974,7 +974,7 @@ public void OnReward(string json)
 }
 ```
 
-Incentivized CPI 캠페인의 경우는 사용자의 앱 설치가 확인된 후 onReward 이벤트가 발생하며, Annoucnement 캠페인의 경우는 캠페인이 앱 사용자에게 매칭되어 노출될 때 onReward 이벤트가 발생합니다. 만일 디바이스의 네트워크 단절 상항이 발생한 경우 SDK가 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
+Incentivized CPI 캠페인의 경우는 사용자의 앱 설치가 확인된 후 onReward 이벤트가 발생하며, Annoucnement 캠페인의 경우는 캠페인이 앱 사용자에게 매칭되어 노출될 때 onReward 이벤트가 발생합니다. 만일 디바이스의 네트워크 단절이 발생한 경우 SDK는 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
 
 (기존의 GetAvailableRewardItems 메소드는 Deprecated 상태로 변경되었지만, 호환성을 보장하여 정상적으로 동작하고 있습니다.)
 

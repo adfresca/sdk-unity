@@ -1060,7 +1060,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 ## Release Notes
 - **v2.2.0-beta3 _(4/6/2014 Updated)_** 
     - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
-    - v2.1.8에서 적용된 'Annoucnemnt 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
+    - v2.1.8에서 적용된 'Announcement 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
     - v2.1.8에서 개선된 [Reward Item](#reward-item) 기능이 적용되었습니다. 
     - [Android SDK 2.4.0-beta4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.
@@ -1071,7 +1071,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
     - [Android SDK 2.4.0-beta2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - **v2.1.8 _(4/6/2014 Updated)_** 
    - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
-   - Annoucnemnt 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
+   - Announcement 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
    - SetAndroidRewardItemListener 구현 기능이 추가되어, 지급 가능한 아이템이 발생할 시에 자동으로 이벤트가 발생합니다. 보다 자세한 내용은 [Reward Item](#reward-item) 항목을 참고하여 주세요.
     - [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.

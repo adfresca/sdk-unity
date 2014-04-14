@@ -851,15 +851,17 @@ AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPu
 
 ## CPI Identifier
 
-Incentivized CPI 캠페인 기능을 사용하여, 사용자가 Media App에서 Advertising App의 광고를 보고 앱을 설치하였을 때 보상으로 Media App의 아이템을 지급할 수 있습니다.
+Incentivized CPI & CPA 캠페인 기능을 사용하여, 사용자가 Media App에서 Advertising App의 광고를 보고 앱을 설치하였을 때 보상으로 Media App의 아이템을 지급할 수 있습니다.
 
 - Medial App: 다른 앱의 광고를 노출하고, 광고 대상의 앱을 설치한 사용자들에게 보상을 지급하는 앱
 - Advertising: Media App에 광고가 노출되는 앱.
 
-Incentivized CPI 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [Incentivized CPI 캠페인 관리하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
+Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [크로스 프로모션 캠페인 관리하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
 
 SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
 
+(현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 URL Schema 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치 및 [Marketing Event](#marketing-event) 기능이 적용되어야 합니다.)
+  
 #### Advertising App 설정하기:
   1. Android
 
@@ -888,9 +890,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
   <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
 
   위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
-  iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 CPI 캠페인을 위해서는 최대한 Unique한 값을 선택해야 합니다.
-
-  (현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 Android의 패키지 이름확인 및 iOS의 URL Schema 설정만 진행되면 됩니다. 하지만 이후 지원할 CPA 캠페인을 위해서 미리 SDK를 설치하는 것을 권장합니다.)
+  iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 캠페인 진행을 위해서는 최대한 Unique한 값을 선택해야 합니다.
 
 #### Media App SDK 적용하기:
 
@@ -902,7 +902,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
 
 Reward Item 기능을 적용하여 현재 사용자에게 지급 가능한 보상 아이템이 있는지 확인하고, 지정된 보상 아이템을 사용자에게 지급할 수 있습니다.
 
-Annoucnement 캠페인의 'Reward Item' 항목을 설정했거나, Incentivized CPI 캠페인의 'Incentive Item' 을 설정한 경우 사용자에게 아이템이 지급되어야 합니다.
+Annoucnement 캠페인의 'Reward Item' 항목을 설정했거나, Incentivized CPI & CPA 캠페인의 'Incentive Item' 을 설정한 경우 사용자에게 보상 아이템이 지급됩니다.
 
 먼저 AndroidManifest.xml 내용을 확인합니다.
 
@@ -974,7 +974,13 @@ public void OnReward(string json)
 }
 ```
 
-Incentivized CPI 캠페인의 경우는 사용자의 앱 설치가 확인된 후 onReward 이벤트가 발생하며, Annoucnement 캠페인의 경우는 캠페인이 앱 사용자에게 매칭되어 노출될 때 onReward 이벤트가 발생합니다. 만일 디바이스의 네트워크 단절이 발생한 경우 SDK는 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
+캠페인 종류에 따라 onReward 이벤트의 발생 조건이 다릅니다.
+
+- Annoucnement 캠페인: 캠페인이 앱 사용자에게 매칭되어 노출될 때 이벤트가 발생합니다
+- Incentivized CPI 캠페인: 사용자의 Advertising App 설치가 확인된 후 이벤트가 발생합니다.
+- Incentivized CPA 캠페인: 사용자의 Advertising App 설치가 확인되고 보상 조건으로 지정된 마케팅 이벤트가 호출된 후에 발생합니다.
+
+만일 디바이스의 네트워크 단절이 발생한 경우 SDK는 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
 
 (기존의 GetAvailableRewardItems 메소드는 Deprecated 상태로 변경되었지만, 호환성을 보장하여 정상적으로 동작하고 있습니다.)
 
@@ -1061,6 +1067,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 - **v2.2.0-beta3 _(4/6/2014 Updated)_** 
     - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
     - v2.1.8에서 적용된 'Announcement 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
+    - v2.1.8에서 적용된 Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요
     - v2.1.8에서 개선된 [Reward Item](#reward-item) 기능이 적용되었습니다. 
     - [Android SDK 2.4.0-beta4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.
@@ -1072,6 +1079,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 - **v2.1.8 _(4/6/2014 Updated)_** 
    - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
    - Announcement 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
+   - Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요
    - SetAndroidRewardItemListener 구현 기능이 추가되어, 지급 가능한 아이템이 발생할 시에 자동으로 이벤트가 발생합니다. 보다 자세한 내용은 [Reward Item](#reward-item) 항목을 참고하여 주세요.
     - [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.md#release-notes) 버전을 지원합니다.

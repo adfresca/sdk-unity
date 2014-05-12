@@ -336,7 +336,7 @@ SDK 적용을 위해서는 Dashboard에서 지정된 각 마케팅 이벤트의 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.Load(EVENT_INDEX_MAIN_PAGE);  // 메인 페이지에 설정한  컨텐츠를 노출
-plugin.Show(EVENT_INDEX_MAIN_PAGE);
+plugin.Show();
 ```
 
 **Example**: 사용자의 게임 캐릭터가 레벨업을 했을 때 설정한 컨텐츠를 노출
@@ -345,7 +345,7 @@ plugin.Show(EVENT_INDEX_MAIN_PAGE);
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level); // 사용자 level 정보를 가장 최신으로 업데이트
 plugin.Load(EVENT_INDEX_LEVEL_UP); // 레벨업 이벤트에 설정한 컨텐츠를 노출
-plugin.Show(EVENT_INDEX_LEVEL_UP);
+plugin.Show();
 ```
 
 * * *

@@ -114,11 +114,11 @@ iOS 플랫폼의 경우는 Native SDK와 동일한 설치 작업을 진행합니
 
 ### Start Session
 
-이제 플러그인을 적용을 시작하기 위해 몇 가지 간단한 코드를 적용합니다. 첫번째로 API Key를 설정하고 앱의 실행을 기록하는 StartSession() 메소드를 적용합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 등록한 앱을 선택한 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다. 
+이제 플러그인을 적용을 시작하기 위해 몇 가지 간단한 코드를 적용합니다. 첫 번째로 API Key를 설정하고 앱의 실행을 기록하는 StartSession() 메소드를 적용합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 등록한 앱을 선택한 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다. 
 
 #### Android
 
-Android Platform의 경우는 유니티 스크립트로 직접 사용자의 게임 실행을 기록할 수 있습니다. 게임이 실행되는 시점에서 StartSession() 메소드를 실행합니다.
+Android 플랫폼 경우는 유니티 스크립트로 직접 사용자의 게임 실행을 기록할 수 있습니다. 게임이 실행되는 시점에서 StartSession() 메소드를 실행합니다.
 
 ```cs
 #if UNITY_ANDROID

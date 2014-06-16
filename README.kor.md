@@ -1,40 +1,29 @@
 ## Contents
-- [Introduction](#introduction)
-- [Quick Start](#quick-start)
+- [Basic Integration](#basic-integration)
     - [Installation](#installation)
-    - [Code](#code)
-- [Test Device ID](#test-device-id)
-- [Custom Parameter](#custom-parameter)
-- [Marketing Event](#marketing-event)
-- [In-App-Purchase Count](#in-app-purchase-count)
-- [Push Notification](#push-notification)
-- [Custom URL](#custom-url)
-- [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
-- [CPI Identifier](#cpi-identifier)
-- [Reward Item](#reward-item)
-- [Advanced Features](#advanced-features)
-    - [Timeout Interval](#timeout-interval)
-- [Proguard Configuration](#proguard-configuration)
-- [Trouble Shooting](#trouble-shooting)
+    - [Start Session](#start-session)
+    - [In-App Messaging](#in-app-messaging)
+    - [Push Messaging](#push-messaging)
+    - [Test Device Registration](#test-device-registration)
+- [IAP & Reward](#iap--reward)
+  - [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
+  - [Give Reward](#give-reward)
+- [Dynamic Targeting](#dynamic-targeting)
+  - [Custom Parameter](#custom-parameter)
+  - [Marketing Moment](#marketing-moment)
+- [Advanced](#advanced)
+  - [Timeout Interval](#timeout-interval) 
+- [Reference](#reference)
+  - [Custom URL Schema](#custom-url-schema)
+  - [Cross Promotion Configuration](#cross-promotion-configuration)
+  - [Image Push Notification](#image-push-notification)
+  - [Proguard Configuration](#proguard-configuration)
+- [Troubleshooting](#troubleshooting)
 - [Release Notes](#release-notes)
 
 * * *
 
-## Introduction
-
-AD fresca는 게임 운영자나 마케터가 앱 내 사용자 특성을 실시간으로 파악하여  더 자주, 더 오래 플레이하고, 더 많이 결제하도록 유도하는 라이브 서비스 운영 툴을 제공합니다.
-
-게임 운영자나 마케터는 [Dashboard](https://admin.adfresca.com) 사이트를 통해 실시간으로 타겟팅한 사용자에게 메시지를 전달할 수 있으며, 이를 실제 앱에 적용하기 위하여 게임 개발팀에서는 아래 제공되는 SDK를 손쉽게 설치하고 가이드에 따라 코드를 적용합니다.
-
-Unity 엔진의 경우 기존의 Native SDK를 연동하여 사용할 수 있도록 공식 플러그인을 제공합니다.  
-
-Unity Package 파일을 통해 모든 구성요소를 쉽게 설치할 수 있으며, 아래 적용 가이드에 따라 간단한 코드만으로  Unity 환경에서도 SDK 적용이 가능하게 되었습니다.
-
-플러그인 제작에 사용된 모든 Wrapper 코드가 공개되며, 필요한 경우 각 게임에 알맞게 수정하여 적용할 수 있습니다. 
-
-* * *
-
-## Quick Start
+## Basic Integration
 
 ### Installation
 
@@ -74,158 +63,285 @@ Assets/Plugins/iOS/
 
 이제 각 플랫폼에 맞게 설치 작업을 진행합니다.
 
-### Android
+#### Android
 
-Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 이미 구현되어 있습니다.기본적으로 AndroidManifest.xml 수정 작업만 진행하여 주시면 됩니다.
+Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 이미 구현되어 있습니다. 기본적으로 AndroidManifest.xml 수정 작업만 진행하여 주시면 됩니다.
 
-#### AndroidManifest.xml 수정하기
+##### AndroidManifest.xml 적용하기
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal" package="com.MyCompany.ProductName" android:versionName="1.0" android:versionCode="1">	
-	<application android:icon="@drawable/app_icon" android:label="@string/app_name">
-		<activity android:name="com.unity3d.player.UnityPlayerProxyActivity" android:label="@string/app_name">
-		  <intent-filter>
-		    <action android:name="android.intent.action.MAIN" />
-		    <category android:name="android.intent.category.LAUNCHER" />
-		  </intent-filter>
-		<!-- Enable ForwardNativeEventsToDalvik -->
-		<meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
-		</activity>
-		
-		<!-- OpenUDID 서비스 등록 -->
-		<service android:name="org.openudid.OpenUDID_service">
-	          <intent-filter>
-	            <action android:name="org.openudid.GETUDID" />
-	          </intent-filter>
-		</service>
-		
-		<!-- Google Refererer Tracking 을 위한 Boradcast Receiver-->
-		<receiver android:name="com.adfresca.sdk.referer.AFRefererReciever" android:exported="true">
-    		  <intent-filter>
-      	 	    <action android:name="com.android.vending.INSTALL_REFERRER" />
-     		  </intent-filter>
-		</receiver>
-		
-		<!-- Incentivized Campaign 을 위한 액티비티-->
-		<activity android:name="com.adfresca.sdk.reward.AFRewardActivity" />
-		
-		<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
-		<activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-		<receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
-		  <intent-filter>
-		    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-		    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-		    <category android:name="com.MyCompany.ProductName" />
-		  </intent-filter>
-		</receiver>
-		<service android:name="com.MyCompany.ProductName.GCMIntentService" />  <!-- GCM 메시지를 처리하기 위하여 GCMReceiver, GCMIntentService 클래스를 직접 구현해야 합니다. (Push Notification 항목 참고) -->    	
-	</application>
-	
-	<uses-feature android:glEsVersion="0x00020000" />
-	<uses-sdk android:minSdkVersion="6" android:targetSdkVersion="16" />
-	
-	<!-- Permission 추가 -->
- 	<uses-permission android:name="android.permission.INTERNET"/>
- 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	
- 	<!-- Push Notification 기능을 사용하기 위하여 아래 내용을 추가 -->
- 	<permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
-	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
-	<uses-permission android:name="android.permission.VIBRATE" />
+<manifest package="your.app.package">
+  <application>
+    <activity>
+    <!-- Enable ForwardNativeEventsToDalvik -->
+    <meta-data android:name="unityplayer.ForwardNativeEventsToDalvik" android:value="true" />
+    </activity>
+    
+    <!-- Device ID 수집을 위한 OpenUDID 서비스 등록 -->
+    <service android:name="org.openudid.OpenUDID_service">
+      <intent-filter>
+        <action android:name="org.openudid.GETUDID" />
+      </intent-filter>
+    </service>
+
+    <!-- Push Messaging 기능을 사용하기 위한 액티비티 등록 -->
+    <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
+
+    <!-- Cross Promotion 및 Reward 기능을 위한 액티비티 등록 -->
+    <activity android:name="com.adfresca.sdk.reward.AFRewardActivity" />
+   
+    <!-- Google Referrer Tracking 을 위한 Boradcast Receiver 등록 -->
+    <receiver android:name="com.adfresca.sdk.referer.AFRefererReciever" android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER" />
+      </intent-filter>
+    </receiver>
+  </application>
+  
+  <!-- Permission 추가 -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 </manifest>
 ```
 
-위와 같이 SDK 적용에 필요한 permission과 service를 등록합니다. 'com.MyCompany.ProductName'로 표기된 패키지명은 모두 알맞은 값으로 수정합니다.
-GCMReceiver, GCMIntentService 클래스의 구현은 아래의 [Push Notification](#push-notification) 항목에서 진행합니다.
+위와 같이 SDK 적용에 필요한 정보들을 추가하여, Android 플랫폼의 설치 작업을 완료합니다.
 
-### iOS
+#### iOS
 
-iOS의 경우는 Native SDK와 동일한 설치 작업을 진행합니다.  모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 
+iOS 플랫폼의 경우는 Native SDK와 동일한 설치 작업을 진행합니다. 모든 플러그인 구성 요소가 Import 되었는지 확인 후, Unity에서 Xcode 프로젝트를 빌드합니다. 
 
-우선, iOS  SDK 설치 가이드의 ['Installation'](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 따라서 설치 작업을 진행합니다.
+빌드된 Xocde 프로젝트를 실행한 후 iOS SDK 설치 가이드의 ['Installation'](https://github.com/adfresca/sdk-ios/blob/master/README.kor.md#installation) 항목을 따라서 설치 작업을 완료합니다.
 
-그리고 아래의 내용을 AppController.mm 파일에 적용합니다.
+### Start Session
+
+이제 플러그인을 적용을 시작하기 위해 몇 가지 간단한 코드를 적용합니다. 첫번째로 API Key를 설정하고 앱의 실행을 기록하는 StartSession() 메소드를 적용합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 등록한 앱을 선택한 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다. 
+
+#### Android
+
+Android Platform의 경우는 유니티 스크립트로 직접 사용자의 게임 실행을 기록할 수 있습니다. 게임이 실행되는 시점에서 StartSession() 메소드를 실행합니다.
+
+```cs
+#if UNITY_ANDROID
+private static string API_KEY = "YOUR_ANDROID_API_KEY";
+#elif UNITY_IPHONE
+private static string API_KEY = "YOUR_IOS_API_KEY";
+#endif
+
+void Start ()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.StartSession();
+}
+```
+
+#### iOS
+
+iOS 플랫폼의 경우는 Xocde에서 메소드를 실행해야 합니다. AppController.mm 파일을 열고 didFinishLaunchingWithOptions() 이벤트에 아래와 같이 코드를 적용합니다.
 
 ```objective-c
 #import <AdFresca/AdFrescaView.h>
 
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [AdFrescaView startSession:@"YOUR_API_KEY"];
+  ....
+} 
+
+```
+
+### In-App Messaging
+
+인-앱 메시징 기능을 이용하여, 사용자에게 원하는 메시지를 실시간으로 전달할 수 있습니다. 메시지를 전달하고자 하는 시점에 유니티 스크립트로 제공되는 Load(), Show() 메소드만을 호출하여 적용이 가능합니다. 메시지는 전면 interstitial 이미지, 텍스트, 혹은 iframe 웹페이지 형태로 게임 화면에 표시될 수 있습니다. 메시지는 현재 게임을 플레이 중인 사용자가 인-앱 메시징 캠페인의 조건과 매칭된 경우에만 화면에 표시됩니다. 조건에 만족하는 캠페인이 없다면 사용자는 아무런 화면을 보지 않고 자연스럽게 게임 플레이를 이어갑니다. 매칭과 관련한 인-앱 메시징의 다이나믹 타겟팅 기능은 아래의 [Dynamic Targeting](#dynamic-targeting) 항목에서 보다 자세히 설명하고 있습니다.
+
+```cs
+void Start ()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Load();
+  plugin.Show();
+}
+```
+
+When you first call in-app messaging methods, you will see the test message below. If you tap on the image, it will redirect to the product page of the app on the app store. You will hide this test message by chagning the test mode configuration later.
+
+첫번째로 인-앱 메시징 코드를 적용한 경우, 아래와 같이 테스트 이미지 메시지가 표시됩니다. 해당 이미지를 터치하면 앱스토어 페이지로 이동합니다. 현재 보고 있는 테스트 메시지는 이후 테스트 모드 설정을 변경하여 더이상 보이지 않도록 설정하게 됩니다.
+
+<img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
+&nbsp;
+<img src="https://adfresca.zendesk.com/attachments/token/ec7byt0qtj00qpb/?name=5555.png" height="240" />
+
+### Push Messaging
+
+푸시 메시징 기능을 이용하여 사용자가 게임을 플레이 하지 않을 때에도 언제든 메시지를 전달할 수 있습니다. 아래의 플랫폼 별 적용 과정을 통하여 푸시 메시징 기능을 적용합니다.
+
+#### Android
+
+SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/console) 사이트에서 프로젝트를 생성하고, [Dashboard](https://admin.adfresca.com) 사이트에 설정할 GCM API Key 및 SDK 적용에 필요한 GCM_SENDER_ID (Project Number) 값을 얻어야 합니다.
+
+'[Android Push Notification 설정 및 적용하기 (GCM)](https://adfresca.zendesk.com/entries/28526764)' 가이드를 참고하여 필요한 값들을 얻습니다.
+
+이제 SDK 적용을 시작합니다.
+
+1) AndroidManifest.xml 내용 추가하기
+
+```xml
+<manifest>   
+  <application>
+      .........
+      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
+      <receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver"
+        android:permission="com.google.android.c2dm.permission.SEND">  
+        <intent-filter>
+          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+          <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+          <category android:name="com.MyCompany.ProductName" />
+         </intent-filter>
+      </receiver>
+      <service android:name="com.MyCompany.ProductName.CustomGCMIntentService" />  
+      ..........
+   </application>
+    ..........
+    <permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    ..........
+</manifest>
+```
+
+- 'com.MyCompany.ProductName' 로 시작하는 패키지 주소를 모두 현재 적용을 진행 중인 게임의 패키지 이름으로 변경합니다.
+- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용중인 내용이 있다면 그대로 사용하여 코드만 적용합니다. 
+- 만약 처음 GCM을 이용하는 경우 Eclipse ADT를 이용하여 직접 해당 자바 클래스를 작성한 후 해당 파일들을 jar 파일로 생성하여 이용해야 합니다. 빠른 진행을 위해서 Unity Plugin에 포함된 'Android Plugin Project' 폴더를 Import 하여 빠른 적용 시작이 가능합니다. 프로젝트를 불러온 후 src 및 gen 폴더 아래의 패키지를 모두 현재 적용하는 게임의 패키지로 변경하면 준비가 완료됩니다.
+
+2) CustomGCMIntentService 클래스 구현하기
+
+```java
+  public class CustomGCMIntentService extends GCMBaseIntentService {
+
+    public CustomGCMIntentService() {
+      super();
+    }
+    
+    @Override
+    protected String[] getSenderIds (Context context) {
+      String[] ids = {AdFrescaPlugin.gcmSenderId};
+      return ids;
+    }
+
+    @Override
+    protected void onRegistered(Context context, String registrationId) {
+        AdFresca.handlePushRegistration(registrationId);
+    }
+
+    @Override
+    protected void onUnregistered(Context context, String registrationId) {
+      AdFresca.handlePushRegistration(null);
+    }
+
+    @Override
+    protected void onMessage(Context context, Intent intent) {
+      // Check AD fresca notification
+        if (AdFresca.isFrescaNotification(intent)) {    
+            String title = AdFrescaPlugin.getAppName(context);
+            int icon = com.MyCompany.ProductName.R.drawable.app_icon;
+            long when = System.currentTimeMillis();
+            Class<?> targetActivityClass = null;
+            
+            if (UnityPlayer.currentActivity != null) {
+              targetActivityClass = UnityPlayer.currentActivity.getClass();
+            } else {
+              targetActivityClass = UnityPlayerProxyActivity.class; // or YourUnityPlayerProxyActivity.class
+            }
+            
+            AFPushNotification notification = AdFresca.generateAFPushNotification(context, intent, targetActivityClass, appName, icon, when);
+            notification.setDefaults(Notification.DEFAULT_ALL); 
+            AdFresca.showNotification(notification);
+        }                
+    }
+  }
+```
+
+3) CustomGCMReceiver 클래스 구현하기
+
+```java
+public class CustomGCMReceiver extends GCMBroadcastReceiver { 
+    @Override
+  protected String getGCMIntentServiceClassName(Context context) { 
+    return "com.MyCompany.ProductName.CustomGCMIntentService"; 
+  } 
+}
+```
+
+4) Jar 파일 저장하기
+
+위 2개 클래스의 수정한 후 유니티 플러그인 폴더에 Export 합니다. 유니티 프로젝트 폴더의 /Assets/Plugins/Android 폴더 아래에 파일을 저장합니다. 다른 불필요한 클래스가 함께 첨부되지 않도록 주의하여 진행합니다.
+
+<img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/unity/unity-android-gcm-export.png"/>
+
+5) Unity 환경에서 GCM 적용하기
+
+이제 유니티 클래스에서 GCM Sender ID 값을 플러그인에 설정하여 적용을 완료합니다.
+
+```cs
+#if UNITY_ANDROID
+private static string GCM_SENDER_ID = "12345678"; // Google API Proejct Number (ex: 12345678)
+#endif
+
+void Start ()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  
+  plugin.SetGCMSenderId(GCM_SENDER_ID);
+  plugin.StartSession();
+}
+```
+
+#### iOS
+
+1) APNS 인증서 파일(.p12)을 Dashboard에 등록하기
+  - Keychain 툴을 이용하여 .cer 인증서 파일을 .p12로 변환하고 [Dashboard](https://admin.adfresca.com) 사이트에 등록합니다.
+  - 보다 자세한 설명은 [iOS Push Notification 인증서 설정 및 적용하기](https://adfresca.zendesk.com/entries/21714780) 가이드를 통하여 확인이 가능합니다.
+
+2) Info.plast 확인하기 / Provision 확인하기
+- AD fresca는 APNS의 Production 환경만을 지원합니다. 때문에 게임 빌드가 production으로 빌드되어야 정상적인 서비스 이용이 가능합니다.
+- Info.plst 파일의 'aps-environment' 값을 'production' 으로 설정되어 있어야 합니다.
+- App Store / Ad Hoc release에 사용하는 Provision 인증서를 사용하여 빌드되어야 합니다.
+
+3) AppController.mm 코드 적용하기 
+
+```mm
+#import <AdFresca/AdFrescaView.h>
+
   - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [AdFrescaView startSession:@"YOUR_API_KEY"];
+    ...
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 위하여 등록
   } 
-
-  // Push Notification 기능을 위하여 아래 내용을 추가합니다.
 
   - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
     [AdFrescaView registerDeviceToken:deviceToken];
   }
   
   - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
+    // AD fresca를 통해 전송된 메시지 여부를 확인하고 앱이 이미 실행 중인 경우에는 동작하지 않도록 합니다.
     if ([AdFrescaView isFrescaNotification:userInfo] && [application applicationState] != UIApplicationStateActive) {
       [AdFrescaView handlePushNotification:userInfo];
     }
   } 
 ```
 
-iOS 플러그인 설치가 완료 되었습니다.
+이로써 Push Notification 기능을 위한 적용 작업이 모두 완료되었습니다.
 
-### Code
+### Test Device Registration
 
-AD fresca SDK 통해 사용자에게 메시지를 전달하기 위한 주요 코드를 적용합니다. 아래의 코드만으로도 게임 운영자 / 마케터가 지정한 캠페인의 콘텐츠를 화면에 표시할 수 있습니다.
-
-```cs
-public class AdFrescaUnitySample : MonoBehaviour
-{
-	#if UNITY_ANDROID
-	private static string API_KEY = "YOUR_ANDROID_API_KEY";
-	private static string GCM_SENDER_ID = "YOUR_GCM_SENDER_ID"; // Google API Proejct ID (ex: 12345678)
-	#elif UNITY_IPHONE
-	private static string API_KEY = "YOUR_IOS_API_KEY";
-	private static string GCM_SENDER_ID = null;
-	#else
-	private static string API_KEY = null;
-	private static string GCM_SENDER_ID = null;
-	#endif
-
-	void Start ()
-	{
-		AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-		plugin.Init(API_KEY);
-		plugin.StartSession();
-    plugin.Load();
-    plugin.Show();
-	}
-}
-```
-
-`plugin.Init(API_KEY);` API Key 를 설정합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 앱 추가 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다.
-
-`plugin.StartSession();` 세션이 시작됨을 서버에 알립니다. 어플리케이션이 시작될 때 **한 번만** 실행되도록 합니다.
-
-`plugin.Load();` 서버로부터 매칭되는 캠페인의 콘텐츠를 내려받습니다. 
-
-`plugin.Show();` 내려받은 콘텐츠를 화면에 표시합니다.
-
-앱이 실행 되면 다음과 같은 화면이 보여집니다. 정상적으로 콘텐츠 뷰가 화면에 표시되고, 터치 시 앱스토어 페이지로 이동하는지 확인합니다.
-
-<img src="https://adfresca.zendesk.com/attachments/token/2fv9e76ptp7yo3h/?name=android-sample-p.png" width="240" />
-&nbsp;
-<img src="https://adfresca.zendesk.com/attachments/token/phn4fcpvbi2damx/?name=device-2013-03-18-133443.png" height="240" />
-
-* * *
-
-### Test Device ID
-
-AD fresca는 테스트 모드 기능을 지원하여 테스트를 원하는 디바이스에만 지정한 캠페인의 콘텐츠를 화면에 표시하고 푸시 메시지를 전송할 수 있습니다. 이로 인해 SDK가 적용된 앱이 이미 앱스토어에 출시된 경우, 게임 운영팀 혹은 개발팀에게만 새로운 메시지를 전달할 수 있도록 지원합니다.
+AD fresca는 테스트 모드 기능을 지원하여 테스트를 원하는 디바이스에만 원하는 메시지를 전달할 수 있습니다. 이로 인해 SDK가 적용된 앱이 이미 앱스토어에 출시된 경우, 게임 운영팀 혹은 개발팀에게만 새로운 메시지를 전달하여 테스트할 수 있도록 지원합니다.
 
 테스트 기기 등록을 위한 아이디 값은 SDK를 통해 추출이 가능하며 2가지 방법을 지원 합니다.
-
+ 
 1. testDeviceId 값을 직접 얻어와서 로그로 출력하는 방법
 
 ```cs
@@ -252,468 +368,13 @@ plugin.Load();
 plugin.Show();
 ```
 
-* * *
-
-## Custom Parameter
-
-커스텀 파라미터는 캠페인 진행 시, 타겟팅을 위해 사용할 사용자의 상태 값을 의미합니다.
-
-AD fresca SDK는 기본적으로 '국가, 언어, 앱 버전, 실행 횟수 등'의 디바이스 고유 데이터를 수집하며, 동시에 각 앱 내에서 고유하게 사용되는 특수한 상태 값들(예: 캐릭터 레벨, 보유 포인트, 스테이지 등)을 커스텀 파라미터로 정의하고 수집하여 분석 및 타겟팅 기능을 제공합니다.
-
-커스텀 파라미터 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
-
-SDK 적용을 위해서는 Dashboard에서 지정된 각 커스텀 파라미터의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
-
-Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, *SetCustomParameter** 메소드를 사용하여 각 인덱스 값에 맞게 상태 값을 설정합니다.
-
-```cs
-void Start() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Init(API_KEY);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
-  plugin.StartSession();
-}
-
-  .....
-
-void onUserLevelChanged(int level) {
-  User.level = level
-  
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-  plugin.Load(EVENT_INDEX_LEVEL_UP);
-  plugin.Show();
-}
-```
-
-**주의**_ SetCustomParameter() 메소드는 StartSession(), Load() 메소드 이전에 호출이 되어야 합니다. 특히 StartSession() 이전에는 반드시 모든 커스텀 파리미터 값들을 설정하고, 이후 변경되는 값들에 한하여 각 위치에 커스텀 파라미터를 설정합니다.
-
-만약 불가피하게 StartSession() 호출 시에 커스텀 파라미터 값을 설정할 수 없는 경우, 앱을 최초로 실행한 사용자의 프로파일은 업데이트되지 않으며 해당 사용자의 2회째 앱 실행부터 SDK가 로컬에 캐싱해둔 값이 전달됩니다. 최초로 실행된 사용자의 프로파일까지 통계 및 타겟팅하기 위해서는 아래와 같이 초기 값 설정을 진행합니다. 또한, 사용자의 로그인 이벤트 이후 모든 커스텀 파라미터의 값을 설정할 수 있도록 구현합니다.
-
-```cs
-void Start() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Init(API_KEY);
-  if (isFirstRunUser)
-  {
-    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, defaultLevel);
-    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_STAGE, defaultStage);
-    plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, defaultFacebookFlag);
-  }
-  plugin.StartSession();
-}
-
-.....
-
-void onUserSignedIn() {
-  User.level = level
-  
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
-}
-```
-
-## Marketing Event
-
-마케팅 이벤트는 유저에게 메세지를 전달하고자 하는 상황을 의미합니다. (예: 캐릭터 레벨 업, 퀘스트 달성, 스토어 페이지 진입)
-
-마케팅 이벤트 기능을 사용하여 지정된 상황에 알맞는 캠페인이 노출되도록 할 수 있습니다.
-
-마케팅 이벤트 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Marketing Events 버튼을 클릭하여 확인할 수 있습니다.
-
-SDK 적용을 위해서는 Dashboard에서 지정된 각 마케팅 이벤트의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
-
-각 이벤트 발생 시, Load() 메소드에 원하는 이벤트 인덱스 값을 인자로 넘겨주시면 간단히 적용이 완료됩니다.
-
-(Load() 메소드에 인덱스를 설정하지 않은 경우, 인덱스 값은 '1' 값이 자동으로 지정됩니다.)
-
-**Example**:  사용자가 메인 페이지로 이동할 시에 설정한 컨텐츠를 노출
-
-```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.Load(EVENT_INDEX_MAIN_PAGE);  // 메인 페이지에 설정한  컨텐츠를 노출
-plugin.Show();
-```
-
-**Example**: 사용자의 게임 캐릭터가 레벨업을 했을 때 설정한 컨텐츠를 노출
-
-```cs
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level); // 사용자 level 정보를 가장 최신으로 업데이트
-plugin.Load(EVENT_INDEX_LEVEL_UP); // 레벨업 이벤트에 설정한 컨텐츠를 노출
-plugin.Show();
-```
+테스트 디바이스 아이디를 확인한 이후에는, [Dashboard](https://admin.adfresca.com)를 접속하여 'Test Device' 메뉴를 통해 디바이스 등록이 가능합니다.
 
 * * *
 
-## In-App Purchase Count
+## IAP & Reward
 
-앱에서 IAP 기능을 사용하는 경우, 현재까지 사용자가 구매한 누적 횟수를 SDK에 설정하여 분석 및 타겟팅에 이용할 수 있습니다. 
-
-**setNumberOfInAppPurchases(int)** 메소드를 사용하여 현재까지 사용자가 구매한 누적 횟수 값을 SDK에 설정합니다. 커스텀 파라미터와 마찬가지로 앱 실행 혹은 사용자 로그인 이후에 값을 지정하고, IAP 결제가 일어난 직후에 갱신된 누적 구매 횟수 값을 설정합니다.
-
-```cs
-void Start() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Init(API_KEY);
-  plugin.SetNumberOfInAppPurchases(user.GetInAppPurchaseCount());
-  plugin.StartSession();
-}
-
-.....
-
-void OnUserPurchasedItem() {
-  User.inAppPurchaseCount++;
-
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetNumberOfInAppPurchases(User.GetInAppPurchaseCount());
-}
-```
-
-* * *
-
-## Push Notification
-
-AD fresca를 통해 Push Notification을 보내고 받을 수 있습니다.
-
-#### Android
-
-SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/console) 사이트에서 프로젝트를 생성하고, [Dashboard](https://admin.adfresca.com) 사이트에 설정할 GCM API Key 및 SDK 적용에 필요한 GCM_SENDER_ID (Project Number) 값을 얻어야 합니다.
-
-'[Android Push Notification 설정 및 적용하기 (GCM)](https://adfresca.zendesk.com/entries/28526764)' 가이드를 참고하여 필요한 값들을 얻습니다.
-
-이제 SDK 적용을 시작합니다.
-
-1) AndroidManifest.xml 확인하기
-
-```xml
-<manifest>   
-  <application>
-      .........
-      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-      <receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver"
-        android:permission="com.google.android.c2dm.permission.SEND">  
-        <intent-filter>
-          <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-          <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-          <category android:name="com.MyCompany.ProductName" />
-         </intent-filter>
-      </receiver>
-      <service android:name="com.MyCompany.ProductName.GCMIntentService" />  
-   </application>
-    ..........
-    <permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
-    <uses-permission android:name="android.permission.VIBRATE" />
-    ..........
-</manifest>
-```
-
-2) GCMIntentService 클래스 구현하기
-
-```java
-  public class GCMIntentService extends GCMBaseIntentService {
-
-    public GCMIntentService() {
-    	super();
-    }
-    
-    @Override
-    protected String[] getSenderIds (Context context) {
-    	String[] ids = {AdFrescaPlugin.gcmSenderId};
-    	return ids;
-    }
-
-    @Override
-    protected void onRegistered(Context context, String registrationId) {
-        AdFresca.handlePushRegistration(registrationId);
-    }
-
-    @Override
-    protected void onUnregistered(Context context, String registrationId) {
-    	AdFresca.handlePushRegistration(null);
-    }
-
-    @Override
-    protected void onMessage(Context context, Intent intent) {
-    	// Check AD fresca notification
-        if (AdFresca.isFrescaNotification(intent)) {   	
-            String title = AdFrescaPlugin.getAppName(context);
-            int icon = R.drawable.app_icon;
-            long when = System.currentTimeMillis();
-            Class<?> targetActivityClass = null;
-            
-            if (UnityPlayer.currentActivity != null) {
-            	targetActivityClass = UnityPlayer.currentActivity.getClass();
-            } else {
-            	targetActivityClass = UnityPlayerProxyActivity.class; // or YourUnityPlayerProxyActivity.class
-            }
-            
-            AdFresca.showNotification(context, intent, targetActivityClass, title, icon, when);
-        }                
-    }
-    
-    @Override
-    protected void onError(Context context, String registrationId) {
-    
-    }
-  }
-```
-
-showNotification() 메소드는 가장 기본적인 Notification 뷰를 이용하여 아무런 사운드 없이 메시지를 표시합니다. Notification에 알람이나 사운드 파일 설정 같은 커스터마이징 작업이 필요한 경우 Android SDK 가이드의 ["Custom Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#custom-notification) 내용을 참고하여 주시기 바랍니다.
-
-또한, Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드의 ["Image Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#image-notification) 내용을 참고하여 주시기 바랍니다.
-
-3) GCMReceiver 클래스 구현하기
-
-```java
-public class GCMReceiver extends GCMBroadcastReceiver { 
-   	@Override
-	protected String getGCMIntentServiceClassName(Context context) { 
-		return "com.MyCompany.ProductName.GCMIntentService"; 
-	} 
-}
-```
-
-4) Unity 환경에서 GCM 적용하기
-
-이제 유니티 클래스에서 GCM Sender ID 값을 플러그인에 적용합니다. Sender ID 값은 API Key 값과 다른 Project Number 값 입니다. 
-
-```cs
-#if UNITY_ANDROID
-private static string GCM_SENDER_ID = "12345678"; // Google API Proejct Number (ex: 12345678)
-#endif
-
-void Start ()
-{
-	AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-	plugin.Init(API_KEY);
-	
-	plugin.SetGCMSenderId(GCM_SENDER_ID);
-	plugin.StartSession();
-}
-```
-
-#### iOS
-
-SDK를 적용하기 이전에 애플의 ["Local and Push Notification Programming Guide"](https://developer.apple.com/library/mac/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Introduction.html) 가이드 문서를 읽어보시길 권장합니다. 
-
-(현재 AD fresca의 iOS Push Notification 서비스는 APNS의 Production 환경만을 지원하며, 추후 업데이트를 통해 Development 환경을 추가로 지원할 예정입니다.)
-
-1) Push Notification 인증서 파일을 생성하고 Dashboard 사이트에 등록합니다.
-  - [iOS Push Notification 인증서 설정 및 적용하기](https://adfresca.zendesk.com/entries/21714780) 가이드 를 따라 Production용 Push Notification Certificate를 생성하고 [Dashboard](https://admin.adfresca.com) 사이트에 등록합니다.
-
-2) Info.plast 확인하기 / Provision 확인하기
-- Info.plst 파일의 'aps-environment' 값을 'production' 으로 설정합니다. 
-- App Store / Ad Hoc release에 사용하는 Provision 인증서를 사용하여 빌드해야 합니다.
-
-3) AppController.mm 파일의 이벤트 확인하기
-
-```mm
-#import <AdFresca/AdFrescaView.h>
-
-  - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [AdFrescaView startSession:@"YOUR_API_KEY"];
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge |UIRemoteNotificationTypeSound];   // Push Notification 기능을 위하여 등록
-  } 
-
-  - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
-    [AdFrescaView registerDeviceToken:deviceToken];
-  }
-  
-  - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-    // AD fresca를 통해 전송된 메시지 여부를 확인하고 앱이 이미 실행 중인 경우에는 동작하지 않도록 합니다.
-    if ([AdFrescaView isFrescaNotification:userInfo] && [application applicationState] != UIApplicationStateActive) {
-      [AdFrescaView handlePushNotification:userInfo];
-    }
-  } 
-```
-
-iOS는 별도로 유니티에서 설정할 작업이 없습니다.
-
-이로써 Push Notification 기능을 위한 적용 작업이 모두 완료되었습니다.
-
-* * *
-
-## Custom URL
-
-Announcement 캠페인의 Click URL, Push Notification 캠페인의 URL Schema 설정 시에 자신의 앱 URL Schema를 사용할 수 있습니다. 이를 통해 사용자가 콘텐츠를 클릭할 경우, 자신이 원하는 특정 앱 페이지로 이동하는 등의 액션을 지정할 수 있습니다.
-
-#### Android 환경에서 Custom URL 적용하기
-
-네이티브 애플리케이션 개발 환경에서는 AndroidManifest.xml 파일을 수정하여 원하는 액티비티에 scheme 정보를 추가하는 방식으로 적용이 됩니다.
-
-하지만 액티비티를 페이지 개념으로 사용하는 네이티브 환경과 달리, Unity 엔진을 사용하여 안드로이드 애플리케이션을 개발하는 경우 단 하나의 UnityPlayer 액티비티만을 사용하며 엔진 내부적으로 페이지를 처리합니다.
-
-때문에 schema를 지정할 수 있는 액티비티의 제약이 생깁니다. MAIN 으로 지정된 UnityPlayer 액티비티는 url schema를 적용할 수 없습니다. 그래서 아래와 같은 방법들을 사용하여 Custom URL을 처리합니다.
-
-1) UnityPlayer 액티비티의 startActivity(intent) 메소드를 오버라이딩하여 Custom URL 처리하기 (Annoucnement 캠페인)
-
-Annoucnement 캠페인을 통해 전달되는 Click URL은 항상 인게임 상황에서 전달되며, SDK가 내부적으로 startActivity() 메소드를 이용하여 호출하고 있습니다. 이러한 조건에서는 게임이 실행되고 있는 UnityPlyaer 액티비티의 startActivity() 메소드를 직접 구현함으로써 Custom URL 처리가 가능합니다.
-
-먼저 Eclipse에서 Android Project를 생성하여 UnityPlayerActivity를 상속받은 'Main Actvity' 클래스를 생성합니다. 그리고 AndroidMenefest.xml 파일을 아래와 같이 수정합니다.
-
-```xml
-<application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
-	<activity android:name="com.MyCompany.ProductName.MainActivity" android:label="@string/app_name">
-		<intent-filter>
-			<action android:name="android.intent.action.MAIN" />
-			<category android:name="android.intent.category.LAUNCHER" />
-		</intent-filter>
-	</activity>
-	.....	
-</application>
-```
-startActivity() 메소드를 아래와 같이 구현합니다. 'myapp://' 으로 적용된 Custom URL이 전달된다면 새로 액티비티를 호출하지 않고 미리 설정한 게임 오브젝트로 값을 전달합니다.
-
-```java
-public class MainActivity extends UnityPlayerActivity {
-  ...
-  @Override 
-  public void startActivity(Intent intent) { 
-    boolean isStartActivity = true;
-
-    // Check intent 
-    Uri uri = intent.getData(); 
-    if (uri != null && uri.getScheme().equals("myapp")) { 
-      isStartActivity = false; 
-    }
-
-    if (isStartActivity) { 
-      super.startActivity(intent); 
-    } else { 
-      // do something with UnitySendMessage and uri 
-      Log.d("TEST", "MainActivity.startActivity() : uri = " + uri.toString());    
-      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", uri.toString());
-    } 
-  }
-}
-```
-
-2) Push Notification을 통해 넘어오는 Custom URL 처리하기 (Push Notificiaton 캠페인)
-
-Custom URL이 설정된 Push Notification을 수신한 경우, Notification을 터치 시 원하는 액션을 지정할 수 있습니다. 단, 이 경우는 인게임 상황이 아니기 때문에 조금 다른 방법을 사용합니다.
-
-먼저 PushProxyActivity 라는 이름의 액티비티 클래스를 하나 생성합니다. 그리고 AndroidMenefest.xml 내용을 아래와 같이 추가합니다. 
-
-```xml
-<activity android:name=".PushProxyActivity">
-	<intent-filter> 
- 		<action android:name="android.intent.action.VIEW" /> 
-		<category android:name="android.intent.category.DEFAULT" /> 
-		<category android:name="android.intent.category.BROWSABLE" /> 
-		<data android:scheme="myapp" android:host="com.adfresca.push" />
-	</intent-filter> 
-</activity>
-
-.......
-```
-위와 같이 설정한 경우 Push Notificaiton 캠페인에서는 myapp://com.adfresca.push?item=abc 와 같은 형식의 url을 입력해야 합니다.
-
-다음은 PushProxyActivity 클래스의 내용을 구현해야 합니다. PushProxyActivity 클래스는 Android OS로 부터 수신하는 Custom URL 정보를 받아 처리하고 바로 자신을 종료하는 단순한 프록시 형태의 액티비티입니다. 만약 현재 UnityPlayer가 실행 중이 아니라면 Custom URL을 처리할 수 없으므로 새로 UnityPlayer를 실행하여 uri 값을 넘겨야 합니다.
-
-```java
-public class PushProxyActivity extends Activity {
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    
-    // hide ui
-    requestWindowFeature(Window.FEATURE_NO_TITLE);
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-	    	    
-    Uri uri = getIntent().getData();
-    if (UnityPlayer.currentActivity != null) { 
-      Log.d("TEST", "PushProxyActivity.onCreate() with currentActivity : uri = " + uri.toString());   
-      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", uri.toString()); 
-      
-     } else {
-       Log.d("TEST", "PushProxyActivity.onCreate() without currentActivity : uri = " + uri.toString());   
-       
-       // Start a new player with uri
-       try {
-         Intent intent = new Intent(this, MainActivity.class);
-         intent.putExtra("fresca_uri", uri.toString());
-         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-         startActivity(intent);
-       } catch (Exception e) {
-         e.printStackTrace();
-       }
-    }
-    
-    finish();
-  }
-}
-```
-마지막으로 PushProxyActivity를 통해 게임이 실행된 경우 넘어오는 uri 값을 처리합니다. Main 액티비티에 아래와 같은 내용을 추가합니다.
-
-```java
-public class MainActivity extends UnityPlayerActivity {
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    ......
-    // Handle custom uri from PushProxcyActivity
-    String frescaURL = this.getIntent().getStringExtra("fresca_uri");
-    if (frescaURL != null) {
-      Log.d("TEST", "MainActivity.onCreate() with uri");  
-      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", frescaURI);
-    } 	
-    ......
-  }
-  .........
-}
-```
-
-Android 플랫폼 환경에서 Custom URL을 처리할 수 있는 모든 방법을 구현하였습니다.
-
-#### iOS 환경에서 Custom URL 적용하기
-
-iOS의 경우 1개의 이벤트체서 모든 URL 처리가 가능하기 때문에 비교적 간단하게 적용할 수 있습니다.
-
-1) Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
-
-<img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
-
-2) AppController.mm 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값을 유니티 게임 오브젝트에 전달합니다. 
-
-```mm
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
-{  
-	if ([url.scheme isEqualToString:@"myapp"])
-	{
-    		NSString *frescaURL = [url absoluteString];
-    		UnitySendMessage("Fresca", "OnCustomURL", [frescaURL UTF8String]);
-	}
-	return YES;
-}
-```
-
-### Unity에서 url 값 확인 및 처리하기
-
-위 예제에서는 모두 'Fresca' 게임 오브젝트의 'OnCustomURL' 이벤트 메소드를 호출하여 값을 전달하였습니다. 이제 Unity 게임 상에서 그 값을 직접 받아 확인하고 처리할 수 있습니다.
-
-```java
-public void OnCustomURL(string url)
-{
-	Debug.Log("OnCustomURL = " + url); 
-	//ex) myapp://com.adfresca.custom?item=abc 값이 전달된 경우 item=abc 값을 파싱하여 아이템 지급
-}
-```
-
-* * *
-
-
-## In-App Purchase Tracking (Beta)
+### In-App Purchase Tracking (Beta)
 
 _**(현재 In-App-Purchase Tracking 기능은 Unity Plugin 2.2.0-beta1 버전, Android OS에서만 지원됩니다.)**_
 
@@ -737,12 +398,12 @@ Actual Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 �
 적용 예제 1: 유니티 환경에서 결제 성공 이벤트 발생 시
 ```cs
 AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
-	.WithItemId("gold100")
-	.WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-	.WithPrice(0.99)
-	.WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
-	.WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
-			
+  .WithItemId("gold100")
+  .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+  .WithPrice(0.99)
+  .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
+  .WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
+      
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.LogPurchase(purchase);
 ```
@@ -751,44 +412,44 @@ plugin.LogPurchase(purchase);
 ```java
 // Callback for when a purchase is finished
 IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-	public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-		Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+  public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+    Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
 
-		if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
-			......
-			return;
-		}
+    if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
+      ......
+      return;
+    }
 
-		Log.d(TAG, "Purchase successful.");
-		if (purchase.getPurchaseState() == 0) {
-			final SkuDetails detail = currentInventory.getSkuDetails(purchase.getSku());
-			final Purchase purchase0 = purchase;
-			
-			UnityPlayer.currentActivity.runOnUiThread(new Runnable(){
-				@Override
-				public void run() {
-					String itemId = purchase0.getSku();
-					String currencyCode = "KRW"; // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-					Double price =  parsePrice(detail.getPrice()); // For Google Play, you can get the price value from SkuDetails
-					Date purhcaseDate = new Date(purchase0.getPurchaseTime());
-					String orderId = purchase0.getOrderId();
-					String receiptData = purchase0.getOriginalJson();
-					String signature = purchase0.getSignature();
+    Log.d(TAG, "Purchase successful.");
+    if (purchase.getPurchaseState() == 0) {
+      final SkuDetails detail = currentInventory.getSkuDetails(purchase.getSku());
+      final Purchase purchase0 = purchase;
+      
+      UnityPlayer.currentActivity.runOnUiThread(new Runnable(){
+        @Override
+        public void run() {
+          String itemId = purchase0.getSku();
+          String currencyCode = "KRW"; // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+          Double price =  parsePrice(detail.getPrice()); // For Google Play, you can get the price value from SkuDetails
+          Date purhcaseDate = new Date(purchase0.getPurchaseTime());
+          String orderId = purchase0.getOrderId();
+          String receiptData = purchase0.getOriginalJson();
+          String signature = purchase0.getSignature();
 
-					AFPurchase actualPurchase = new AFPurchase.Builder(AFPurchase.Type.ACTUAL_ITEM)
-															  .setItemId(itemId)
-															  .setCurrencyCode(currencyCode)
-															  .setPrice(price)
-															  .setPurchaseDate(purhcaseDate)
-															  .setReceipt(orderId, receiptData, signature)
-															  .build();
+          AFPurchase actualPurchase = new AFPurchase.Builder(AFPurchase.Type.ACTUAL_ITEM)
+                                .setItemId(itemId)
+                                .setCurrencyCode(currencyCode)
+                                .setPrice(price)
+                                .setPurchaseDate(purhcaseDate)
+                                .setReceipt(orderId, receiptData, signature)
+                                .build();
 
-					AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(actualPurchase);
-				}
-			});
-		}
-		
-		......
+          AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(actualPurchase);
+        }
+      });
+    }
+    
+    ......
     }
 };
 ```
@@ -812,10 +473,10 @@ Virtual Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경
 적용 예제: 
 ```cs
 AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
-	.WithItemId("long_sword")
-	.WithCurrencyCode("gold") 
-	.WithPrice(100)
-	.WithPurchaseDate(purchaseDateTime);
+  .WithItemId("long_sword")
+  .WithCurrencyCode("gold") 
+  .WithPrice(100)
+  .WithPurchaseDate(purchaseDateTime);
 
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.LogPurchase(purchase);
@@ -841,74 +502,17 @@ Unity Plugin의 경우는 이미 아래와 같은 코드가 적용되어 있습�
 ```java
 ......
 AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPurchaseExceptionListener(){
-	public void onException(AFPurchase purchase, AFException e) {
-		Log.e("AdFresca", "AFPurchaseExceptionListener.onException = " + e.getMessage());
-	}
+  public void onException(AFPurchase purchase, AFException e) {
+    Log.e("AdFresca", "AFPurchaseExceptionListener.onException = " + e.getMessage());
+  }
 });
 ```
 
 * * *
 
-## CPI Identifier
+### Give Reward
 
-Incentivized CPI & CPA 캠페인 기능을 사용하여, 사용자가 Media App에서 Advertising App의 광고를 보고 앱을 설치하였을 때 보상으로 Media App의 아이템을 지급할 수 있습니다.
-
-- Medial App: 다른 앱의 광고를 노출하고, 광고 대상의 앱을 설치한 사용자들에게 보상을 지급하는 앱
-- Advertising: Media App에 광고가 노출되는 앱.
-
-Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [크로스 프로모션 캠페인 이해하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
-
-SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
-
-(현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 URL Schema 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치 및 [Marketing Event](#marketing-event) 기능이 적용되어야 합니다.)
-  
-#### Advertising App 설정하기:
-  1. Android
-
-  Android 플랫폼의 경우 앱의 패키지 이름을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 패키지 이름을 확인하고 CPI Identifier로 사용합니다.
-
-  AndroidManifest.xml 파일을 열어 패키지 이름을 확인합니다.
-
-  ```xml
-  <?xml version="1.0" encoding="utf-8"?>
-
-  <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.adfresca.demo">
-    <application>
-    .....
-    </application>
-  </manifest>
-  ```
-
-  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
-
-  2. iOS
-
-  iOS 플랫폼의 경우 URL Schema 값을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 URL Schema을 설정하고 CPI Identifier로 사용합니다.
-
-  Xcode 프로젝트의 Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
-
-  <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
-
-  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
-  iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 캠페인 진행을 위해서는 최대한 Unique한 값을 선택해야 합니다.
-  
-  마지막으로, Incentivized CPA 캠페인을 진행할 경우는 보상 조건으로 지정한 마케팅 이벤트가 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 이벤트를 호출합니다.
-  ```cs
-  // 튜토리얼 완료 이벤트를 보상 조건으로 지정한 경우
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Load(EVENT_INDEX_TUTORIAL);  
-  plugin.Show(EVENT_INDEX_TUTORIAL);
-  ```
-
-#### Media App SDK 적용하기:
-
-  Media App에서 보상 지급 여부를 확인하고, 사용자에게 아이템을 지급하기 위해서는 SDK 가이드의 [Reward Item](#reward-item) 항목의 내용을 구현합니다.
-
-* * *
-
-## Reward Item
-
-Reward Item 기능을 적용하여 현재 사용자에게 지급 가능한 보상 아이템이 있는지 확인하고, 지정된 보상 아이템을 사용자에게 지급할 수 있습니다.
+Reward 기능을 적용하여 현재 사용자에게 지급 가능한 보상 아이템이 있는지 확인하고, 지정된 보상 아이템을 사용자에게 지급할 수 있습니다.
 
 Annoucnement 캠페인의 'Reward Item' 항목을 설정했거나, Incentivized CPI & CPA 캠페인의 'Incentive Item' 을 설정한 경우 사용자에게 보상 아이템이 지급됩니다.
 
@@ -989,22 +593,85 @@ public void OnReward(string json)
 - Incentivized CPA 캠페인: 사용자의 Advertising App 설치가 확인되고 보상 조건으로 지정된 마케팅 이벤트가 호출된 후에 발생합니다.
 
 만일 디바이스의 네트워크 단절이 발생한 경우 SDK는 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
+* * *
 
-(기존의 GetAvailableRewardItems 메소드는 Deprecated 상태로 변경되었지만, 호환성을 보장하여 정상적으로 동작하고 있습니다.)
+## Dynamic Targeting
+
+### Custom Parameter
+
+커스텀 파라미터는 캠페인 진행 시, 타겟팅을 위해 사용할 사용자의 상태 값을 의미합니다.
+
+AD fresca SDK는 기본적으로 '국가, 언어, 앱 버전, 실행 횟수 등'의 디바이스 고유 데이터를 수집하며, 동시에 각 앱 내에서 고유하게 사용되는 특수한 상태 값들(예: 캐릭터 레벨, 보유 포인트, 스테이지 등)을 커스텀 파라미터로 정의하고 수집하여 분석 및 타겟팅 기능을 제공합니다.
+
+커스텀 파라미터 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
+
+SDK 적용을 위해서는 Dashboard에서 지정된 각 커스텀 파라미터의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
+
+Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, *SetCustomParameter** 메소드를 사용하여 각 인덱스 값에 맞게 상태 값을 설정합니다. 앱이 실행되는 시점에 한 번 설정하고, 해당 파라미터 값이 변경될 때 마다 최신 값을 설정하여 줍니다.
+
+```cs
+void Start() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
+  plugin.StartSession();
+}
+
+  .....
+
+void onUserLevelChanged(int level) {
+  User.level = level
+  
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
+}
+```
 
 * * *
 
-## Advanced Features
+### Marketing Moment
+
+마케팅 모멘트는 유저에게 메세지를 전달하고자 하는 상황을 의미합니다. (예: 캐릭터 레벨 업, 퀘스트 달성, 스토어 페이지 진입)
+
+마케팅 모멘트 기능을 사용하여 지정된 상황에 알맞는 캠페인이 노출되도록 할 수 있습니다.
+
+마케팅 모멘트 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Marketing Moments 버튼을 클릭하여 확인할 수 있습니다.
+
+SDK 적용을 위해서는 Dashboard에서 지정된 각 마케팅 모멘트의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
+
+각 모멘트 발생 시, Load() 메소드에 원하는 모멘트 인덱스 값을 인자로 넘겨주시면 간단히 적용이 완료됩니다.
+
+(Load() 메소드에 인덱스를 설정하지 않은 경우, 인덱스 값은 '1' 값이 자동으로 지정됩니다.)
+
+**Example**:  사용자가 메인 페이지로 이동할 시에 설정한 컨텐츠를 노출
+
+```cs
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+plugin.Load(EVENT_INDEX_MAIN_PAGE);  // 메인 페이지에 설정한  컨텐츠를 노출
+plugin.Show();
+```
+
+**Example**: 사용자의 게임 캐릭터가 레벨업을 했을 때 설정한 컨텐츠를 노출
+
+```cs
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level); // 사용자 level 정보를 가장 최신으로 업데이트
+plugin.Load(EVENT_INDEX_LEVEL_UP); // 레벨업 이벤트에 설정한 컨텐츠를 노출
+plugin.Show();
+```
+
+## Advanced
 
 ### Timeout Interval
 
-컨텐츠의 최대 로딩 시간을 직접 지정하실 수 있습니다. 지정된 시간 내에 컨텐츠가 로딩되지 못한 경우, 사용자에게 컨텐츠를 노출하지 않습니다.
+메시지의 최대 로딩 시간을 직접 지정하실 수 있습니다. 지정된 시간 내에 메시지가 로딩되지 못한 경우, 사용자에게 메시지를 표시하지 않습니다.
 
 최소 1초 이상 지정이 가능하며, 지정하지 않을 시 기본 값으로 5초가 지정 됩니다.
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.Init(API_KEY);
 plugin.SetTimeoutInterval(5);
 plugin.Load();
 plugin.Show();
@@ -1012,7 +679,240 @@ plugin.Show();
 
 * * *
 
-## Proguard Configuration
+## Reference
+
+### Custom URL Schema
+
+Announcement 캠페인의 Click URL, Push Notification 캠페인의 URL Schema 설정 시에 자신의 앱 URL Schema를 사용할 수 있습니다. 이를 통해 사용자가 콘텐츠를 클릭할 경우, 자신이 원하는 특정 앱 페이지로 이동하는 등의 액션을 지정할 수 있습니다.
+
+#### Android 환경에서 Custom URL 적용하기
+
+네이티브 애플리케이션 개발 환경에서는 AndroidManifest.xml 파일을 수정하여 원하는 액티비티에 scheme 정보를 추가하는 방식으로 적용이 됩니다.
+
+하지만 액티비티를 페이지 개념으로 사용하는 네이티브 환경과 달리, Unity 엔진을 사용하여 안드로이드 애플리케이션을 개발하는 경우 단 하나의 UnityPlayer 액티비티만을 사용하며 엔진 내부적으로 페이지를 처리합니다.
+
+때문에 schema를 지정할 수 있는 액티비티의 제약이 생깁니다. MAIN 으로 지정된 UnityPlayer 액티비티는 url schema를 적용할 수 없습니다. 그래서 아래와 같은 방법들을 사용하여 Custom URL을 처리합니다.
+
+1) UnityPlayer 액티비티의 startActivity(intent) 메소드를 오버라이딩하여 Custom URL 처리하기 (Annoucnement 캠페인)
+
+Annoucnement 캠페인을 통해 전달되는 Click URL은 항상 인게임 상황에서 전달되며, SDK가 내부적으로 startActivity() 메소드를 이용하여 호출하고 있습니다. 이러한 조건에서는 게임이 실행되고 있는 UnityPlyaer 액티비티의 startActivity() 메소드를 직접 구현함으로써 Custom URL 처리가 가능합니다.
+
+먼저 Eclipse에서 Android Project를 생성하여 UnityPlayerActivity를 상속받은 'Main Actvity' 클래스를 생성합니다. 그리고 AndroidMenefest.xml 파일을 아래와 같이 수정합니다.
+
+```xml
+<application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
+  <activity android:name="com.MyCompany.ProductName.MainActivity" android:label="@string/app_name">
+    <intent-filter>
+      <action android:name="android.intent.action.MAIN" />
+      <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+  </activity>
+  ..... 
+</application>
+```
+startActivity() 메소드를 아래와 같이 구현합니다. 'myapp://' 으로 적용된 Custom URL이 전달된다면 새로 액티비티를 호출하지 않고 미리 설정한 게임 오브젝트로 값을 전달합니다.
+
+```java
+public class MainActivity extends UnityPlayerActivity {
+  ...
+  @Override 
+  public void startActivity(Intent intent) { 
+    boolean isStartActivity = true;
+
+    // Check intent 
+    Uri uri = intent.getData(); 
+    if (uri != null && uri.getScheme().equals("myapp")) { 
+      isStartActivity = false; 
+    }
+
+    if (isStartActivity) { 
+      super.startActivity(intent); 
+    } else { 
+      // do something with UnitySendMessage and uri 
+      Log.d("TEST", "MainActivity.startActivity() : uri = " + uri.toString());    
+      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", uri.toString());
+    } 
+  }
+}
+```
+
+2) Push Notification을 통해 넘어오는 Custom URL 처리하기 (Push Notificiaton 캠페인)
+
+Custom URL이 설정된 Push Notification을 수신한 경우, Notification을 터치 시 원하는 액션을 지정할 수 있습니다. 단, 이 경우는 인게임 상황이 아니기 때문에 조금 다른 방법을 사용합니다.
+
+먼저 PushProxyActivity 라는 이름의 액티비티 클래스를 하나 생성합니다. 그리고 AndroidMenefest.xml 내용을 아래와 같이 추가합니다. 
+
+```xml
+<activity android:name=".PushProxyActivity">
+  <intent-filter> 
+    <action android:name="android.intent.action.VIEW" /> 
+    <category android:name="android.intent.category.DEFAULT" /> 
+    <category android:name="android.intent.category.BROWSABLE" /> 
+    <data android:scheme="myapp" android:host="com.adfresca.push" />
+  </intent-filter> 
+</activity>
+
+.......
+```
+위와 같이 설정한 경우 Push Notificaiton 캠페인에서는 myapp://com.adfresca.push?item=abc 와 같은 형식의 url을 입력해야 합니다.
+
+다음은 PushProxyActivity 클래스의 내용을 구현해야 합니다. PushProxyActivity 클래스는 Android OS로 부터 수신하는 Custom URL 정보를 받아 처리하고 바로 자신을 종료하는 단순한 프록시 형태의 액티비티입니다. 만약 현재 UnityPlayer가 실행 중이 아니라면 Custom URL을 처리할 수 없으므로 새로 UnityPlayer를 실행하여 uri 값을 넘겨야 합니다.
+
+```java
+public class PushProxyActivity extends Activity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    
+    // hide ui
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            
+    Uri uri = getIntent().getData();
+    if (UnityPlayer.currentActivity != null) { 
+      Log.d("TEST", "PushProxyActivity.onCreate() with currentActivity : uri = " + uri.toString());   
+      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", uri.toString()); 
+      
+     } else {
+       Log.d("TEST", "PushProxyActivity.onCreate() without currentActivity : uri = " + uri.toString());   
+       
+       // Start a new player with uri
+       try {
+         Intent intent = new Intent(this, MainActivity.class);
+         intent.putExtra("fresca_uri", uri.toString());
+         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+         startActivity(intent);
+       } catch (Exception e) {
+         e.printStackTrace();
+       }
+    }
+    
+    finish();
+  }
+}
+```
+마지막으로 PushProxyActivity를 통해 게임이 실행된 경우 넘어오는 uri 값을 처리합니다. Main 액티비티에 아래와 같은 내용을 추가합니다.
+
+```java
+public class MainActivity extends UnityPlayerActivity {
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    ......
+    // Handle custom uri from PushProxcyActivity
+    String frescaURL = this.getIntent().getStringExtra("fresca_uri");
+    if (frescaURL != null) {
+      Log.d("TEST", "MainActivity.onCreate() with uri");  
+      UnityPlayer.UnitySendMessage("Fresca", "OnCustomURL", frescaURI);
+    }   
+    ......
+  }
+  .........
+}
+```
+
+Android 플랫폼 환경에서 Custom URL을 처리할 수 있는 모든 방법을 구현하였습니다.
+
+#### iOS 환경에서 Custom URL 적용하기
+
+iOS의 경우 1개의 이벤트체서 모든 URL 처리가 가능하기 때문에 비교적 간단하게 적용할 수 있습니다.
+
+1) Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+
+<img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
+
+2) AppController.mm 파일을 열어 handleOpenURL 메소드를 구현합니다. 호출되는 URL 값을 유니티 게임 오브젝트에 전달합니다. 
+
+```mm
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
+{  
+  if ([url.scheme isEqualToString:@"myapp"])
+  {
+        NSString *frescaURL = [url absoluteString];
+        UnitySendMessage("Fresca", "OnCustomURL", [frescaURL UTF8String]);
+  }
+  return YES;
+}
+```
+
+#### Unity에서 url 값 확인 및 처리하기
+
+위 예제에서는 모두 'Fresca' 게임 오브젝트의 'OnCustomURL' 이벤트 메소드를 호출하여 값을 전달하였습니다. 이제 Unity 게임 상에서 그 값을 직접 받아 확인하고 처리할 수 있습니다.
+
+```java
+public void OnCustomURL(string url)
+{
+  Debug.Log("OnCustomURL = " + url); 
+  //ex) myapp://com.adfresca.custom?item=abc 값이 전달된 경우 item=abc 값을 파싱하여 아이템 지급
+}
+```
+
+* * *
+
+### Cross Promotion Configuration
+
+Incentivized CPI & CPA 캠페인 기능을 사용하여, 사용자가 Media App에서 Advertising App의 광고를 보고 앱을 설치하였을 때 보상으로 Media App의 아이템을 지급할 수 있습니다.
+
+- Medial App: 다른 앱의 광고를 노출하고, 광고 대상의 앱을 설치한 사용자들에게 보상을 지급하는 앱
+- Advertising: Media App에 광고가 노출되는 앱.
+
+Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [크로스 프로모션 캠페인 이해하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
+
+SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
+
+(현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 URL Schema 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치 및 [Marketing Event](#marketing-event) 기능이 적용되어야 합니다.)
+  
+#### Advertising App 설정하기:
+  1. Android
+
+  Android 플랫폼의 경우 앱의 패키지 이름을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 패키지 이름을 확인하고 CPI Identifier로 사용합니다.
+
+  AndroidManifest.xml 파일을 열어 패키지 이름을 확인합니다.
+
+  ```xml
+  <?xml version="1.0" encoding="utf-8"?>
+
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.adfresca.demo">
+    <application>
+    .....
+    </application>
+  </manifest>
+  ```
+
+  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
+
+  2. iOS
+
+  iOS 플랫폼의 경우 URL Schema 값을 이용하여 광고를 노출한 앱이 실제로 디바이스에 설치되었는지 검사하게 됩니다. 따라서 Advertising App 앱의 URL Schema을 설정하고 CPI Identifier로 사용합니다.
+
+  Xcode 프로젝트의 Info.plst 파일을 열어 사용할 URL Schema 정보를 설정 합니다.
+
+  <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
+
+  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
+  iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 캠페인 진행을 위해서는 최대한 Unique한 값을 선택해야 합니다.
+  
+  마지막으로, Incentivized CPA 캠페인을 진행할 경우는 보상 조건으로 지정한 마케팅 이벤트가 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 이벤트를 호출합니다.
+  ```cs
+  // 튜토리얼 완료 이벤트를 보상 조건으로 지정한 경우
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Load(EVENT_INDEX_TUTORIAL);  
+  plugin.Show(EVENT_INDEX_TUTORIAL);
+  ```
+
+#### Media App SDK 적용하기:
+
+  Media App에서 보상 지급 여부를 확인하고, 사용자에게 아이템을 지급하기 위해서는 SDK 가이드의 [Give Reward](#give-reward) 항목의 내용을 구현합니다.
+
+* * *
+
+### Image Push Notification
+
+Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드의 ["Image Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#image-notification) 내용을 참고하여 진행이 가능합니다.
+
+* * *
+
+### Proguard Configuration
 
 안드로이드에서 Proguard 툴을 이용하여 APK 파일을 보호하는 경우 몇 가지 예외 처리 작업을 진행해야 합니다. AD fresca SDK와 SDK에 포함된 OpenUDID 및 Google Gson에 대한 예외 처리를 아래와 같이 적용합니다.
 
@@ -1026,7 +926,7 @@ plugin.Show();
 
 * * *
 
-## Trouble Shooting
+## Troubleshooting
 
 콘텐츠가 화면에 제대로 출력되지 않거나, 에러가 발생하는 경우 SDK에서 에러 정보를 확인할 수 있습니다. 현재 Unity 코드로 에러 정보를 출력하는 방법은 아직 지원되지 않고 있으며, 각 플랫폼 코드에서 직접 로그를 출력할 수 있습니다.
 

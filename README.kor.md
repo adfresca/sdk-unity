@@ -162,9 +162,7 @@ void Start ()
 }
 ```
 
-When you first call in-app messaging methods, you will see the test message below. If you tap on the image, it will redirect to the product page of the app on the app store. You will hide this test message by chagning the test mode configuration later.
-
-첫번째로 인-앱 메시징 코드를 적용한 경우, 아래와 같이 테스트 이미지 메시지가 표시됩니다. 해당 이미지를 터치하면 앱스토어 페이지로 이동합니다. 현재 보고 있는 테스트 메시지는 이후 테스트 모드 설정을 변경하여 더이상 보이지 않도록 설정하게 됩니다.
+첫 번째로 인-앱 메시징 코드를 적용한 경우, 아래와 같이 테스트 이미지 메시지가 표시됩니다. 해당 이미지를 터치하면 앱스토어 페이지로 이동합니다. 현재 보고 있는 테스트 메시지는 이후 테스트 모드 설정을 변경하여 더이상 보이지 않도록 설정하게 됩니다.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;
@@ -172,7 +170,7 @@ When you first call in-app messaging methods, you will see the test message belo
 
 ### Push Messaging
 
-푸시 메시징 기능을 이용하여 사용자가 게임을 플레이 하지 않을 때에도 언제든 메시지를 전달할 수 있습니다. 아래의 플랫폼 별 적용 과정을 통하여 푸시 메시징 기능을 적용합니다.
+푸시 메시징 기능을 이용하여 사용자가 게임을 플레이하지 않을 때에도 언제든 메시지를 전달할 수 있습니다. 아래의 플랫폼 별 적용 과정을 통하여 푸시 메시징 기능을 적용합니다.
 
 #### Android
 
@@ -214,7 +212,7 @@ SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/cons
 ```
 
 - 'com.MyCompany.ProductName' 로 시작하는 패키지 주소를 모두 현재 적용을 진행 중인 게임의 패키지 이름으로 변경합니다.
-- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용중인 내용이 있다면 그대로 사용하여 코드만 적용합니다. 
+- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용 중인 내용이 있다면 그대로 사용하여 코드만 적용합니다. 
 - 만약 처음 GCM을 이용하는 경우 Eclipse ADT를 이용하여 직접 해당 자바 클래스를 작성한 후 해당 파일들을 jar 파일로 생성하여 이용해야 합니다. 빠른 진행을 위해서 Unity Plugin에 포함된 'Android Plugin Project' 폴더를 Import 하여 빠른 적용 시작이 가능합니다. 프로젝트를 불러온 후 src 및 gen 폴더 아래의 패키지를 모두 현재 적용하는 게임의 패키지로 변경하면 준비가 완료됩니다.
 
 2) CustomGCMIntentService 클래스 구현하기

@@ -84,10 +84,7 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
       </intent-filter>
     </service>
 
-    <!-- Push Messaging 기능을 사용하기 위한 액티비티 등록 -->
-    <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-
-    <!-- Cross Promotion 및 Reward 기능을 위한 액티비티 등록 -->
+    <!-- Reward 기능을 위한 액티비티 등록 -->
     <activity android:name="com.adfresca.sdk.reward.AFRewardActivity" />
    
     <!-- Google Referrer Tracking 을 위한 Boradcast Receiver 등록 -->
@@ -103,8 +100,6 @@ Android 플랫폼의 대부분의 설치 및 적용 작업이 플러그인에 �
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 </manifest>
 ```
-
-위와 같이 SDK 적용에 필요한 정보들을 추가하여, Android 플랫폼의 설치 작업을 완료합니다.
 
 #### iOS
 
@@ -186,24 +181,26 @@ SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/cons
 <manifest>   
   <application>
       .........
-      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
-      <receiver android:name="com.MyCompany.ProductName.CustomGCMReceiver"
+      <receiver android:name="YOUR.PACKAGE.NAME.GCMReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">  
         <intent-filter>
           <action android:name="com.google.android.c2dm.intent.RECEIVE" />
           <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-          <category android:name="com.MyCompany.ProductName" />
+          <category android:name="YOUR.PACKAGE.NAME" />
          </intent-filter>
       </receiver>
-      <service android:name="com.MyCompany.ProductName.CustomGCMIntentService" />  
+      <service android:name="YOUR.PACKAGE.NAME.GCMIntentService" />  
+
+      <activity android:name="com.adfresca.ads.AdFrescaPushActivity" />
       ..........
    </application>
     ..........
-    <permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-    <uses-permission android:name="com.MyCompany.ProductName.permission.C2D_MESSAGE" />
+    <permission android:name="YOUR.PACKAGE.NAME.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="YOUR.PACKAGE.NAME.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> 
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -211,67 +208,62 @@ SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/cons
 </manifest>
 ```
 
-- 'com.MyCompany.ProductName' 로 시작하는 패키지 주소를 모두 현재 적용을 진행 중인 게임의 패키지 이름으로 변경합니다.
-- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용 중인 내용이 있다면 그대로 사용하여 코드만 적용합니다. 
-- 만약 처음 GCM을 이용하는 경우 Eclipse ADT를 이용하여 직접 해당 자바 클래스를 작성한 후 해당 파일들을 jar 파일로 생성하여 이용해야 합니다. 빠른 진행을 위해서 Unity Plugin에 포함된 'Android Plugin Project' 폴더를 Import 하여 빠른 적용 시작이 가능합니다. 프로젝트를 불러온 후 src 및 gen 폴더 아래의 패키지를 모두 현재 적용하는 게임의 패키지로 변경하면 준비가 완료됩니다.
+- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용 중인 내용이 있다면 그대로 사용하여 SDK 코드만 추가합니다. 
+- 만약 기존에 사용 중인 GCM 클래스가 없다면, 직접 안드로이드 자바 클래스를 작성해야 합니다. 빠른 진행을 위하여 유니티 플러그인에 포함된 'Android Plugin Project'를 이용합니다. Eclipse ADT에서 해당 샘플 프로젝트를 추가한 후 /src 및 /gen 아래에 있는 패키지를 모두 현재 적용 중인 게임의 패키지로 변경합니다. 그리고 위의 AndroidManifest.xml 파일 내용 중 'YOUR.PACKAGE.NAME' 표시된 패키지명도 함께 변경해야 합니다.
 
 2) CustomGCMIntentService 클래스 구현하기
 
 ```java
-  public class CustomGCMIntentService extends GCMBaseIntentService {
+public CustomGCMIntentService() {
+  super();
+}
 
-    public CustomGCMIntentService() {
-      super();
+@Override
+protected String[] getSenderIds (Context context) {
+  String[] ids = {AdFrescaPlugin.gcmSenderId};
+  return ids;
+}
+
+@Override
+protected void onRegistered(Context context, String registrationId) {
+  AdFresca.handlePushRegistration(registrationId);
+}
+
+@Override
+protected void onUnregistered(Context context, String registrationId) {
+  AdFresca.handlePushRegistration(null);
+}
+
+@Override
+protected void onMessage(Context context, Intent intent) {
+  // Check AD fresca notification
+  if (AdFresca.isFrescaNotification(intent)) {    
+
+    String title = AdFrescaPlugin.getAppName(context);
+    int icon = com.MyCompany.ProductName.R.drawable.app_icon;
+    long when = System.currentTimeMillis();
+    Class<?> targetActivityClass = null;
+    
+    if (UnityPlayer.currentActivity != null) {
+      targetActivityClass = UnityPlayer.currentActivity.getClass();
+    } else {
+      targetActivityClass = UnityPlayerProxyActivity.class; // or YourUnityPlayerProxyActivity.class
     }
     
-    @Override
-    protected String[] getSenderIds (Context context) {
-      String[] ids = {AdFrescaPlugin.gcmSenderId};
-      return ids;
-    }
-
-    @Override
-    protected void onRegistered(Context context, String registrationId) {
-        AdFresca.handlePushRegistration(registrationId);
-    }
-
-    @Override
-    protected void onUnregistered(Context context, String registrationId) {
-      AdFresca.handlePushRegistration(null);
-    }
-
-    @Override
-    protected void onMessage(Context context, Intent intent) {
-      // Check AD fresca notification
-        if (AdFresca.isFrescaNotification(intent)) {    
-            String title = AdFrescaPlugin.getAppName(context);
-            int icon = com.MyCompany.ProductName.R.drawable.app_icon;
-            long when = System.currentTimeMillis();
-            Class<?> targetActivityClass = null;
-            
-            if (UnityPlayer.currentActivity != null) {
-              targetActivityClass = UnityPlayer.currentActivity.getClass();
-            } else {
-              targetActivityClass = UnityPlayerProxyActivity.class; // or YourUnityPlayerProxyActivity.class
-            }
-            
-            AFPushNotification notification = AdFresca.generateAFPushNotification(context, intent, targetActivityClass, appName, icon, when);
-            notification.setDefaults(Notification.DEFAULT_ALL); 
-            AdFresca.showNotification(notification);
-        }                
-    }
-  }
+    AFPushNotification notification = AdFresca.generateAFPushNotification(context, intent, targetActivityClass, appName, icon, when);
+    notification.setDefaults(Notification.DEFAULT_ALL); 
+    AdFresca.showNotification(notification);
+  }                
+}  
 ```
 
 3) CustomGCMReceiver 클래스 구현하기
 
 ```java
-public class CustomGCMReceiver extends GCMBroadcastReceiver { 
-    @Override
-  protected String getGCMIntentServiceClassName(Context context) { 
-    return "com.MyCompany.ProductName.CustomGCMIntentService"; 
-  } 
-}
+@Override
+protected String getGCMIntentServiceClassName(Context context) { 
+  return "YOUR.PACKAGE.NAME.CustomGCMIntentService"; 
+} 
 ```
 
 4) Jar 파일 저장하기
@@ -858,8 +850,6 @@ Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboar
 
 SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
 
-(현재 Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 URL Schema 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치 및 [Marketing Event](#marketing-event) 기능이 적용되어야 합니다.)
-  
 #### Advertising App 설정하기:
   1. Android
 
@@ -890,7 +880,8 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
   위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
   iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 캠페인 진행을 위해서는 최대한 Unique한 값을 선택해야 합니다.
   
-  마지막으로, Incentivized CPA 캠페인을 진행할 경우는 보상 조건으로 지정한 마케팅 이벤트가 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 이벤트를 호출합니다.
+  마지막으로, Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 CPI Identifier 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치가 필요하며 보상 조건으로 지정한 마케팅 모멘트르 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 모멘트 호출합니다.
+
   ```cs
   // 튜토리얼 완료 이벤트를 보상 조건으로 지정한 경우
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;

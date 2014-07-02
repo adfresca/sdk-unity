@@ -28,9 +28,9 @@
 
 Download _Unity Plugin_ at the following link.
 
-[Unity Plugin v2.1.8 Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.4, iOS SDK v1.3.5)
+[Unity Plugin Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
 
-[Unity Plugin with IAP Tracking BETA v2.2.0-beta3 Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta4, iOS SDK v1.3.5)
+[Unity Plugin with IAP Tracking Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) 
 
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install following components below
 

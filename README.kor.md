@@ -29,9 +29,9 @@
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[Unity Plugin v2.1.8 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) (Android SDK v2.3.4, iOS SDK v1.3.5)
+[Unity Plugin 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
 
-[Unity Plugin with IAP Tracking BETA v2.2.0-beta3 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) (Android SDK v2.4.0-beta4, iOS SDK v1.3.5)
+[Unity Plugin with IAP Tracking BETA 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 

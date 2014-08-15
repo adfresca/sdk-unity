@@ -5,9 +5,10 @@
     - [In-App Messaging](#in-app-messaging)
     - [Push Messaging](#push-messaging)
     - [Test Device Registration](#test-device-registration)
-- [IAP & Reward](#iap--reward)
+- [IAP, Reward and Promotion](#iap-reward-and-promotion)
   - [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
   - [Give Reward](#give-reward)
+  - [Promotion](#promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
   - [Marketing Moment](#marketing-moment)
@@ -30,8 +31,6 @@
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
 [Unity Plugin 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
-
-[Unity Plugin with IAP Tracking BETA 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip)
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 
@@ -383,19 +382,28 @@ AD fresca의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
 
 ### Actual Item Tracking
 
-Actual Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다.
+Actual Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
 
 적용 예제 1: 유니티 환경에서 결제 성공 이벤트 발생 시
 ```cs
-AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
-  .WithItemId("gold100")
-  .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-  .WithPrice(0.99)
-  .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
-  .WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
-      
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.LogPurchase(purchase);
+private void OnActualItemPurchased() 
+{
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
+      .WithItemId("gold100")
+      .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+      .WithPrice(0.99)
+      .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
+      .WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
+          
+    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+    plugin.LogPurchase(purchase);
+}
+
+private void OnPurchaseActualItemFailure() 
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.CancelPromotionPurchase();
+}
 ```
 
 적용 예제 2: Android 네이티브 환경에서 Google Play 결제 모듈을 직접 구현하는 경우
@@ -407,6 +415,7 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
 
     if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
       ......
+      AdFresca.getInstance(MainActivity.this).cancelPromotionPurchase();
       return;
     }
 
@@ -458,18 +467,27 @@ WithReceipt(string, string, string) | 추후 Receipt Verficiation 기능을 위�
 
 ### Virtual Item Tracking
 
-Virtual Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경우를 의미합니다. 앱 내에서 가상 화폐를 이용한 결제 이벤트가 성공한 경우 아래 예제와 같이 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다.
+Virtual Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경우를 의미합니다. 앱 내에서 가상 화폐를 이용한 결제 이벤트가 성공한 경우 아래 예제와 같이 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
 
 적용 예제: 
 ```cs
-AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
-  .WithItemId("long_sword")
-  .WithCurrencyCode("gold") 
-  .WithPrice(100)
-  .WithPurchaseDate(purchaseDateTime);
+private void OnVirtualItemPurchased() 
+{
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
+      .WithItemId("long_sword")
+      .WithCurrencyCode("gold") 
+      .WithPrice(100)
+      .WithPurchaseDate(purchaseDateTime);
+    
+    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+    plugin.LogPurchase(purchase);
+}
 
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.LogPurchase(purchase);
+private void OnPurchaseVirtualItemFailure() 
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.CancelPromotionPurchase();
+}
 ```
 
 Virtual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
@@ -567,12 +585,13 @@ void Start ()
 public void OnReward(string json)
 {
   RewardItem rewardItem = LitJson.JsonMapper.ToObject<RewardItem>(json);
- 
+  
   Debug.Log ("rewardItem.name: " + rewardItem.name);
+  Debug.Log ("rewardItem.quantity: " + rewardItem.quantity);
   Debug.Log ("rewardItem.uniqueValue: " + rewardItem.uniqueValue);
-
-  // 아이템 고유 값 'uniqueValue'을 이용하여 사용자에게 아이템 지급
-  SendItemToUser(rewardItem.uniqueValue);
+  Debug.Log ("rewardItem.securityToken: " + rewardItem.securityToken);
+  
+  SendItemToUser("USER_ID", rewardItem.uniqueValue, rewardItem.quantity, rewardItem.securityToken);
 }
 ```
 
@@ -583,6 +602,73 @@ public void OnReward(string json)
 - Incentivized CPA 캠페인: 사용자의 Advertising App 설치가 확인되고 보상 조건으로 지정된 마케팅 이벤트가 호출된 후에 발생합니다.
 
 만일 디바이스의 네트워크 단절이 발생한 경우 SDK는 데이터를 로컬에 보관하여 다음 앱 실행에서 아이템 지급이 가능하도록 구현되어 있기 때문에 항상 100% 지급을 보장합니다.
+
+##### SendItemToUser() 메소드의 구현
+
+SDK에서 요청한 아이템을 사용자에게 지급해야 합니다. 클라이언트에서 직접 지급하거나, 백엔드 서버와 통신하여 사용자의 선물함으로 보상을 지급하는 방식을 이용할 수 있습니다. 아이팀의 고유 값, 수량, 그리고 시큐리티 토큰값을 이용하여 현재 로그인된 사용자에게 아이템을 지급합니다.
+
+##### 백엔드 서버를 통해 아이템을 지급할 경우 보안 이슈 해결하기
+
+저희 SDK에서는 특정 사용자가 동일한 캠페인에서 1회 이상 아이템이 지급되지 않도록 처리하고 있습니다. 하지만 클라이언트에서 백엔드 서버와 통신하는 과정이 노출된다면 외부 공격에 의해 아이템이 중복으로 지급되는 보안 이슈가 발생할 수도 있습니다. 해당 문제를 방지하기 위하여 시큐리티 토큰값을 제공하고 있습니다. 시큐리티 토큰값은 대쉬보드에서 캠페인 생성 시에 자동으로 생성 혹은 직접 지정할 수 있는 고유 값입니다. 해당 값을 이용하여 아래와 같은 처리를 할 수 있습니다.
+
+1. 백엔드 서버에서는 진행하려는 리워드 캠페인의 시큐리티 토큰값을 데이터베이스에 미리 보관하여, 존재하지 않는 토큰값이 포함된 요청을 거절합니다.
+2. 특정 사용자가 동일한 토큰값으로 1회 이상 지급 요청을 하는 경우 요청을 거절합니다. 
+3. 만약 토큰값이 외부에 노출되었다고 판단될 경우, 대쉬보드에서 토큰값을 새로 생성하거나 수정합니다.
+
+### Promotion
+
+Sales Promotion 캠페인을 이용하여 특정 아이템의 구매를 유도할 수 있습니다. 사용자가 캠페인에 노출된 이미지 메시지를 클릭할 경우 해당 아이템의 결제 UI가 표시됩니다. SDK는 사용자의 실제 결제 여부까지 자동으로 트랙킹하여 대쉬보드에서 실시간으로 통계를 제공합니다. 
+
+프로모션 기능을 적용하기 위해서 OnPromotion 이벤트를 구현합니다. 프로모션 캠페인이 노출된 후 사용자가 이미지 메시지의 액션 영역을 탭하면 onPromotion() 이벤트가 발생합니다. 이벤트에 넘어오는 PromotionPurchase 객체 정보를 이용하여 사용자에게 아이템 결제 UI를 표시하도록 코드를 적용합니다.
+
+Actual Currency 아이템의 경우 인-앱 결제 라이브러리를 이용하여 결제 UI를 표시합니다. PromotionPurchase 객체의 ItemId 값이 아이템의 SKU 값에 해당됩니다. 
+
+Virtual Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상점 내 아이템 결제 UI를 표시하도록 코드를 작성합니다. Virtual Currency 프로모션의 경우는 2가지 가격 할인 옵션을 제공하고 있습니다. PromotionDiscountType 값을 이용하여 할인 옵션을 확인할 수 있습니다.
+
+1. **Discount Price**: 캠페인에 직접 지정된 가격으로 아이템을 판매합니다. Price 값을 이용하여 가격 정보를 얻습니다.
+2. **Discount Rate**: 캠페인에 지정된 할인율을 적용하여 아이템을 판매합니다. PromotionDiscountRate 값을 이용하여 할인율 정보를 받아옵니다.
+
+
+```cs
+public void OnPromotion(string json)
+{
+	Debug.Log("OnPromotion = " + json);		
+	Purchase PromotionPurchase = LitJson.JsonMapper.ToObject<Purchase>(json);
+
+	string ItemId = PromotionPurchase.ItemId;
+	string LogMessage = "no logMessage";
+
+	if (PromotionPurchase.PurchaseType == Purchase.Type.ACTUAL_ITEM)
+	{
+		// Use In-app Billing Library  
+		ShowActualItemPurchaseUI(ItemId);
+		LogMessage = String.Format("on ACTUAL_ITEM Promotion ({0})", ItemId);  
+	}
+	else if (PromotionPurchase.PurchaseType == Purchase.Type.VIRTUAL_ITEM)
+	{
+		String CurrencyCode = PromotionPurchase.CurrencyCode;
+		if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNTED_TYPE_PRICE) 
+		{
+			// Use a discounted price
+			double DiscountedPrice = PromotionPurchase.Price;
+			ShowVirtualItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
+			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
+		}
+		else if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNT_TYPE_RATE)
+		{
+			// Use this rate to calculate a discounted price of item. discountedPrice = originalPrice - (originalPrice * discountRate)
+			double DiscountRate = PromotionPurchase.PromotionDiscountRate;
+			ShowVirtualItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
+			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
+		}
+	}
+
+	Debug.Log(LogMessage);
+}
+```
+
+SDK가 사용자의 실제 구매 여부를 트랙킹하기 위해서는 [In-App Purchase Tracking](#in-app-purchase-tracking-beta) 기능이 미리 구현되어 있어야 합니다. 특히 사용자가 아이템을 구매를 하지 않거나 실패한 경우를 트랙킹 하기 위하여 CancelPromotionPurchase() 메소드가 반드시 적용되어 있어야 합니다.
+
 * * *
 
 ## Dynamic Targeting
@@ -961,7 +1047,14 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 * * *
 
 ## Release Notes
-- **v2.2.0-beta3 _(4/6/2014 Updated)_** 
+- v2.2.1 _(8/15/2014 Updated)_
+    - 리워드 지급 시에 시큐리티 토큰값을 이용하여 보안 이슈를 해결할 수 있습니다. 자세한 내용은 [Give Reward](#give-reward) 항목을 참고하여 주세요.
+    - Sales Promotion 캠페인 기능을 이용하여 아이템의 프로모션 기능을 지원합니다. 자세한 내용은 [Promotion](#promotion) 항목을 참고하여 주세요.
+    - [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta) 기능에서 cancelPromotionPurchase() 메소드가 추가되었습니다. 
+    - 이미지 메시지의 **Tap Area** 기능을 지원합니다.
+    - Android SDK가 캠페인 매칭 시에 여러 개의 캠페인이 동시에 매칭될 수 있도록 지원합니다.. 새로운 SDK는 순차적으로 매칭된 캠페인들의 메시지를 표시합니다.
+    - iap beta 버전이 2.2.1부터 통합되었습니다. 
+- v2.2.0-beta3 _(4/6/2014 Updated)_
     - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
     - v2.1.8에서 적용된 'Announcement 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
     - v2.1.8에서 적용된 Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요
@@ -973,7 +1066,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 - v2.2.0-beta1 _(1/14/2014 Updated)_ 
     - 앱 내에서 발생하는 In-App Purchase 데이터를 트랙킹할 수 있는 기능이 추가되었습니다. 자세한 내용은 [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta) 항목을 참고하여 주세요.
     - [Android SDK 2.4.0-beta2](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
-- **v2.1.8 _(4/6/2014 Updated)_** 
+- v2.1.8 _(4/6/2014 Updated)_
    - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.md#installation) 항목을 참고하여 주세요.
    - Announcement 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
    - Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요

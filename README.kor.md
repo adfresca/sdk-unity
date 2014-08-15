@@ -630,6 +630,17 @@ Virtual Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상
 
 
 ```cs
+void Start ()
+{
+	AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+	plugin.Init(API_KEY);
+	plugin.StartSession();
+	
+	....
+	
+	plugin.SetPromotionListener("YourGameObject", "OnPromotion");
+}
+	
 public void OnPromotion(string json)
 {
 	Debug.Log("OnPromotion = " + json);		

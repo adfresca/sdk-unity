@@ -365,7 +365,7 @@ plugin.Show();
 
 ### In-App Purchase Tracking (Beta)
 
-_**(현재 In-App-Purchase Tracking 기능은 Unity Plugin 2.2.0-beta1 버전, Android OS에서만 지원됩니다.)**_
+_**(현재 In-App-Purchase Tracking 기능은 Android OS에서만 지원됩니다.)**_
 
 _In-App-Purchase Tracking_  기능을 통하여 현재 앱에서 발생하고 있는 모든 인-앱 결제를 분석하고 캠페인 타겟팅에 이용할 수 있습니다.
 
@@ -616,6 +616,8 @@ SDK에서 요청한 아이템을 사용자에게 지급해야 합니다. 클라�
 3. 만약 토큰값이 외부에 노출되었다고 판단될 경우, 대쉬보드에서 토큰값을 새로 생성하거나 수정합니다.
 
 ### Promotion
+
+_**(현재 Promotion 기능은 Android OS에서만 지원됩니다.)**_
 
 Sales Promotion 캠페인을 이용하여 특정 아이템의 구매를 유도할 수 있습니다. 사용자가 캠페인에 노출된 이미지 메시지를 클릭할 경우 해당 아이템의 결제 UI가 표시됩니다. SDK는 사용자의 실제 결제 여부까지 자동으로 트랙킹하여 대쉬보드에서 실시간으로 통계를 제공합니다. 
 

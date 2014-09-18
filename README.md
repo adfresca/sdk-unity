@@ -481,9 +481,9 @@ When you use 'Reward Item' in in-app messaging or 'Incentive item' in incentiviz
 
 With implementing reward item codes, you can check if users have any reward to receive, and then will be notified with a reward item information.
 
-Use two codes as shown below:
+Use the two codes as shown below:
 - CheckRewardItems(): This method checks if any item is available to receive. We recommend to put this code when the app becomes active. 
-- SetAndroidRewardItemListener(): When the reward condition is met with the current user, onReward event is automatically called with an item value from Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
+- SetAndroidRewardItemListener(): When the reward condition is met with the current user, onReward event is automatically called with an item value from our Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
 
 **Implement AFRewardItemDelegate for iOS**
 
@@ -539,15 +539,15 @@ public void OnReward(string json)
 }
 ```
 
-You will implement your own 'SendItemToUser()' method. This method may send the current user info and item's uniqueValue to your server. Then server gives the item to the user.
+You need to implement your own 'SendItemToUser()' method. This method may send the current user info and item's uniqueValue to your server, which willl give the item to the user.
 
-onReward event is called when each type of campaign's reward condition is completed.
+The onReward event is called when a campaign's reward condition is met.
 
-- Announcement Campaign: the event is called when your user see the campaign contents
-- Incentivized CPI Campaign: the event is called when SDK checks Advertising App's install
-- Incentivized CPA Campaign: the event is called after SDK checks Advertising App's install and the user called the targeted marketing moment in Advertising App
+- Announcement Campaign: event is called when a user sees the campaign content.
+- Incentivized CPI Campaign: event is called when our SDK confirms that the advertising app is installed.
+- Incentivized CPA Campaign: event is called after our SDK confirms that the advertising app is installed and the user completes the intended action (calling the specified marketing moment.)
 
-If your users have any network disconnection or loss in theirs device, our SDK stored the reward data in the app's local storage, and then re-check in the next app session. So, we guarantee users will always get the reward from our SDK.
+If users have any network connectivity issues, our SDK stores the reward data in the app's local storage, and then deliver the reward when users run the app again. This guarantees that users will always get the reward from our SDK.
 
 * * *
 
@@ -555,11 +555,11 @@ If your users have any network disconnection or loss in theirs device, our SDK s
 
 ### Custom Parameter
 
-Our SDK can collect user specific profiles such as level, stage, maximum score and etc. We use it to deliver a personalized and targeted message in real time to specific user segment that you can define.
+Our SDK can collect user-specific profiles such as level, stage, maximum score, etc. We can use them to deliver a personalized and targeted message in real-time to specific user segments that you define.
 
-To implement codes, simply call SetCustomParameter method with passing parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://dashboard.nudge.do): 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+To implement codes, simply call SetCustomParameter method with parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://dashboard.nudge.do): 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters.'
 
-You will call the method after your app is launched and the values have changed. 
+You will call the method after the app is launched and when the value has changed. 
 
 ```cs
 void Start() {
@@ -588,11 +588,11 @@ void OnUserStageChanged(int stage) {
 
 ### Marketing Moment
 
-Marketing Moment means the moment you want to engage with your users. For example, you may need to deliver the message when the user completes a quest or enters an item store. You will be able to use it with the [custom parameters](#custom-parameter) so you can deliver the personalized and targeted message in specific moment in real time.
+Marketing Moment means when and where you want to engage users. For example, you may need to deliver a message when a user completes a quest or enters into an item store. You will be able to use it with the [custom parameters](#custom-parameter) so you can deliver a personalized and targeted message at a specific moment in real-time.
 
-To implement codes, simply call **Load(index)** method with passing marketing moment's index. You can get the marketing moment's index in our [Dashboard](https://dashboard.nudge.do): 1) Select a App 2) In 'Overview' menu, click 'Settings - Marketing Moment' button. 
+To implement codes, simply call **Load(index)** method with marketing moment's index. You can get the marketing moment's index in our [Dashboard](https://dashboard.nudge.do): 1) Select an App 2) In 'Overview' menu, click 'Settings - Marketing Moment.' 
 
-You will call the method after the moment has happened in the app.
+You will call the method after the moment happened in the app.
 
 ```cs
   void OnUserDidEnterItemStore() 
@@ -615,9 +615,9 @@ You will call the method after the moment has happened in the app.
 
 ### Timeout Interval
 
-You can set a timeout interval for messaging request. If message is not loaded within this time interval, Message won't be displayed to users and SDK will return the control to your app.
+You can set a timeout interval for a messaging request. If the message is not loaded within this time interval, the message won't be displayed to users and our SDK will return control to your app.
 
-Default is 5 seconds and you can set from 1 seconds to 5 seconds.
+Default is 5 seconds and you can set it from 1 to 5 seconds.
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
@@ -632,19 +632,19 @@ plugin.Show();
 
 ### Custom URL Schema
 
-You can set your own URL Schema as 'Click URL' of the campaigns. So, you can navigate your users to the specific page or do some custom actions when user clicked the image message. 
+You can set your own URL Schema as 'Deep Link' of the campaigns and you can redirect users to a specific page or run custom actions when usesr click the image message. 
 
-#### Use Custom URL for Android
+#### Use a Custom URL for Android
 
-In the native android application, you can simply add schema information to AndroidManifest.xml to use custom url. However, unlike the native android application that uses multiple activities as its pages, Unity engine uses only one player activity and implements engine's own paginations internally. So, there is a problem to add schema information since you cannot set schema on UnityPlayer activity.
+In the native Android application, you can simply add schema information to AndroidManifest.xml to use custom url. However, unlike the native Android application that uses multiple activities for its pages, Unity engine uses only one player activity and implements its own paginations internally. So you can't add schema information and set schema on UnityPlayer activity.
 
-To solve this issue, you need to do some extra works as below.
+To resolve this issue, you need to do the followings.
 
 1) Override startActivity(intent) of UnityPlayer Activity to handle Custom URL for Announcement Campaign.
 
-Click URL from Announcement Campaign is always executed on in-game situation. It is never executed from outside of game like a push notification. Also, SDK uses startActivity() method to execute url. Therefore, you can manually handle urls by overriding startActivity() of UnityPlayer activity. 
+Click URL from Announcement Campaign is always executed on in-game situation. It is never executed from outside of the game (i.e. a push notification.) Also our SDK uses startActivity() method to execute the url. Therefore, you can manually handle a url by overriding startActivity() of UnityPlayer activity. 
 
-Firstly, you should create a new Android Project in Eclipse and generate a class named MainActivity and inherited from UnityPlayerActivity. Then, modify AndroidMenefest.xml as below.
+First, you should create a new Android Project in Eclipse and generate a class named MainActivity inherited from UnityPlayerActivity. Then modify AndroidMenefest.xml as follows.
 
 ```xml
 <application android:icon="@drawable/app_icon" android:label="@string/app_name" android:debuggable="true">
@@ -658,7 +658,7 @@ Firstly, you should create a new Android Project in Eclipse and generate a class
 </application>
 ```
 
-Now, you implement startActivity() method of MainActivity. if custom url with 'myapp://" schema is received, it will pass uri string value to your unity game object.
+You need to implement startActivity() method of MainActivity. If a custom url with 'myapp://" schema is received, it will pass a uri string value to your Unity game object.
 
 ```java
 public class MainActivity extends UnityPlayerActivity {
@@ -686,9 +686,9 @@ public class MainActivity extends UnityPlayerActivity {
 
 2) Handle custom url form Push Notification Campaign
 
-When your app receive a push notification with custom url, you can execute your own custom action. A notification is mostly received when user is outside of game. So, we should handle custom url with a little bit different approach. 
+When the app receives a push notification with a custom url, you can execute your own custom action. Typically a notification is received when a user is outside of the game. So we should handle the custom url with a different approach. 
 
-Firstly, create a new activity class named 'PushProxyActivity', and register the activity in AndroidMenefest.xml as below
+First, create a new activity class named 'PushProxyActivity,' and register the activity in AndroidMenefest.xml as shown below.
 
 ```xml
 <activity android:name=".PushProxyActivity">
@@ -702,10 +702,10 @@ Firstly, create a new activity class named 'PushProxyActivity', and register the
 
 .......
 ```
-In this case, you should create custom url like myapp://com.adfresca.push?item=abc in your Push Notification Campaign. 
+You also need to create a custom url like 'myapp://com.adfresca.push?item=abc' in your Push Notification Campaign. 
 
-Then, you should implement PushProxyActivity class. This class is a simple proxy-style activity which only handles url form Android OS and then quits itself. 
-However, there is a exceptional situation when a notification is received and your application is not running. In that case, you can't handle custom url in the game engine, so you should manually start your game and pass url to MainActivity as below.
+Then you should implement PushProxyActivity class. This class is a simple proxy-style activity which only handles a url from Android OS and then quits itself. 
+However, there is an exception that a notification is received and your application is not running. When that happens, you can't handle a custom url in the game engine, so you should manually start your game and pass the url to MainActivity as shown below.
 
 ```java
 public class PushProxyActivity extends Activity {
@@ -741,7 +741,7 @@ public class PushProxyActivity extends Activity {
   }
 }
 ```
-Finally, you should handle url from PushProxyActivity in your MainActivity.
+Finally, you should handle a url from PushProxyActivity in your MainActivity.
 
 ```java
 public class MainActivity extends UnityPlayerActivity {
@@ -760,11 +760,11 @@ public class MainActivity extends UnityPlayerActivity {
 }
 ```
 
-#### Use custom url in iOS
+#### Use a Custom Url in iOS
 
-For iOS, it is much easier to use custom url since there is only one event method for url handling.
+For iOS, it is much easier to use a custom url since there is only one event method for url handling.
 
-1) Set your custom url schemes in Info.plst as follows
+1) Set your custom url schemes in Info.plst as follows.
 
 <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png" />
 
@@ -782,9 +782,9 @@ For iOS, it is much easier to use custom url since there is only one event metho
 }
 ```
 
-#### Use custom url in Unity
+#### Use Custom Url in Unity
 
-Both example codes above have passed url strings to 'OnCustomURL' method of 'Fresca' game object. Now you can handle url values in Unity.
+Both example codes shown above have passed a url string to 'OnCustomURL' method of 'Fresca' game object. Now you can handle url values in Unity.
 
 ```java
 public void OnCustomURL(string url)
@@ -798,20 +798,18 @@ public void OnCustomURL(string url)
 
 ### Cross Promotion Configuration
 
-Using Incentivized CPI & CPA Campaign, your users in 'Media App' can get an incentive item when they install 'Adverting App' from the campaigns.
+Using Incentivized CPI & CPA Campaigns, users in 'Media App' can get an incentive item when they install 'Adverting App' from the campaigns.
 
-- Medial App: the media app which displays the promotion image and gives an incentive item to users
-- AdvertisingApp: the promotion app which is displayed with an image in the media app's screen.
+- Media App: app which displays a promotion image to users and redirects users to Advertising App's install page in the app store and gives an incentive item to users when they complete the pre-defined actions in the Advetising App. 
+- Advertising App: app which is the target of advertisment.
 
-For more details of Incentivized campaigns and configuration guide in dashboard, please refer 'Understanding Cross-promotion (Korean)'  guide.
-
-To integrate SDK with this feature, you should set URL Schema value for the adverting app and implement codes to give an incentive item to users in the media app.
+To integrate our SDK with this feature, you should set URL Schema value for the adverting app and implement codes to give an incentive item to users in the media app.
 
 #### Advertising App Configuration:
 
   1. Android
 
-  For Android, SDK uses the package name to check if the advertising app is installed in the same device. 
+  For Android, our SDK uses the package name to check if the advertising app is installed in the same device. 
 
   You can find the package name in AndroidManifest.xml
 
@@ -821,21 +819,21 @@ To integrate SDK with this feature, you should set URL Schema value for the adve
   </manifest>
   ```
 
-  In this case, you should set CPI Identifier value of advertising app to "com.adfresca.demo" in our dashboard.
+  In this case, you should set CPI Identifier value of the advertising app to "com.adfresca.demo" in our dashboard.
 
   2. iOS
 
-  For iOS, SDK uses URL Schema value to check the advertising app's installation. 
+  For iOS, our SDK uses URL Schema value to check if the advertising app is installed.
 
-  Open Info.plst in Xocde to check your value.
+  Open Info.plst in Xcode to check your value.
 
   <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
 
-  In this case, you should set CPI Identifier value of advertising app to "myapp://" in our dashboard. For iOS, url schema value may be duplicated with other apps, so be careful to choose unique value to run CPI Campaign..
+  You need to set the CPI Identifier value of the advertising app to "myapp://" in our dashboard. For iOS, a url schema value may be redundant with other apps', so be careful to choose a unique value to run a CPI Campaign.
 
-  For Incentivized CPI Campaign, SDK Installation of the advertising app is not required. You only check the package name. 
+  For an Incentivized CPI Campaign, the advertising app does not need to have our SDK integrated. You only need to set the package name correct. 
 
-  However, If you use Incentivized CPA Campaign, SDK installation is required and you should also implement 'Marketing Moment' feature to check a reward condition. For example, when you set the reward condition to check 'Tutorial Complete' event, you should call the marketing moment method to inform your user achieved the goal.
+  However, if you use an Incentivized CPA Campaign, you need to integrate our SDK in the advertising app and also implement a 'Marketing Moment' to use for a reward condition. For example, when you set a reward condition as'Tutorial Complete' marketing event, you should call the marketing moment method to inform that the user hit the condition (goal).
 
   ```cs
   void OnUserFinishTutorial() 
@@ -854,7 +852,7 @@ To integrate SDK with this feature, you should set URL Schema value for the adve
 
 ### Proguard Configuration
 
-If you use Proguard to protect your APK, you should add exception configurations for our Android SDK. Add following lines of codes to ignore our SDK, OpenUDID, and Google Gson. 
+If you use Proguard to protect your APK, you need to add exception configurations for our Android SDK. Add the following lines of codes to ignore our SDK, OpenUDID, and Google Gson. 
 
 ```java
 -keep class com.adfresca.** {*;} 
@@ -868,11 +866,11 @@ If you use Proguard to protect your APK, you should add exception configurations
 
 ## Troubleshooting
 
-if our SDK can't show any message or raise errors, you can debug by following methods below.
+If our SDK does not show any message or raise errors, you can debug by the following methods.
 
 **Android**
 
-If you can write your own java codes in UnityPlayerActivity, you can implement setExceptionListener() to print logs, or send the error messages using UnitySendMessage();
+If you can write your own java codes in UnityPlayerActivity, you can implement setExceptionListener() to print logs, or send error messages using UnitySendMessage();
 
 ```java
 AdFresca.setExceptionListener(new AFExceptionListener(){
@@ -885,7 +883,7 @@ AdFresca.setExceptionListener(new AFExceptionListener(){
 
 **iOS**
 
-You can Implement AdFrescaViewDelegate in Xcode project to check the error messages.
+You can implement AdFrescaViewDelegate in a Xcode project to check error messages.
 
 ```objective-c
 // UnityAppController.h
@@ -914,7 +912,7 @@ You can Implement AdFrescaViewDelegate in Xcode project to check the error messa
 ## Release Notes
 - v2.1.6 _(1/10/2014 Updated)_ 
     - Added [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-    - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option has been required to enable touch event. Please refer to [Installation](#installation) section for detailed installation guide.
+    - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option is required to enable a touch event. Please refer to [Installation](#installation) section for detailed installation guide.
 - v2.1.4 _(12/01/2013 Updated)_ 
     - Added [iOS SDK 1.3.4](https://adfresca.zendesk.com/entries/21796143#release-notes)
 - v2.1.4 _(11/27/2013 Updated)_ 
@@ -928,9 +926,9 @@ You can Implement AdFrescaViewDelegate in Xcode project to check the error messa
     - Added [Android SDK 2.2.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.0 _(08/08/2013 Updated)_
     - Added [Android SDK 2.2.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-    - For Android, use PrintTestDeviceIdByLog() method to print test device id in log
+    - For Android, use PrintTestDeviceIdByLog() method to print a test device id in log
 - v2.0.1 _(07/26/2013 Updated)_
-    - Fix a bug that a default GCMIntentService shows error message when push message was received in 'stopped' application state 
+    - Fix a bug that a default GCMIntentService shows an error message when a push message is received in 'stopped' application state 
     - Removed some default argument codes of AndroidPlugin.cs 
     - Added Android SDK v2.1.3
 - v2.0.0 _(07/10/2013 Updated)_

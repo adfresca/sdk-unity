@@ -32,7 +32,7 @@ Download _Unity Plugin_ at the following link.
 
 [Unity Plugin with IAP Tracking BETA Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) 
 
-Open your Unity Project and run AdFrescaUnityPlugin.package. It will install following components below
+Open your Unity Project and run AdFrescaUnityPlugin.package. It will install the following components below.
 
 Assets/
 
@@ -58,11 +58,11 @@ Assets/Plugins/iOS/
     AdFrescaPlugin.h
     AdFrescaPlugin.mm
 
-Now, we start some installation works for each platform
+Now, we will start installation for each platform.
 
 #### Android
 
-For Android, we have already done with most of installation from package file. You just need to modify AndroidManifest.xml as below
+For Android, you also need to modify AndroidManifest.xml as shown below.
 
 ##### Modify AndroidManifest.xml
 
@@ -100,17 +100,17 @@ For Android, we have already done with most of installation from package file. Y
 
 #### iOS
 
-For iOS, Unity requires to do the same installation work as a native project. After checking all the components from package file, build and export Xcode project from Unity.
+For iOS, Unity requires you to do the entire installation just like an iOS native project. After checking all the components from the package file, you need to build and export a Xcode project from Unity.
 
-Install iOS SDK with following ['iOS SDK Installation'](https://github.com/adfresca/sdk-ios/blob/master/README.md#installation) section of our iOS SDK guide.
+Install iOS SDK by referring to the following ['iOS SDK Installation'](https://github.com/adfresca/sdk-ios/blob/master/README.md#installation) section of our iOS SDK guide.
 
 ### Start Session
 
-Now, start to put some simple SDK codes in your app. You first need to call startSession() method with setting your API Key. To get your API Key, go to our [Dashboard](https://admin.adfresca.com) and then click 'Settings - API Keys' button in your app's 'Overview' page.
+Now you need to start putting simple SDK codes in your app. You first need to call startSession() method with your API Key. To get your API Key, go to our [Dashboard](https://dashboard.nudge.do) and then click 'Settings - API Keys' button in your app's 'Overview' page.
 
 #### Android
 
-Put StartSession() method when users start an app. Please make sure that this method is called once while your app is running.
+Put StartSession() method when users start the app. Please make sure that this method is called once, while your app is running.
 
 ```cs
 #if UNITY_ANDROID
@@ -143,7 +143,7 @@ For iOS, you need to put the native SDK codes in your Xcode project. Open AppCon
 
 ### In-App Messaging
 
-With the in-app messaging feature, you can deliver a message to your in-app users in real time. Simply put 'Load()' and 'Show()' methods where you want to deliver a message. The type of message can be an interstitial image, text, and iframe webpage. The message is only shown when your user matches the in-app messaging campaign's target logics. We will discuss more details of the in-app messaging's dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
+With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iframe webpage. The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
 
 ```cs
 void Start ()
@@ -154,7 +154,7 @@ void Start ()
 }
 ```
 
-When you first call in-app messaging methods, you will see the test message below. If you tap on the image, it will redirect to the product page of the app on the app store. You will hide this test message by chagning the test mode configuration later.
+When you first call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test mode configuration later.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;
@@ -166,9 +166,9 @@ You can also deliver your push messages anytime you want. Follow the steps below
 
 #### Android
 
-Before you start, you need to have your GCM project number from Google API Console, and set GCM API Key value to our [Dashboard](https://admin.adfresca.com). Please refer to '[Android Push Notification Guide](https://adfresca.zendesk.com/entries/28526764)'
+Before you start, you need to have your GCM project number from Google API Console, and set GCM API Key value to our [Dashboard](https://dashboard.nudge.do). Please refer to '[Android Push Notification Guide](https://adfresca.zendesk.com/entries/28526764)'
 
-1) Add some codes to AndroidManifest.xml
+1) Add codes to AndroidManifest.xml
 
 ```xml
 <manifest>   
@@ -201,8 +201,8 @@ Before you start, you need to have your GCM project number from Google API Conso
 </manifest>
 ```
 
-- If you already have your own GCMReceiver and GCMIntentService classes, you only need to put some SDK codes in your own GCMIntentService class.
-- If you haven't implemented any GCM classes yet, you will need to write your own GCM classes in java code. Please use our 'Android Plugin Project' in our unity plugin folder. After importing the sample project in Eclipse ADT, you will need to rename packages in **/src** and **/gen** to your own package name. Also make sure you need to rename 'YOUR.PACKAGE.NAME' in AndroidManifest.xml above.
+- If you already have your own GCMReceiver and GCMIntentService classes, you only need to put codes here in your own GCMIntentService class.
+- If you haven't implemented any GCM classes yet, you will need to write your own GCM classes in java code. Please use our 'Android Plugin Project' in our unity plugin folder. After importing the sample project in Eclipse ADT, you will need to rename packages in **/src** and **/gen** to your own package name. Also make sure you need to rename 'YOUR.PACKAGE.NAME' in AndroidManifest.xml as shown above.
 
 2) Implement CustomGCMIntentService
 
@@ -260,13 +260,13 @@ protected String getGCMIntentServiceClassName(Context context) {
 
 4) Export Jar
 
-After updating two classes above, you need to export them as a single jar file into the unity project (/Assets/Plugins/Android/). Please make sure you should only export these two classes, not the entire package.
+After updating the two classes as shown above, you need to export them as a single jar file into the unity project (/Assets/Plugins/Android/). Please make sure you only export these two classes, not the entire package.
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/unity/unity-android-gcm-export.png"/>
 
 5) Unity Code
 
-Now, you add a single line of unity code to use GCM. Add 'SetGCMSenderId(GCM_PROJECT_ID)' method to set Google API Project number. Be carful that project number is not API Key value.
+Now, you add a single line of Unity code to use GCM. Add 'SetGCMSenderId(GCM_PROJECT_ID)' method to set Google API Project number. Please note that the project number is not an API Key value.
 
 ```cs
 #if UNITY_ANDROID
@@ -286,12 +286,12 @@ void Start ()
 #### iOS
 
 1. Upload your APNS Certificate file (.p12) to our Dashboard
-  - You can export your .cer file to .p12 file using Keychain. Please refer to [iOS Push Notification Certificate Guide](https://adfresca.zendesk.com/entries/21714780) to generate .p12 and upload to [Dashboard](https://admin.adfresca.com)
+  - You can export your .cer file to .p12 file using Keychain application. Please refer to [iOS Push Notification Certificate Guide](https://adfresca.zendesk.com/entries/21714780) to generate .p12 and upload to our [Dashboard](https://dashboard.nudge.do)
 
 2. Check your provisioning
-  - AD fresca only supports APNS production environment. So, you should build your app with App Store or Ad Hoc Provisioning file to enable production mode
+  - Nudge only supports APNS production environment. So you should build your app with App Store or Ad Hoc Provisioning file to enable production mode.
 
-3. Add some codes to AppController.mm in Xocde Project 
+3. Add the following codes to AppController.mm in Xcode Project. 
 
 ```mm
 #import <AdFresca/AdFrescaView.h>
@@ -312,13 +312,13 @@ void Start ()
 } 
 ```
 
-So, we are now done with the push messaging implementation!
+We are now done with the push messaging implementation!
 
 ### Test Device Registration
 
-AD fresca supports a test mode feature. With the test mode feature, you can deliver your test message to only registred test devices. 
+Nudge supports a test mode feature. With the test mode feature, you can deliver your test message to only registred test devices. 
 
-To register your test device to our dashboard, you need to know your test device ID from our SDK. SDK provides two ways to show test device ID.
+To register your test device to our dashboard, you need your test device ID from our SDK. Our SDK provides two ways to show a test device ID.
  
 1) Using PrintTestDeviceIdByLog() method
 
@@ -335,7 +335,7 @@ if(Application.platform == RuntimePlatform.Android) {
 }
 ```
 
-2) Displaying test device ID on your app screen using SetPrintTestDeviceId(bool) method.
+2) Displaying a test device ID on your app screen using SetPrintTestDeviceId(bool) method.
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance
@@ -346,7 +346,7 @@ plugin.Load();
 plugin.Show();
 ```
 
-After you have your test device ID, you have to register it to [Dashboard](https://admin.adfresca.com). You can register your device in the 'Test Device' menu.
+After you have your test device ID, you have to register it to [Dashboard](https://dashboard.nudge.do) under 'Test Device' menu.
 
 * * *
 
@@ -356,22 +356,22 @@ After you have your test device ID, you have to register it to [Dashboard](https
 
 (Android Only)
 
-With In-App-Purchase Tracking , you can analyze all the purchases of your users, and use it for targeting specific user segment to display your campaigns. (targeting feature is coming soon)
+With in-app-purchase tracking, you can track all the in-app purchases, and use them for targeting specific user segments to display your campaigns.
 
 There are two types of purchases you can track with our SDK.
 
-1. **Actual Item Purchase Tracking:**  the purchases made by real money. For example, user purchased 'USD 1.99' to get 'Gold 100' cash item.
-2. **Virtual Item Purchase Tracking:** the purchases made by virtual money. For example, user purchased 'Gold 10' to get 'Rocket Launcher' item 
+1. **Actual Item Purchase Tracking:**  purchases made with real money. For example, a user purchased a 'Gold 100' item with 'USD 1.99'.
+2. **Virtual Item Purchase Tracking:** purchases made with virtual money. For example, a user purchased 'Rocket Launcher' item with 'Gold 10'. 
 
-You don't need to write down any item list manually. All the Items tracked by SDK are automatically added to our dashboard. To see the list of item, go to 'Overview > Settings > In-App Items' page in our dashboard.
+You don't need to manually write down an item list. Our SDK tracks all purchases and any items included in the purchases are automatically added to our dashboard. To see the list of items, go to 'Overview > Settings > In-App Items' page in our dashboard.
 
-Let's get started to implement SDK codes with examples below. 
+Let's get started by implementing SDK codes with the examples below. 
 
 ### Actual Item Tracking
 
-The purchase of 'Actual Item' is made with the store's billing library such as Google Play Billing. When your user purchased the item successfully, simply create Purchase object and use LogPurchase() method.
+You will use app stores' billing library such as Google Play Billing for purchases of 'Actual Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method.
 
-Example 1: When you implement 'purchase succeeded' event in Unity 
+Example 1: Implementing 'purchase succeeded' event in Unity 
 ```cs
 AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
   .WithItemId("gold100")
@@ -384,7 +384,7 @@ AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.LogPurchase(purchase);
 ```
 
-Example 2: When you implement Google Billing Library in the native Android codes.
+Example 2: Implementing Google Billing Library in the native Android codes.
 
 ```java
 // Callback for when a purchase is finished
@@ -431,21 +431,21 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
 };
 ```
 
-The above example is written for Google Play. You can also get the required values form other billing library such as Amazon.
+The above example is written for Google Play. You can also get the required values from other billing libraries such as Amazon.
 
-For more details of Purchase object with the actual item, check the table below.
+For more details of Purchase object with actual items, check the table below.
 
 Method | Description
 ------------ | ------------- | ------------
-WithItemId(string) | Set the unique identifier of your item. This value is may not be different per the os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguish each item by this value.
-WithCurrencyCode(string) | Set the current code of IOS 4217 standard. For Google Play, use the currency code of 'default price' in your account. For Amazon, set 'USD' value since Amazon only supports USD.
-WithPrice(double) | Set the item price. you may use SkuDetails's value or manually set the value from your server.
-WithPurchaseDate(date) | Set the date of purchase. You may use purchase.getPurchaseTime() value. If you set null value, it will be automatically recorded by our SDK and server. Please don't use local time of user's device.
+WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
+WithCurrencyCode(string) | Set the current code of ISO 4217 standard. For Google Play, use the currency code of 'default price' in your account. For Amazon, set 'USD' value since Amazon only supports USD.
+WithPrice(double) | Set the item price. You may use SkuDetails's value or manually set the value from your server.
+WithPurchaseDate(date) | Set the date of purchase. You may use purchase.getPurchaseTime() value. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 WithReceipt(string, string, string) | Set the receipt property of purchase object (Google Play only). We will use it to verify the receipt in the future. 
 
 ### Virtual Item Tracking
 
-When users purchased your virtual item in the app, you can also create Purchase object and call LogPurchase() method.
+When users purchase your virtual item in the app, you can also create Purchase object and call LogPurchase() method.
 
 ```cs
 AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
@@ -458,32 +458,32 @@ AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
 plugin.LogPurchase(purchase);
 ```
 
-For more details of Purchase object with the virtual item, check the table below.
+For more details of Purchase object with virtual items, check the table below.
 
 Method | Description
 ------------ | ------------- | ------------
-WithItemId(string) | Set the unique identifier of your item. This value is may not be different per the os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguish each item by this value.
+WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
 WithCurrencyCode(string) | Set the item's virtual currency code. (ex: 'gold', 'gas')
 WithPrice(double) | Set the item price. You may get this value from your server. (ex: 100 of gold)
-WithPurchaseDate(date) | Set the date of purchase. If you set null value, it will be automatically recorded by our SDK and server. Please don't use local time of user's device.
+WithPurchaseDate(date) | Set the date of purchase. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 
 ### IAP Trouble Shooting
 
-After you call LogPurchase() method, the purchase data is updated to our dashboard in real-time. You can see the list of updated item in 'Overview > Settings > In-App Items' menu.
+After you call LogPurchase() method, the purchase data is updated to our dashboard in real-time. You can see the list of updated items in 'Overview > Settings > In-App Items' menu.
 
-If you can't see any data in our dashboard, your Purchase object may be invalid. Check your Android logs as our plugin is printing error messages. The log format will be "AFPurchaseExceptionListener.onException = {error message}".
+If you can't see any data in our dashboard, your Purchase object may be invalid. Check your Android (or iOS) logs if our plugin printed error messages. The log format will be "AFPurchaseExceptionListener.onException = {error message}".
 
 * * *
 
 ### Give Reward
 
-When you set 'Reward Item' section of the announcement campaign or 'Inventive item' section of the incentivized CPI & CPA campaign, you should implement this 'reward item' code to give an reward item to your users.
+When you use 'Reward Item' in in-app messaging or 'Incentive item' in incentivized CPI & CPA campaign, you should implement this 'reward item' code to give a reward item to users.
 
-Implementing reward item codes, you can check if your user has any reward to receive, and then will be noticed with an reward item info.
+With implementing reward item codes, you can check if users have any reward to receive, and then will be notified with a reward item information.
 
-To implement codes, we use two codes below:
-- CheckRewardItems(): this method is to check if any item is available to receive. we recommend to put this code when app becomes active. 
-- SetAndroidRewardItemListener(): when the reward condition is completed with current user, onReward event is automatically called with an item value from Android SDK. For iOS, you will need some work as follows in Xcode. Then you can give an item to the user with RewardItem object.
+Use two codes as shown below:
+- CheckRewardItems(): This method checks if any item is available to receive. We recommend to put this code when the app becomes active. 
+- SetAndroidRewardItemListener(): When the reward condition is met with the current user, onReward event is automatically called with an item value from Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
 
 **Implement AFRewardItemDelegate for iOS**
 
@@ -534,7 +534,7 @@ public void OnReward(string json)
   Debug.Log ("rewardItem.name: " + rewardItem.name);
   Debug.Log ("rewardItem.uniqueValue: " + rewardItem.uniqueValue);
 
-  // 아이템 고유 값 'uniqueValue'을 이용하여 사용자에게 아이템 지급
+  // give an item to the user using 'uniqueValue' of the item
   SendItemToUser(rewardItem.uniqueValue);
 }
 ```
@@ -557,7 +557,7 @@ If your users have any network disconnection or loss in theirs device, our SDK s
 
 Our SDK can collect user specific profiles such as level, stage, maximum score and etc. We use it to deliver a personalized and targeted message in real time to specific user segment that you can define.
 
-To implement codes, simply call SetCustomParameter method with passing parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://admin.adfresca.com): 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+To implement codes, simply call SetCustomParameter method with passing parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://dashboard.nudge.do): 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
 
 You will call the method after your app is launched and the values have changed. 
 
@@ -590,7 +590,7 @@ void OnUserStageChanged(int stage) {
 
 Marketing Moment means the moment you want to engage with your users. For example, you may need to deliver the message when the user completes a quest or enters an item store. You will be able to use it with the [custom parameters](#custom-parameter) so you can deliver the personalized and targeted message in specific moment in real time.
 
-To implement codes, simply call **Load(index)** method with passing marketing moment's index. You can get the marketing moment's index in our [Dashboard](https://admin.adfresca.com): 1) Select a App 2) In 'Overview' menu, click 'Settings - Marketing Moment' button. 
+To implement codes, simply call **Load(index)** method with passing marketing moment's index. You can get the marketing moment's index in our [Dashboard](https://dashboard.nudge.do): 1) Select a App 2) In 'Overview' menu, click 'Settings - Marketing Moment' button. 
 
 You will call the method after the moment has happened in the app.
 

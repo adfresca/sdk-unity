@@ -306,6 +306,11 @@ void Start ()
   } else {
     [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
   }
+
+  NSDictionary* userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
+	if (userInfo != nil) {
+    [self application:application didReceiveRemoteNotification:userInfo];
+	}
 } 
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

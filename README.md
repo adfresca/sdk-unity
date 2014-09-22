@@ -308,9 +308,9 @@ void Start ()
   }
 
   NSDictionary* userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-	if (userInfo != nil) {
+  if (userInfo != nil) {
     [self application:application didReceiveRemoteNotification:userInfo];
-	}
+  }
 } 
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {

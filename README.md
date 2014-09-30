@@ -5,10 +5,10 @@
     - [In-App Messaging](#in-app-messaging)
     - [Push Messaging](#push-messaging)
     - [Test Device Registration](#test-device-registration)
-- [IAP, Reward and Promotion](#iap-reward-and-promotion)
+- [IAP, Reward and Sales Promotion](#iap-reward-and-sales-promotion)
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
-  - [Promotion](#promotion)
+  - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
   - [Marketing Moment](#marketing-moment)
@@ -363,7 +363,7 @@ After you have your test device ID, you have to register it to [Dashboard](https
 
 * * *
 
-## IAP, Reward and Promotion
+## IAP, Reward and Sales Promotion
 
 ### In-App Purchase Tracking
 
@@ -595,7 +595,7 @@ Our SDK never calls itemRewarded event more than once per campaign. We always ch
 
 * * *
 
-### Promotion
+### Sales Promotion
 
 _**(Unity plugin supports promotion feature only with Android platform. iOS support will be available soon)**_
 
@@ -1028,7 +1028,7 @@ You can implement AdFrescaViewDelegate in a Xcode project to check error message
     - Support A/B test feature for iOS platform. (No coding is required)
     - Added [iOS SDK 1.4.6](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
 - v2.2.1 _(8/15/2014 Updated)_
-    - Support sales promotion campaign. Please refer to [Promotion](#promotion) section.
+    - Support sales promotion campaign. Please refer to [Sales Promotion](#sales-promotion) section.
     - Support security token of reward campaign's hack proof. Please refer to [Give Reward](#give-  reward) section.
     - Add cancelPromotionPurchase() method to [In-App Purchase Tracking](#in-app-purchase-tracking)
     - Support tap area feature.

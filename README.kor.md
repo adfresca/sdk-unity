@@ -1,14 +1,14 @@
 ## Contents
 - [Basic Integration](#basic-integration)
-    - [Installation](#installation)
-    - [Start Session](#start-session)
-    - [In-App Messaging](#in-app-messaging)
-    - [Push Messaging](#push-messaging)
-    - [Test Device Registration](#test-device-registration)
-- [IAP, Reward and Promotion](#iap-reward-and-promotion)
+  - [Installation](#installation)
+  - [Start Session](#start-session)
+  - [In-App Messaging](#in-app-messaging)
+  - [Push Messaging](#push-messaging)
+  - [Test Device Registration](#test-device-registration)
+- [IAP, Reward and Sales Promotion](#iap-reward-and-sales-promotion)
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
-  - [Promotion](#promotion)
+  - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
   - [Marketing Moment](#marketing-moment)
@@ -372,7 +372,7 @@ plugin.Show();
 
 * * *
 
-## IAP, Reward and Promotion
+## IAP, Reward and Sales Promotion
 
 ### In-App Purchase Tracking
 
@@ -626,7 +626,7 @@ SDK에서 요청한 아이템을 사용자에게 지급해야 합니다. 클라�
 2. 특정 사용자가 동일한 토큰값으로 1회 이상 지급 요청을 하는 경우 요청을 거절합니다. 
 3. 만약 토큰값이 외부에 노출되었다고 판단될 경우, 대쉬보드에서 토큰값을 새로 생성하거나 수정합니다.
 
-### Promotion
+### Sales Promotion
 
 _**(현재 유니티 플러그인의 Promotion 기능은 Android OS에서만 지원됩니다. iOS 지원은 곧 업데이트됩니다.)**_
 
@@ -1077,7 +1077,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
     - [iOS SDK 1.4.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
 - v2.2.1 _(8/15/2014 Updated)_
     - 리워드 지급 시에 시큐리티 토큰값을 이용하여 보안 이슈를 해결할 수 있습니다. 자세한 내용은 [Give Reward](#give-reward) 항목을 참고하여 주세요.
-    - Sales Promotion 캠페인 기능을 이용하여 아이템의 프로모션 기능을 지원합니다. 자세한 내용은 [Promotion](#promotion) 항목을 참고하여 주세요.
+    - Sales Promotion 캠페인 기능을 이용하여 아이템의 프로모션 기능을 지원합니다. 자세한 내용은 [Sales Promotion](#sales-promotion) 항목을 참고하여 주세요.
     - [In-App Purchase Tracking](#in-app-purchase-tracking) 기능에서 cancelPromotionPurchase() 메소드가 추가되었습니다. 
     - 이미지 메시지의 **Tap Area** 기능을 지원합니다.
     - Android SDK가 캠페인 매칭 시에 여러 개의 캠페인이 동시에 매칭될 수 있도록 지원합니다.. 새로운 SDK는 순차적으로 매칭된 캠페인들의 메시지를 표시합니다.

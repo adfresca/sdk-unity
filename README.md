@@ -753,9 +753,9 @@ In the native Android application, you can simply add schema information to Andr
 
 To resolve this issue, you need to do the followings.
 
-1) Override startActivity(intent) of UnityPlayer Activity to handle Custom URL for Announcement Campaign.
+1) Override startActivity(intent) of UnityPlayer Activity to handle Custom URL for In-App Messaging Campaign.
 
-Deep Link from Announcement Campaign is always executed on in-game situation. It is never executed from outside of the game (i.e. a push notification.) Also our SDK uses startActivity() method to execute the url. Therefore, you can manually handle a url by overriding startActivity() of UnityPlayer activity. 
+Deep Link from In-App Messaging Campaign is always executed on in-game situation. It is never executed from outside of the game (i.e. a push notification.) Also our SDK uses startActivity() method to execute the url. Therefore, you can manually handle a url by overriding startActivity() of UnityPlayer activity. 
 
 First, you should create a new Android Project in Eclipse and generate a class named MainActivity inherited from UnityPlayerActivity. Then modify AndroidMenefest.xml as follows.
 
@@ -797,7 +797,7 @@ public class MainActivity extends UnityPlayerActivity {
 }
 ```
 
-2) Handle custom url form Push Notification Campaign
+2) Handle custom url form Push Messaging Campaign
 
 When the app receives a push notification with a custom url, you can execute your own custom action. Typically a notification is received when a user is outside of the game. So we should handle the custom url with a different approach. 
 
@@ -815,7 +815,7 @@ First, create a new activity class named 'PushProxyActivity,' and register the a
 
 .......
 ```
-You also need to create a custom url like 'myapp://com.adfresca.push?item=abc' in your Push Notification Campaign. 
+You also need to create a custom url like 'myapp://com.adfresca.push?item=abc' in your Push Messaging Campaign. 
 
 Then you should implement PushProxyActivity class. This class is a simple proxy-style activity which only handles a url from Android OS and then quits itself. 
 However, there is an exception that a notification is received and your application is not running. When that happens, you can't handle a custom url in the game engine, so you should manually start your game and pass the url to MainActivity as shown below.
@@ -1037,7 +1037,7 @@ You can implement AdFrescaViewDelegate in a Xcode project to check error message
 - v2.2.0 _(1/14/2014 Updated)_ 
     - [In-App Purchase Tracking](#in-app-purchase-tracking) is added.
 - v2.1.8 _(4/6/2014 Updated)_
-    - SDK supports '[Reward Item](#reward-item)' feature of the announcement campaign.
+    - SDK supports '[Reward Item](#reward-item)' feature of the In-App Messaging campaign.
     - SDK supports 'Incentivized CPA Campaign'. Please refer to 'CPI Identifier' section for detail. 
     - Added [iOS SDK 1.3.5](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
     - Added [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)

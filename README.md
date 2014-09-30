@@ -15,7 +15,7 @@
 - [Advanced](#advanced)
   - [Timeout Interval](#timeout-interval) 
 - [Reference](#reference)
-  - [Custom URL Schema](#custom-url-schema)
+  - [Deep Link](#deep-link)
   - [Cross Promotion Configuration](#cross-promotion-configuration)
   - [Proguard Configuration](#proguard-configuration)
 - [Troubleshooting](#troubleshooting)
@@ -743,7 +743,7 @@ plugin.Show();
 
 ## Reference
 
-### Custom URL Schema
+### Deep Link
 
 You can set your own URL Schema as 'Deep Link' of the campaigns and you can redirect users to a specific page or run custom actions when usesr click the image message. 
 

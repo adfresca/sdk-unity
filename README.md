@@ -31,8 +31,6 @@ Download _Unity Plugin_ at the following link.
 
 [Unity Plugin Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
 
-[Unity Plugin with IAP Tracking BETA Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap.zip) 
-
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install the following components below.
 
 Assets/

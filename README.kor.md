@@ -372,7 +372,7 @@ plugin.Show();
 
 * * *
 
-## IAP & Reward
+## IAP, Reward and Promotion
 
 ### In-App Purchase Tracking
 

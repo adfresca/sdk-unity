@@ -5,9 +5,10 @@
     - [In-App Messaging](#in-app-messaging)
     - [Push Messaging](#push-messaging)
     - [Test Device Registration](#test-device-registration)
-- [IAP & Reward](#iap--reward)
-  - [In-App Purchase Tracking (Beta)](#in-app-purchase-tracking-beta)
+- [IAP, Reward and Promotion](#iap-reward-and-promotion)
+  - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
+  - [Promotion](#promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
   - [Marketing Moment](#marketing-moment)
@@ -30,7 +31,7 @@ Download _Unity Plugin_ at the following link.
 
 [Unity Plugin Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
 
-[Unity Plugin with IAP Tracking BETA Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap-beta.zip) 
+[Unity Plugin with IAP Tracking BETA Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity-iap.zip) 
 
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install the following components below.
 
@@ -44,7 +45,7 @@ Assets/AdFresca/
     AndroidPlugin.cs
     IOSPlugin.cs
     RewardItem.cs
-    Purchase.cs // only for IAP BETA
+    Purchase.cs
 
 Assets/Plugins/Android/
 
@@ -229,7 +230,7 @@ protected void onUnregistered(Context context, String registrationId) {
 
 @Override
 protected void onMessage(Context context, Intent intent) {
-  // Check AD fresca notification
+  // Check Nudge notification
   if (AdFresca.isFrescaNotification(intent)) {    
 
     String title = AdFrescaPlugin.getAppName(context);
@@ -364,9 +365,9 @@ After you have your test device ID, you have to register it to [Dashboard](https
 
 ## IAP & Reward
 
-### In-App Purchase Tracking (Beta)
+### In-App Purchase Tracking
 
-(Android Only)
+_**(Unity plugin supports in-app-purchase tracking feature only with Android platform. iOS support will be available soon)**_
 
 With in-app-purchase tracking, you can track all the in-app purchases, and use them for targeting specific user segments to display your campaigns.
 
@@ -381,19 +382,28 @@ Let's get started by implementing SDK codes with the examples below.
 
 ### Actual Item Tracking
 
-You will use app stores' billing library such as Google Play Billing for purchases of 'Actual Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method.
+You will use app stores' billing library such as Google Play Billing for purchases of 'Actual Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method. Also, call cancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
 Example 1: Implementing 'purchase succeeded' event in Unity 
 ```cs
-AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
-  .WithItemId("gold100")
-  .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-  .WithPrice(0.99)
-  .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
-  .WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
-      
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.LogPurchase(purchase);
+private void OnActualItemPurchased() 
+{
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
+      .WithItemId("gold100")
+      .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
+      .WithPrice(0.99)
+      .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
+      .WithReceipt("google_play_order_id", "google_play_receipt_json", "google_play_signature"); // Optional
+          
+    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+    plugin.LogPurchase(purchase);
+}
+
+private void OnPurchaseActualItemFailure() 
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.CancelPromotionPurchase();
+}
 ```
 
 Example 2: Implementing Google Billing Library in the native Android codes.
@@ -406,6 +416,7 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
 
     if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
       ......
+      AdFresca.getInstance(MainActivity.this).cancelPromotionPurchase();
       return;
     }
 
@@ -457,17 +468,26 @@ WithReceipt(string, string, string) | Set the receipt property of purchase objec
 
 ### Virtual Item Tracking
 
-When users purchase your virtual item in the app, you can also create Purchase object and call LogPurchase() method.
+When users purchase your virtual item in the app, you can also create Purchase object and call LogPurchase() method. Also, call CancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
 ```cs
-AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
-  .WithItemId("long_sword")
-  .WithCurrencyCode("gold") 
-  .WithPrice(100)
-  .WithPurchaseDate(purchaseDateTime);
+private void OnVirtualItemPurchased() 
+{
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
+      .WithItemId("long_sword")
+      .WithCurrencyCode("gold") 
+      .WithPrice(100)
+      .WithPurchaseDate(purchaseDateTime);
+    
+    AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+    plugin.LogPurchase(purchase);
+}
 
-AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-plugin.LogPurchase(purchase);
+private void OnPurchaseVirtualItemFailure() 
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.CancelPromotionPurchase();
+}
 ```
 
 For more details of Purchase object with virtual items, check the table below.
@@ -555,11 +575,92 @@ You need to implement your own 'SendItemToUser()' method. This method may send t
 
 The onReward event is called when a campaign's reward condition is met.
 
-- Announcement Campaign: event is called when a user sees the campaign content.
+- Reward Campaign: event is called when a user sees the campaign content.
 - Incentivized CPI Campaign: event is called when our SDK confirms that the advertising app is installed.
 - Incentivized CPA Campaign: event is called after our SDK confirms that the advertising app is installed and the user completes the intended action (calling the specified marketing moment.)
 
 If users have any network connectivity issues, our SDK stores the reward data in the app's local storage, and then deliver the reward when users run the app again. This guarantees that users will always get the reward from our SDK.
+
+#### implementing SendItemToUser()
+
+You should give a reward item to your user using your own client code or back-end server api. Your client may send an api request with an unique vale of item, quantity and security token values to your server. Then the server application will add a reward item to the user's item inventory.
+
+#### Hack Proof
+
+Our SDK never calls itemRewarded event more than once per campaign. We always check it with device identifiers to avoid abuse. However, it is still possible for hackers to hijack your api request between your client and back-end server. To prevent this issue, we provide a security token value. A security token is an unique value per your campaign. You can generate the token while you're creating a reward campaign. You can hack proof by using the security token as noted below:
+
+1. You will store a security token to your own database before starting a reward campaign. You should reject any reward requests with an invalid token value.
+2. If some users are trying to request with the same token value more than once, you should reject those requests.
+3. If you think your security token is exposed to hackers, you can always change the value in our dashboard.
+
+* * *
+
+### Promotion
+
+_**(Unity plugin supports promotion feature only with Android platform. iOS support will be available soon)**_
+
+By using sales promotion campaigns, you can promote your in-app item to your users. When users tap on an action button of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
+
+To apply our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message in a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
+
+For Actual Currency Items, you should use your in-app billing library codes to show the purchase UI. You can get the SKU value from ItemId property of promotionPurchase object.
+
+For Virtual Currency Items, you should use your own purchase UI which might be already implemented in your store page. Also there are discount options for virtual item sales promotion campaigns. You can check the discount type using discountType property of promotionPurchase object
+
+1. **Discount Price**: Users can buy a promotion item at a specific discounted price. You can get the price from Price property.
+
+2. **Discount Rate**: Users can buy a promotion item at a discount rate. You will calculate the discounted price applying the discount rate which can be earned from DiscountRate property.
+
+```cs
+void Start ()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.Init(API_KEY);
+  plugin.StartSession();
+  
+  ....
+  
+  plugin.SetPromotionListener("YourGameObject", "OnPromotion");
+}
+  
+public void OnPromotion(string json)
+{
+  Debug.Log("OnPromotion = " + json);   
+  Purchase PromotionPurchase = LitJson.JsonMapper.ToObject<Purchase>(json);
+
+  string ItemId = PromotionPurchase.ItemId;
+  string LogMessage = "no logMessage";
+
+  if (PromotionPurchase.PurchaseType == Purchase.Type.ACTUAL_ITEM)
+  {
+    // Use In-app Billing Library  
+    ShowActualItemPurchaseUI(ItemId);
+    LogMessage = String.Format("on ACTUAL_ITEM Promotion ({0})", ItemId);  
+  }
+  else if (PromotionPurchase.PurchaseType == Purchase.Type.VIRTUAL_ITEM)
+  {
+    String CurrencyCode = PromotionPurchase.CurrencyCode;
+    if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNTED_TYPE_PRICE) 
+    {
+      // Use a discounted price
+      double DiscountedPrice = PromotionPurchase.Price;
+      ShowVirtualItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
+      LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
+    }
+    else if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNT_TYPE_RATE)
+    {
+      // Use this rate to calculate a discounted price of item. discountedPrice = originalPrice - (originalPrice * discountRate)
+      double DiscountRate = PromotionPurchase.PromotionDiscountRate;
+      ShowVirtualItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
+      LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
+    }
+  }
+
+  Debug.Log(LogMessage);
+}
+```
+
+Our SDK will detect if users made a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) features. Therefore, you should implement it to complete this promotion feature. Please make sure that you implement 'CancelPromotionPurchase()' method when the users cancelled or failed to purchase items.
 
 * * *
 
@@ -922,18 +1023,38 @@ You can implement AdFrescaViewDelegate in a Xcode project to check error message
 * * *
 
 ## Release Notes
+
+- **v2.2.2 (2014/09/30 Updated)**
+    - Support A/B test feature for iOS platform. (No coding is required)
+    - Added [iOS SDK 1.4.6](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
+- v2.2.1 _(8/15/2014 Updated)_
+    - Support sales promotion campaign. Please refer to [Promotion](#promotion) section.
+    - Support security token of reward campaign's hack proof. Please refer to [Give Reward](#give-  reward) section.
+    - Add cancelPromotionPurchase() method to [In-App Purchase Tracking](#in-app-purchase-tracking)
+    - Support tap area feature.
+    - SDK will match multiple campaigns and show multiple messages in one marketing moment request.
+    - Added [Android SDK 2.4.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
+- v2.2.0 _(1/14/2014 Updated)_ 
+    - [In-App Purchase Tracking](#in-app-purchase-tracking) is added.
+- v2.1.8 _(4/6/2014 Updated)_
+    - SDK supports '[Reward Item](#reward-item)' feature of the announcement campaign.
+    - SDK supports 'Incentivized CPA Campaign'. Please refer to 'CPI Identifier' section for detail. 
+    - Added [iOS SDK 1.3.5](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
+    - Added [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
+- v2.1.7 _(1/31/2014 Updated)_
+    - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
 - v2.1.6 _(1/10/2014 Updated)_ 
     - Added [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
     - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option is required to enable a touch event. Please refer to [Installation](#installation) section for detailed installation guide.
 - v2.1.4 _(12/01/2013 Updated)_ 
-    - Added [iOS SDK 1.3.4](https://adfresca.zendesk.com/entries/21796143#release-notes)
+    - Added [iOS SDK 1.3.4](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
 - v2.1.4 _(11/27/2013 Updated)_ 
-    - Added [iOS SDK 1.3.3](https://adfresca.zendesk.com/entries/21796143#release-notes)
+    - Added [iOS SDK 1.3.3](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
     - Added [Android SDK 2.3.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.3 _(10/01/2013 Updated)_ 
     - Added [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.2 _(08/19/2013 Updated)_ 
-    - Added [iOS SDK 1.3.2](https://adfresca.zendesk.com/entries/21796143#release-notes)
+    - Added [iOS SDK 1.3.2](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
 - v2.1.1
     - Added [Android SDK 2.2.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.0 _(08/08/2013 Updated)_

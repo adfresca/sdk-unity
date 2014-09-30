@@ -1007,7 +1007,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
 
 ### Image Push Notification
 
-Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드의 ["Image Notification"](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#image-notification) 내용을 참고하여 진행이 가능합니다.
+Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드의 ["Image Push Notification"](https://github.com/nudge-now/sdk-android/blob/master/README.kor.md#image-push-notification) 내용을 참고하여 진행이 가능합니다.
 
 * * *
 

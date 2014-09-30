@@ -755,7 +755,7 @@ To resolve this issue, you need to do the followings.
 
 1) Override startActivity(intent) of UnityPlayer Activity to handle Custom URL for Announcement Campaign.
 
-Click URL from Announcement Campaign is always executed on in-game situation. It is never executed from outside of the game (i.e. a push notification.) Also our SDK uses startActivity() method to execute the url. Therefore, you can manually handle a url by overriding startActivity() of UnityPlayer activity. 
+Deep Link from Announcement Campaign is always executed on in-game situation. It is never executed from outside of the game (i.e. a push notification.) Also our SDK uses startActivity() method to execute the url. Therefore, you can manually handle a url by overriding startActivity() of UnityPlayer activity. 
 
 First, you should create a new Android Project in Eclipse and generate a class named MainActivity inherited from UnityPlayerActivity. Then modify AndroidMenefest.xml as follows.
 

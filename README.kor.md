@@ -273,7 +273,7 @@ protected String getGCMIntentServiceClassName(Context context) {
 
 5) Unity 환경에서 GCM 적용하기
 
-이제 유니티 클래스에서 GCM Sender ID 값을 플러그인에 설정하여 적용을 완료합니다.
+이제 유니티 클래스에서 GCM Sender ID 값을 플러그인에 설정하여 적용을 완료합니다. 만약 기존에 사용 중인 GCM 서비스가 있어 이미 디바이스의 GCM 푸시 고유 아이디를 알고 있는 경우, SetGCMPushRegistrationIdentifier(string) 메소드를 호출하여 값만 설정하는 것도 가능합니다.
 
 ```cs
 #if UNITY_ANDROID
@@ -286,6 +286,8 @@ void Start ()
   plugin.Init(API_KEY);
   
   plugin.SetGCMSenderId(GCM_SENDER_ID);
+  // plugin.SetGCMPushRegistrationIdentifier("DEVICE_GCM_PUSH_REG_ID"); // if you already have it
+
   plugin.StartSession();
 }
 ```
@@ -334,7 +336,7 @@ void Start ()
 } 
 ```
 
-이로써 Push Notification 기능을 위한 적용 작업이 모두 완료되었습니다.
+이로써 푸시 메시징 기능을 위한 적용 작업이 모두 완료되었습니다.
 
 ### Test Device Registration
 
@@ -376,8 +378,6 @@ plugin.Show();
 
 ### In-App Purchase Tracking
 
-_**(현재 유니티 플러그인의 In-App-Purchase Tracking 기능은 Android OS에서만 지원됩니다. iOS 지원은 곧 업데이트됩니다.)**
-
 _In-App-Purchase Tracking_  기능을 통하여 현재 앱에서 발생하고 있는 모든 인-앱 결제를 분석하고 캠페인 타겟팅에 이용할 수 있습니다.
 
 Nudge의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
@@ -401,6 +401,7 @@ private void OnActualItemPurchased()
 {
     AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
       .WithItemId("gold100")
+      .WithItemName("100 Gold")
       .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
       .WithPrice(0.99)
       .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
@@ -417,60 +418,12 @@ private void OnPurchaseActualItemFailure()
 }
 ```
 
-적용 예제 2: Android 네이티브 환경에서 Google Play 결제 모듈을 직접 구현하는 경우
-```java
-// Callback for when a purchase is finished
-IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-  public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-    Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-
-    if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
-      ......
-      AdFresca.getInstance(MainActivity.this).cancelPromotionPurchase();
-      return;
-    }
-
-    Log.d(TAG, "Purchase successful.");
-    if (purchase.getPurchaseState() == 0) {
-      final SkuDetails detail = currentInventory.getSkuDetails(purchase.getSku());
-      final Purchase purchase0 = purchase;
-      
-      UnityPlayer.currentActivity.runOnUiThread(new Runnable(){
-        @Override
-        public void run() {
-          String itemId = purchase0.getSku();
-          String currencyCode = "KRW"; // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-          Double price =  parsePrice(detail.getPrice()); // For Google Play, you can get the price value from SkuDetails
-          Date purhcaseDate = new Date(purchase0.getPurchaseTime());
-          String orderId = purchase0.getOrderId();
-          String receiptData = purchase0.getOriginalJson();
-          String signature = purchase0.getSignature();
-
-          AFPurchase actualPurchase = new AFPurchase.Builder(AFPurchase.Type.ACTUAL_ITEM)
-                                .setItemId(itemId)
-                                .setCurrencyCode(currencyCode)
-                                .setPrice(price)
-                                .setPurchaseDate(purhcaseDate)
-                                .setReceipt(orderId, receiptData, signature)
-                                .build();
-
-          AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(actualPurchase);
-        }
-      });
-    }
-    
-    ......
-    }
-};
-```
-
-위 예제는 Google Play 결제 라이브러리를 기준으로 작성되었지만 아마존이나 티스토어 등 모든 결제 라이브러리에서도 Purchase 객체에 필요한 값을 얻어올 수 있습니다.
-
 Actual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
 
 Method | Description
 ------------ | ------------- | ------------
 WithItemId(string) | 결제한 아이템의 고유 식별 아이디를 설정합니다. 등록된 앱스토어에 상관 없이 앱내에서 고유한 식별 값을 이용하는 것을 권장합니다. Nudge 대쉬보드에서 해당 값을 기준으로 아이템 목록이 생성됩니다. 
+WithItemName(string) | 결제한 아이템의 이름을 설정합니다. 이 값은 대쉬보드에서 이름을 표시하기 위한 용도로만 이용됩니다. 등록된 이름은 언제든지 대쉬보드에서 변경이 가능합니다. 
 WithCurrencyCode(string) | ISO 4217 표준 코드를 설정합니다. Google Play의 경우 'Default price' 에 설정되는 Currency Code 값을 이용하며 타 결제 라이브러리의 경우는 보통 이용 가능한 Currency Code가 고정되어 있습니다 (예: 아마존은 USD, 티스토어는 KRW). 또는 자체 백엔드 서버에서 결제하는 아이템의 Currency Code를 내려받아 설정할 수 있습니다.
 WithPrice(double) | 아이템의 가격을 설정합니다. 결제 라이브러리에서 주는 값을 이용하거나, 자체 백엔드 서버에서 가격을 내려받아 설정할 수 있습니다. 
 WithPurchaseDate(datetime) | 결제된 시간을 DateTime 객체 형태로 설정합니다. 값이 설정되지 않은 경우 Nudge 서비스에 기록되는 시간이 결제 시간으로 자동 설정됩니다.
@@ -486,6 +439,7 @@ private void OnVirtualItemPurchased()
 {
     AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
       .WithItemId("long_sword")
+      .WithItemName("Long Sword")
       .WithCurrencyCode("gold") 
       .WithPrice(100)
       .WithPurchaseDate(purchaseDateTime);
@@ -506,6 +460,7 @@ Virtual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 �
 Method | Description
 ------------ | ------------- | ------------
 WithItemId(string) | 결제한 아이템의 고유 식별 아이디를 설정합니다. 등록된 앱스토어에 상관 없이 앱내에서 고유한 식별 값을 이용하는 것을 권장합니다. Nudge 대쉬보드에서 해당 값을 기준으로 아이템 목록이 생성됩니다. 
+WithItemName(string) | 결제한 아이템의 이름을 설정합니다. 이 값은 대쉬보드에서 이름을 표시하기 위한 용도로만 이용됩니다. 등록된 이름은 언제든지 대쉬보드에서 변경이 가능합니다. 
 WithCurrencyCode(string) | 결제에 사용한 가상화폐 고유 코드를 설정합니다. (예: gold)
 WithPrice(double) | 가상 화폐로 결제한 가격 정보를 설정합니다. (예: gold 10개의 경우 10 값을 설정)
 WithPurchaseDate(datetime) | 결제된 시간을 DateTime 객체 형태로 설정합니다. 값이 설정되지 않은 경우 Nudge 서비스에 기록되는 시간이 결제 시간으로 자동 설정됩니다.
@@ -628,8 +583,6 @@ SDK에서 요청한 아이템을 사용자에게 지급해야 합니다. 클라�
 
 ### Sales Promotion
 
-_**(현재 유니티 플러그인의 Promotion 기능은 Android OS에서만 지원됩니다. iOS 지원은 곧 업데이트됩니다.)**_
-
 Sales Promotion 캠페인을 이용하여 특정 아이템의 구매를 유도할 수 있습니다. 사용자가 캠페인에 노출된 이미지 메시지를 클릭할 경우 해당 아이템의 결제 UI가 표시됩니다. SDK는 사용자의 실제 결제 여부까지 자동으로 트랙킹하여 대쉬보드에서 실시간으로 통계를 제공합니다. 
 
 프로모션 기능을 적용하기 위해서 OnPromotion 이벤트를 구현합니다. 프로모션 캠페인이 노출된 후 사용자가 이미지 메시지의 액션 영역을 탭하면 onPromotion() 이벤트가 발생합니다. 이벤트에 넘어오는 PromotionPurchase 객체 정보를 이용하여 사용자에게 아이템 결제 UI를 표시하도록 코드를 적용합니다.
@@ -641,6 +594,31 @@ Virtual Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상
 1. **Discount Price**: 캠페인에 직접 지정된 가격으로 아이템을 판매합니다. Price 값을 이용하여 가격 정보를 얻습니다.
 2. **Discount Rate**: 캠페인에 지정된 할인율을 적용하여 아이템을 판매합니다. PromotionDiscountRate 값을 이용하여 할인율 정보를 받아옵니다.
 
+**iOS에서 AFPromotionDelegate 구현하기**
+
+```objective-c
+// UnityAppController.h
+@interface UnityAppController : NSObject<UIApplicationDelegate, AFPromotionDelegate>
+{
+  ...
+}
+
+...
+
+// UnityAppController.mm
+- (void)applicationDidBecomeActive:(UIApplication *)application 
+{
+  AdFrescaView *fresca = [AdFrescaView sharedAdView];
+  [fresca setPromotionDelegate:self];
+}
+
+- (void)onPromotion:(AFPurchase *)promotionPurchase
+{
+  UnitySendMessage("YourGameObject", "OnPromotion", [[promotionPurchase JSONForUnity] UTF8String]);
+}
+```
+
+**Unity 코드 적용하기**
 
 ```cs
 void Start ()
@@ -651,7 +629,7 @@ void Start ()
 	
 	....
 	
-	plugin.SetPromotionListener("YourGameObject", "OnPromotion");
+	plugin.SetPromotionListener("YourGameObject", "OnPromotion"); // for Android only
 }
 	
 public void OnPromotion(string json)
@@ -664,7 +642,7 @@ public void OnPromotion(string json)
 
 	if (PromotionPurchase.PurchaseType == Purchase.Type.ACTUAL_ITEM)
 	{
-		// Use In-app Billing Library  
+		// 인-앱 결제 라이브러리를 호출.
 		ShowActualItemPurchaseUI(ItemId);
 		LogMessage = String.Format("on ACTUAL_ITEM Promotion ({0})", ItemId);  
 	}
@@ -673,14 +651,14 @@ public void OnPromotion(string json)
 		String CurrencyCode = PromotionPurchase.CurrencyCode;
 		if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNTED_TYPE_PRICE) 
 		{
-			// Use a discounted price
+      // 할인된 가격을 이용하여 앱-내 아이템 구매 UI를 표시.
 			double DiscountedPrice = PromotionPurchase.Price;
 			ShowVirtualItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
 			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
 		}
 		else if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNT_TYPE_RATE)
 		{
-			// Use this rate to calculate a discounted price of item. discountedPrice = originalPrice - (originalPrice * discountRate)
+      // 할인율 값을 이용하여 앱-내 아이템 구매 UI를 표시. discountedPrice = originalPrice - (originalPrice * discountRate)
 			double DiscountRate = PromotionPurchase.PromotionDiscountRate;
 			ShowVirtualItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
 			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
@@ -1060,7 +1038,8 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
   [AdFrescaView startSession:@"YOUR_API_KEY"];
-  [[AdFrescaView shardAdView] setDelegate:self];
+  AdFrescaView *view = [AdFrescaView shardAdView];
+  view.delegate = self;
 }
 
 - (void)fresca:(AdFrescaView *)fresca didFailToReceiveAdWithException:(AdException *)error {  
@@ -1071,9 +1050,14 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 * * *
 
 ## Release Notes
-
+- **v2.2.3 (2014/11/11 Updated)**
+    - iOS 플랫폼에서의 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능을 지원합니다.
+    - iOS 플랫폼에서의 [Sales Promotion](#sales-promotion) 기능을 지원합니다.
+    - 안드로이드 플랫폼에서 GCM Push Registration ID를 직접 지정할 수 있는 SetGCMPushRegistrationIdentifier() 메소드가 추가되었습니다.   
+    - [iOS SDK 1.4.8](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
 - **v2.2.2 (2014/09/30 Updated)**
     - iOS 플랫폼의 A/B 테스트 기능을 지원합니다. 해당 기능은 별도의 코딩 작업 없이 이용 가능합니다.
+    - [Android SDK 2.4.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.4.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
 - v2.2.1 _(8/15/2014 Updated)_
     - 리워드 지급 시에 시큐리티 토큰값을 이용하여 보안 이슈를 해결할 수 있습니다. 자세한 내용은 [Give Reward](#give-reward) 항목을 참고하여 주세요.

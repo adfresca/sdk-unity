@@ -285,7 +285,7 @@ void Start ()
 #### iOS
 
 1. Upload your APNS Certificate file (.p12) to our Dashboard
-  - You can export your .cer file to .p12 file using Keychain application. Please refer to [iOS Push Notification Certificate Guide](https://adfresca.zendesk.com/entries/21714780) to generate .p12 and upload to our [Dashboard](https://dashboard.nudge.do)
+  - You can export your .cer file to .p12 file using Keychain application. Please refer to [iOS Push Notification Certificate Guide](https://adfresca.zendesk.com/entries/82614238) to generate .p12 and upload to our [Dashboard](https://dashboard.nudge.do)
 
 2. Check your provisioning
   - Nudge only supports APNS production environment. So you should build your app with App Store or Ad Hoc Provisioning file to enable production mode.

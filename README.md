@@ -371,22 +371,22 @@ With in-app-purchase tracking, you can track all the in-app purchases, and use t
 
 There are two types of purchases you can track with our SDK.
 
-1. **Actual Item Purchase Tracking:**  purchases made with real money. For example, a user purchased a 'Gold 100' item with 'USD 1.99'.
-2. **Virtual Item Purchase Tracking:** purchases made with virtual money. For example, a user purchased 'Rocket Launcher' item with 'Gold 10'. 
+1. **Hard Currency Item Purchase Tracking:**  purchases made with real money. For example, a user purchased a 'Gold 100' item with 'USD 1.99'.
+2. **Soft Currency Item Purchase Tracking:** purchases made with virtual money. For example, a user purchased 'Rocket Launcher' item with 'Gold 10'. 
 
 You don't need to manually write down an item list. Our SDK tracks all purchases and any items included in the purchases are automatically added to our dashboard. To see the list of items, go to 'Overview > Settings > In-App Items' page in our dashboard.
 
 Let's get started by implementing SDK codes with the examples below. 
 
-### Actual Item Tracking
+### Hard Currency Item Tracking
 
-You will use app stores' billing library such as Google Play Billing for purchases of 'Actual Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method. Also, call cancelPromotionPurchase() method when a user cancelled or failed to purchase.
+You will use app stores' billing library such as Google Play Billing for purchases of 'Hard Currency Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method. Also, call cancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
 Example 1: Implementing 'purchase succeeded' event in Unity 
 ```cs
-private void OnActualItemPurchased() 
+private void OnHardItemPurchased() 
 {
-    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.HARD_ITEM)
       .WithItemId("gold100")
       .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
       .WithPrice(0.99)
@@ -397,7 +397,7 @@ private void OnActualItemPurchased()
     plugin.LogPurchase(purchase);
 }
 
-private void OnPurchaseActualItemFailure() 
+private void OnPurchaseHardItemFailure() 
 {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.CancelPromotionPurchase();
@@ -434,7 +434,7 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
           String receiptData = purchase0.getOriginalJson();
           String signature = purchase0.getSignature();
 
-          AFPurchase actualPurchase = new AFPurchase.Builder(AFPurchase.Type.ACTUAL_ITEM)
+          AFPurchase hardPurchase = new AFPurchase.Builder(AFPurchase.Type.HARD_ITEM)
                                 .setItemId(itemId)
                                 .setCurrencyCode(currencyCode)
                                 .setPrice(price)
@@ -442,7 +442,7 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
                                 .setReceipt(orderId, receiptData, signature)
                                 .build();
 
-          AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(actualPurchase);
+          AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(hardPurchase);
         }
       });
     }
@@ -454,7 +454,7 @@ IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelpe
 
 The above example is written for Google Play. You can also get the required values from other billing libraries such as Amazon.
 
-For more details of Purchase object with actual items, check the table below.
+For more details of Purchase object with hard currency items, check the table below.
 
 Method | Description
 ------------ | ------------- | ------------
@@ -464,14 +464,14 @@ WithPrice(double) | Set the item price. You may use SkuDetails's value or manual
 WithPurchaseDate(date) | Set the date of purchase. You may use purchase.getPurchaseTime() value. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 WithReceipt(string, string, string) | Set the receipt property of purchase object (Google Play only). We will use it to verify the receipt in the future. 
 
-### Virtual Item Tracking
+### Soft Currency Item Tracking
 
-When users purchase your virtual item in the app, you can also create Purchase object and call LogPurchase() method. Also, call CancelPromotionPurchase() method when a user cancelled or failed to purchase.
+When users purchase your soft currency item in the app, you can also create Purchase object and call LogPurchase() method. Also, call CancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
 ```cs
-private void OnVirtualItemPurchased() 
+private void OnSoftItemPurchased() 
 {
-    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.SOFT_ITEM)
       .WithItemId("long_sword")
       .WithCurrencyCode("gold") 
       .WithPrice(100)
@@ -481,19 +481,19 @@ private void OnVirtualItemPurchased()
     plugin.LogPurchase(purchase);
 }
 
-private void OnPurchaseVirtualItemFailure() 
+private void OnPurchaseSoftItemFailure() 
 {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.CancelPromotionPurchase();
 }
 ```
 
-For more details of Purchase object with virtual items, check the table below.
+For more details of Purchase object with soft currency items, check the table below.
 
 Method | Description
 ------------ | ------------- | ------------
 WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
-WithCurrencyCode(string) | Set the item's virtual currency code. (ex: 'gold', 'gas')
+WithCurrencyCode(string) | Set the item's soft currency code. (ex: 'gold', 'gas')
 WithPrice(double) | Set the item price. You may get this value from your server. (ex: 100 of gold)
 WithPurchaseDate(date) | Set the date of purchase. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 
@@ -601,9 +601,9 @@ By using sales promotion campaigns, you can promote your in-app item to your use
 
 To apply our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message in a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
 
-For Actual Currency Items, you should use your in-app billing library codes to show the purchase UI. You can get the SKU value from ItemId property of promotionPurchase object.
+For Hard Currency Items, you should use your in-app billing library codes to show the purchase UI. You can get the SKU value from ItemId property of promotionPurchase object.
 
-For Virtual Currency Items, you should use your own purchase UI which might be already implemented in your store page. Also there are discount options for virtual item sales promotion campaigns. You can check the discount type using discountType property of promotionPurchase object
+For Soft Currency Items, you should use your own purchase UI which might be already implemented in your store page. Also there are discount options for soft currency item sales promotion campaigns. You can check the discount type using discountType property of promotionPurchase object
 
 1. **Discount Price**: Users can buy a promotion item at a specific discounted price. You can get the price from Price property.
 
@@ -629,28 +629,28 @@ public void OnPromotion(string json)
   string ItemId = PromotionPurchase.ItemId;
   string LogMessage = "no logMessage";
 
-  if (PromotionPurchase.PurchaseType == Purchase.Type.ACTUAL_ITEM)
+  if (PromotionPurchase.PurchaseType == Purchase.Type.HARD_ITEM)
   {
     // Use In-app Billing Library  
-    ShowActualItemPurchaseUI(ItemId);
-    LogMessage = String.Format("on ACTUAL_ITEM Promotion ({0})", ItemId);  
+    ShowHardItemPurchaseUI(ItemId);
+    LogMessage = String.Format("on HARD_ITEM Promotion ({0})", ItemId);  
   }
-  else if (PromotionPurchase.PurchaseType == Purchase.Type.VIRTUAL_ITEM)
+  else if (PromotionPurchase.PurchaseType == Purchase.Type.SOFT_ITEM)
   {
     String CurrencyCode = PromotionPurchase.CurrencyCode;
     if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNTED_TYPE_PRICE) 
     {
       // Use a discounted price
       double DiscountedPrice = PromotionPurchase.Price;
-      ShowVirtualItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
-      LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
+      ShowSoftItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
+      LogMessage = String.Format("on SOFT_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
     }
     else if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNT_TYPE_RATE)
     {
       // Use this rate to calculate a discounted price of item. discountedPrice = originalPrice - (originalPrice * discountRate)
       double DiscountRate = PromotionPurchase.PromotionDiscountRate;
-      ShowVirtualItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
-      LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
+      ShowSoftItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
+      LogMessage = String.Format("on SOFT_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
     }
   }
 
@@ -1021,7 +1021,8 @@ You can implement AdFrescaViewDelegate in a Xcode project to check error message
 * * *
 
 ## Release Notes
-
+- **v2.2.3 _(2014/12/05 Updated)_**
+  - HARD_ITEM and SOFT_ITEM enums are added to Purchase class to replace ACTUAL_ITEM and VIRTUAL_ITEM which will be deprecated. Please refer to [In-App Purchase Tracking](#in-app-purchase-tracking) section.
 - **v2.2.2 (2014/09/30 Updated)**
     - Support A/B test feature for iOS platform. (No coding is required)
     - Added [iOS SDK 1.4.6](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)

@@ -382,8 +382,8 @@ _In-App-Purchase Tracking_  기능을 통하여 현재 앱에서 발생하고 �
 
 Nudge의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
 
-1. 실제 화폐를 통해 결제되는 Actual Item Purchase Tracking (예: USD $1.99를 결제하여 Gold 100개 아이템을 구입)
-2. 가상 화폐를 통해 결제되는 Virtual Item Purchase Tracking (예: Gold 10개를 이용하여 포션 아이템을 구입)
+1. 실제 화폐를 통해 결제되는 Hard Currency Item Purchase Tracking (예: USD $1.99를 결제하여 Gold 100개 아이템을 구입)
+2. 가상 화폐를 통해 결제되는 Soft Currency Item Purchase Tracking (예: Gold 10개를 이용하여 포션 아이템을 구입)
 
 위 2가지 유형의 데이터를 모두 Tracking 함으로써 앱의 매출뿐만 아니라 인-앱 사용자들의 아이템 구매 추이 분석까지 가능합니다.
 
@@ -391,15 +391,15 @@ Nudge의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
 
 아래의 적용 예제를 참고하여 간단히 In-App-Purchase Tracking 기능을 적용합니다.
 
-### Actual Item Tracking
+### Hard Currency Item Tracking
 
-Actual Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
+Hard Currency Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
 
 적용 예제 1: 유니티 환경에서 결제 성공 이벤트 발생 시
 ```cs
-private void OnActualItemPurchased() 
+private void OnHardItemPurchased() 
 {
-    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.ACTUAL_ITEM)
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.HARD_ITEM)
       .WithItemId("gold100")
       .WithItemName("100 Gold")
       .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
@@ -411,14 +411,14 @@ private void OnActualItemPurchased()
     plugin.LogPurchase(purchase);
 }
 
-private void OnPurchaseActualItemFailure() 
+private void OnPurchaseHardItemFailure() 
 {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.CancelPromotionPurchase();
 }
 ```
 
-Actual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
+Hard Currency Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
 
 Method | Description
 ------------ | ------------- | ------------
@@ -429,15 +429,15 @@ WithPrice(double) | 아이템의 가격을 설정합니다. 결제 라이브러�
 WithPurchaseDate(datetime) | 결제된 시간을 DateTime 객체 형태로 설정합니다. 값이 설정되지 않은 경우 Nudge 서비스에 기록되는 시간이 결제 시간으로 자동 설정됩니다.
 WithReceipt(string, string, string) | 추후 Receipt Verficiation 기능을 위해 필요한 데이터를 설정합니다. 현재 버전의 SDK는 Google Play만 지원하며 타 결제 라이브러리의 경우는 값을 설정하지 않습니다.
 
-### Virtual Item Tracking
+### Soft Currency Item Tracking
 
-Virtual Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경우를 의미합니다. 앱 내에서 가상 화폐를 이용한 결제 이벤트가 성공한 경우 아래 예제와 같이 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
+Soft Currency Item의 결제는 앱 내의 가상 화폐로 아이템을 결제한 경우를 의미합니다. 앱 내에서 가상 화폐를 이용한 결제 이벤트가 성공한 경우 아래 예제와 같이 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
 
 적용 예제: 
 ```cs
-private void OnVirtualItemPurchased() 
+private void OnSoftItemPurchased() 
 {
-    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.VIRTUAL_ITEM)
+    AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.SOFT_ITEM)
       .WithItemId("long_sword")
       .WithItemName("Long Sword")
       .WithCurrencyCode("gold") 
@@ -448,14 +448,14 @@ private void OnVirtualItemPurchased()
     plugin.LogPurchase(purchase);
 }
 
-private void OnPurchaseVirtualItemFailure() 
+private void OnPurchaseSoftItemFailure() 
 {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.CancelPromotionPurchase();
 }
 ```
 
-Virtual Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
+Soft Currency Item을 위한 PurchaseBuilder의 보다 자세한 설명은 아래와 같습니다.
 
 Method | Description
 ------------ | ------------- | ------------
@@ -587,9 +587,9 @@ Sales Promotion 캠페인을 이용하여 특정 아이템의 구매를 유도�
 
 프로모션 기능을 적용하기 위해서 OnPromotion 이벤트를 구현합니다. 프로모션 캠페인이 노출된 후 사용자가 이미지 메시지의 액션 영역을 탭하면 onPromotion() 이벤트가 발생합니다. 이벤트에 넘어오는 PromotionPurchase 객체 정보를 이용하여 사용자에게 아이템 결제 UI를 표시하도록 코드를 적용합니다.
 
-Actual Currency 아이템의 경우 인-앱 결제 라이브러리를 이용하여 결제 UI를 표시합니다. PromotionPurchase 객체의 ItemId 값이 아이템의 SKU 값에 해당됩니다. 
+Hard Currency 아이템의 경우 인-앱 결제 라이브러리를 이용하여 결제 UI를 표시합니다. PromotionPurchase 객체의 ItemId 값이 아이템의 SKU 값에 해당됩니다. 
 
-Virtual Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상점 내 아이템 결제 UI를 표시하도록 코드를 작성합니다. Virtual Currency 프로모션의 경우는 2가지 가격 할인 옵션을 제공하고 있습니다. PromotionDiscountType 값을 이용하여 할인 옵션을 확인할 수 있습니다.
+Soft Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상점 내 아이템 결제 UI를 표시하도록 코드를 작성합니다. Soft Currency 프로모션의 경우는 2가지 가격 할인 옵션을 제공하고 있습니다. PromotionDiscountType 값을 이용하여 할인 옵션을 확인할 수 있습니다.
 
 1. **Discount Price**: 캠페인에 직접 지정된 가격으로 아이템을 판매합니다. Price 값을 이용하여 가격 정보를 얻습니다.
 2. **Discount Rate**: 캠페인에 지정된 할인율을 적용하여 아이템을 판매합니다. PromotionDiscountRate 값을 이용하여 할인율 정보를 받아옵니다.
@@ -640,28 +640,28 @@ public void OnPromotion(string json)
 	string ItemId = PromotionPurchase.ItemId;
 	string LogMessage = "no logMessage";
 
-	if (PromotionPurchase.PurchaseType == Purchase.Type.ACTUAL_ITEM)
+	if (PromotionPurchase.PurchaseType == Purchase.Type.HARD_ITEM)
 	{
 		// 인-앱 결제 라이브러리를 호출.
-		ShowActualItemPurchaseUI(ItemId);
-		LogMessage = String.Format("on ACTUAL_ITEM Promotion ({0})", ItemId);  
+		ShowHardItemPurchaseUI(ItemId);
+		LogMessage = String.Format("on HARD_ITEM Promotion ({0})", ItemId);  
 	}
-	else if (PromotionPurchase.PurchaseType == Purchase.Type.VIRTUAL_ITEM)
+	else if (PromotionPurchase.PurchaseType == Purchase.Type.SOFT_ITEM)
 	{
 		String CurrencyCode = PromotionPurchase.CurrencyCode;
 		if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNTED_TYPE_PRICE) 
 		{
       // 할인된 가격을 이용하여 앱-내 아이템 구매 UI를 표시.
 			double DiscountedPrice = PromotionPurchase.Price;
-			ShowVirtualItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
-			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
+			ShowSoftItemPurchaseUIWithDiscountedPrice(ItemId, CurrencyCode, DiscountedPrice);
+			LogMessage = String.Format("on SOFT_ITEM Promotion ({0}) with {1} {2}", ItemId, DiscountedPrice, CurrencyCode);
 		}
 		else if (PromotionPurchase.PromotionDiscountType == Purchase.DiscountType.DISCOUNT_TYPE_RATE)
 		{
       // 할인율 값을 이용하여 앱-내 아이템 구매 UI를 표시. discountedPrice = originalPrice - (originalPrice * discountRate)
 			double DiscountRate = PromotionPurchase.PromotionDiscountRate;
-			ShowVirtualItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
-			LogMessage = String.Format("on VIRTUAL_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
+			ShowSoftItemPurchaseUIWithDiscountRate(ItemId, CurrencyCode, DiscountRate);
+			LogMessage = String.Format("on SOFT_ITEM Promotion ({0}) with {1}% discount", ItemId, DiscountRate * 100.0);
 		}
 	}
 
@@ -1050,6 +1050,8 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 * * *
 
 ## Release Notes
+- **v2.2.3 _(2014/12/05 Updated)_**
+  - Purchase 객체에 HARD_ITEM, SOFT_ITEM purchase type이 추가되고 ACTUAL_ITEM, SOFT_ITEM 값이 deprecated 되었습니다. 자세한 내용은 [In-App Purchase Tracking](#in-app-purchase-tracking) 항목을 참고하여 주세요.
 - **v2.2.3 (2014/11/11 Updated)**
     - iOS 플랫폼에서의 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능을 지원합니다.
     - iOS 플랫폼에서의 [Sales Promotion](#sales-promotion) 기능을 지원합니다.

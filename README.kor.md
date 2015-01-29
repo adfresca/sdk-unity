@@ -1050,14 +1050,17 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 * * *
 
 ## Release Notes
-- **v2.2.3 _(2014/12/05 Updated)_**
+- **v2.2.4 _(2015/01/29 Updated)_**
+    - [Android SDK 2.4.6](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
+    - [iOS SDK 1.5.2](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
+- v2.2.3 _(2014/12/05 Updated)_
   - Purchase 객체에 HARD_ITEM, SOFT_ITEM purchase type이 추가되고 ACTUAL_ITEM, SOFT_ITEM 값이 deprecated 되었습니다. 자세한 내용은 [In-App Purchase Tracking](#in-app-purchase-tracking) 항목을 참고하여 주세요.
-- **v2.2.3 (2014/11/11 Updated)**
+- v2.2.3 (2014/11/11 Updated)
     - iOS 플랫폼에서의 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능을 지원합니다.
     - iOS 플랫폼에서의 [Sales Promotion](#sales-promotion) 기능을 지원합니다.
     - 안드로이드 플랫폼에서 GCM Push Registration ID를 직접 지정할 수 있는 SetGCMPushRegistrationIdentifier() 메소드가 추가되었습니다.   
     - [iOS SDK 1.4.8](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- **v2.2.2 (2014/09/30 Updated)**
+- v2.2.2 (2014/09/30 Updated)
     - iOS 플랫폼의 A/B 테스트 기능을 지원합니다. 해당 기능은 별도의 코딩 작업 없이 이용 가능합니다.
     - [Android SDK 2.4.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.4.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.

@@ -664,11 +664,11 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ### Custom Parameter
 
-Our SDK can collect user-specific profiles such as level, stage, maximum score, etc. We can use them to deliver a personalized and targeted message in real-time to specific user segments that you define.
+Our SDK can collect user-specific profiles such as level, stage, maximum score, etc. We can use them to deliver a personalized and targeted message in real-time to specific user segments that you can define.
 
 To implement codes, simply call SetCustomParameter method with parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://dashboard.nudge.do): 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters.'
 
-You will call the method after the app is launched and when the value has changed. 
+You will call the method after the app is launched and when the values have changed. (If you can't set the values without user sign in, you may set them right after a user signs in.)
 
 ```cs
 void Start() {
@@ -693,11 +693,13 @@ void OnUserStageChanged(int stage) {
 }
 ```
 
+After you write the codes and set values, you will be able to see a list of custom parameters you added on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+
 * * *
 
 ### Marketing Moment
 
-Marketing Moment means when and where you want to engage users. For example, you may need to deliver a message when a user completes a quest or enters into an item store. You will be able to use it with the [custom parameters](#custom-parameter) so you can deliver a personalized and targeted message at a specific moment in real-time.
+Marketing Moment is where and when you want to engage users. For example, you may need to deliver a message when a user completes a quest or enters into an in-app store. You can deliver the personalized and targeted message at a specific moment in real time.
 
 To implement codes, simply call **Load(index)** method with marketing moment's index. You can get the marketing moment's index in our [Dashboard](https://dashboard.nudge.do): 1) Select an App 2) In 'Overview' menu, click 'Settings - Marketing Moment.' 
 

@@ -57,11 +57,11 @@ Assets/Plugins/iOS/
     AdFrescaPlugin.h
     AdFrescaPlugin.mm
 
-Now, we will start installation for each platform.
+Now we will start installation for each platform.
 
 #### Android
 
-For Android, you also need to modify AndroidManifest.xml as shown below.
+You need to modify AndroidManifest.xml as shown below.
 
 ##### Modify AndroidManifest.xml
 
@@ -99,17 +99,17 @@ For Android, you also need to modify AndroidManifest.xml as shown below.
 
 #### iOS
 
-For iOS, Unity requires you to do the entire installation just like an iOS native project. After checking all the components from the package file, you need to build and export a Xcode project from Unity.
+Unity requires you to do the installation just like any other iOS native project. After checking all the components from the package file, you need to build and export a Xcode project from Unity.
 
 Install iOS SDK by referring to the following ['iOS SDK Installation'](https://github.com/adfresca/sdk-ios/blob/master/README.md#installation) section of our iOS SDK guide.
 
 ### Start Session
 
-Now you need to start putting simple SDK codes in your app. You first need to call startSession() method with your API Key. To get your API Key, go to our [Dashboard](https://dashboard.nudge.do) and then click 'Settings - API Keys' button in your app's 'Overview' page.
+You need to start putting simple SDK codes in your app. You first need to call startSession() method with your API Key. To get your API Key, go to our [Dashboard](https://dashboard.nudge.do) and then click 'Settings - API Keys' button in your app's 'Overview' page.
 
 #### Android
 
-Put StartSession() method when users start the app. Please make sure that this method is called once, while your app is running.
+Put StartSession() method when users start the app. Please make sure that this method is called once while your app is running.
 
 ```cs
 #if UNITY_ANDROID
@@ -128,7 +128,7 @@ void Start ()
 
 #### iOS
 
-For iOS, you need to put the native SDK codes in your Xcode project. Open AppController.mm file and modify didFinishLaunchingWithOptions() event as follows.
+You need to put native SDK codes in your Xcode project. Open AppController.mm file and modify didFinishLaunchingWithOptions() event as follows.
 
 ```objective-c
 #import <AdFresca/AdFrescaView.h>
@@ -142,7 +142,7 @@ For iOS, you need to put the native SDK codes in your Xcode project. Open AppCon
 
 ### In-App Messaging
 
-With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iframe webpage. The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
+With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iFrame webpage. The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
 
 ```cs
 void Start ()
@@ -153,7 +153,7 @@ void Start ()
 }
 ```
 
-When you first call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test mode configuration later.
+When you call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test mode configuration later.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;
@@ -259,7 +259,7 @@ protected String getGCMIntentServiceClassName(Context context) {
 
 4) Export Jar
 
-After updating the two classes as shown above, you need to export them as a single jar file into the unity project (/Assets/Plugins/Android/). Please make sure you only export these two classes, not the entire package.
+After updating the two classes as shown above, you need to export them as a single jar file into the unity project (/Assets/Plugins/Android/). Please make sure you export these two classes only, not the entire package.
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/unity/unity-android-gcm-export.png"/>
 
@@ -288,7 +288,7 @@ void Start ()
   - You can export your .cer file to .p12 file using Keychain application. Please refer to [iOS Push Notification Certificate Guide](https://adfresca.zendesk.com/entries/82614238) to generate .p12 and upload to our [Dashboard](https://dashboard.nudge.do)
 
 2. Check your provisioning
-  - Nudge only supports APNS production environment. So you should build your app with App Store or Ad Hoc Provisioning file to enable production mode.
+  - Nudge only supports APNS production environment. So you should build your app with App Store (or Ad Hoc) Provisioning file to enable production mode.
 
 3. Add the following codes to AppController.mm in Xcode Project. 
 
@@ -323,11 +323,9 @@ void Start ()
 } 
 ```
 
-We are now done with the push messaging implementation!
-
 ### Test Device Registration
 
-Nudge supports a test mode feature. With the test mode feature, you can deliver your test message to only registred test devices. 
+Nudge supports a test mode feature. With the test mode feature, you can deliver your test message only to registred test devices. 
 
 To register your test device to our dashboard, you need your test device ID from our SDK. Our SDK provides two ways to show a test device ID.
  
@@ -357,7 +355,7 @@ plugin.Load();
 plugin.Show();
 ```
 
-After you have your test device ID, you have to register it to [Dashboard](https://dashboard.nudge.do) under 'Test Device' menu.
+You can register your test device with the test device ID to [Dashboard](https://dashboard.nudge.do) under 'Test Device' menu.
 
 * * *
 
@@ -367,7 +365,7 @@ After you have your test device ID, you have to register it to [Dashboard](https
 
 _**(Unity plugin supports in-app-purchase tracking feature only with Android platform. iOS support will be available soon)**_
 
-With in-app-purchase tracking, you can track all the in-app purchases, and use them for targeting specific user segments to display your campaigns.
+With in-app purchase tracking, you can track all the in-app purchases, and use them for targeting specific user segments to display your campaigns.
 
 There are two types of purchases you can track with our SDK.
 
@@ -466,7 +464,7 @@ WithReceipt(string, string, string) | Set the receipt property of purchase objec
 
 ### Soft Currency Item Tracking
 
-When users purchase your soft currency item in the app, you can also create Purchase object and call LogPurchase() method. Also, call CancelPromotionPurchase() method when a user cancelled or failed to purchase.
+When a user purchase a soft currency item in the app, you can also create Purchase object and call LogPurchase() method. Also, call CancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
 ```cs
 private void OnSoftItemPurchased() 
@@ -501,19 +499,19 @@ WithPurchaseDate(date) | Set the date of purchase. If you set Null value, it wil
 
 After you call LogPurchase() method, the purchase data is updated to our dashboard in real-time. You can see the list of updated items in 'Overview > Settings > In-App Items' menu.
 
-If you can't see any data in our dashboard, your Purchase object may be invalid. Check your Android (or iOS) logs if our plugin printed error messages. The log format will be "AFPurchaseExceptionListener.onException = {error message}".
+If you don't see any data in our dashboard, your Purchase object may be invalid. Check your Android (or iOS) logs if our plugin printed error messages. The log format will be "AFPurchaseExceptionListener.onException = {error message}".
 
 * * *
 
 ### Give Reward
 
-When you use 'Reward Item' in in-app messaging or 'Incentive item' in incentivized CPI & CPA campaign, you should implement this 'reward item' code to give a reward item to users.
+When you set 'Reward Item' in in-app messaging or 'Incentive item' in incentivized CPI & CPA campaign, you should implement this 'reward item' code to give a reward item to users.
 
 With implementing reward item codes, you can check if users have any reward to receive, and then will be notified with a reward item information.
 
 Use the two codes as shown below:
 - CheckRewardItems(): This method checks if any item is available to receive. We recommend to put this code when the app becomes active. 
-- SetAndroidRewardItemListener(): When the reward condition is met with the current user, onReward event is automatically called with an item value from our Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
+- SetAndroidRewardItemListener(): When there is a reward available for a user, onReward event is automatically called with an item value from our Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
 
 **Implement AFRewardItemDelegate for iOS**
 
@@ -571,25 +569,25 @@ public void OnReward(string json)
 
 You need to implement your own 'SendItemToUser()' method. This method may send the current user info and item's uniqueValue to your server, which willl give the item to the user.
 
-The onReward event is called when a campaign's reward condition is met.
+The onReward event is called when there is a reward available for the user.
 
 - Reward Campaign: event is called when a user sees the campaign content.
 - Incentivized CPI Campaign: event is called when our SDK confirms that the advertising app is installed.
 - Incentivized CPA Campaign: event is called after our SDK confirms that the advertising app is installed and the user completes the intended action (calling the specified marketing moment.)
 
-If users have any network connectivity issues, our SDK stores the reward data in the app's local storage, and then deliver the reward when users run the app again. This guarantees that users will always get the reward from our SDK.
+If a user has any network connectivity issues, our SDK stores the reward data in the app's local storage, and then deliver the reward when users run the app again. This guarantees that the user will always get the reward from our SDK.
 
 #### implementing SendItemToUser()
 
-You should give a reward item to your user using your own client code or back-end server api. Your client may send an api request with an unique vale of item, quantity and security token values to your server. Then the server application will add a reward item to the user's item inventory.
+You need to give a reward item to the user using your own client code or back-end server api. Your client may send an API request with an unique vale of item, quantity and security token values to your server. Then the server application will add a reward item to the user's item inventory.
 
-#### Hack Proof
+#### Hack Proof Code
 
-Our SDK never calls itemRewarded event more than once per campaign. We always check it with device identifiers to avoid abuse. However, it is still possible for hackers to hijack your api request between your client and back-end server. To prevent this issue, we provide a security token value. A security token is an unique value per your campaign. You can generate the token while you're creating a reward campaign. You can hack proof by using the security token as noted below:
+Our SDK never calls itemRewarded event more than once per campaign by checking it with device identifiers to avoid abuse. However it is still possible for hackers to hijack your API request between your client and back-end server. If yuo want more security, you can use a security token, which is a unique value generated per a reward campaign. You can generate the token while you're creating a reward campaign. You can hack proof by using the security token as noted below:
 
 1. You will store a security token to your own database before starting a reward campaign. You should reject any reward requests with an invalid token value.
-2. If some users are trying to request with the same token value more than once, you should reject those requests.
-3. If you think your security token is exposed to hackers, you can always change the value in our dashboard.
+2. If some users request rewards with the same token value more than once, you should reject those requests.
+3. If you think your security token is exposed to hackers, you can always change it in our dashboard.
 
 * * *
 
@@ -597,7 +595,7 @@ Our SDK never calls itemRewarded event more than once per campaign. We always ch
 
 _**(Unity plugin supports promotion feature only with Android platform. iOS support will be available soon)**_
 
-By using sales promotion campaigns, you can promote your in-app item to your users. When users tap on an action button of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
+You can  in-app item to your users. When users tap on an action button of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
 
 To apply our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message in a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
 

@@ -208,7 +208,7 @@ SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/cons
 </manifest>
 ```
 
-- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용 중인 내용이 있다면 그대로 사용하여 SDK 코드만 추가합니다. 
+- CustomGCMReceiver 클래스와 CustomGCMIntentService 클래스는 이미 적용 중인 내용이 있다면 그대로 사용하여 필요한 SDK 코드만 추가합니다. 
 - 만약 기존에 사용 중인 GCM 클래스가 없다면, 직접 안드로이드 자바 클래스를 작성해야 합니다. 빠른 진행을 위하여 유니티 플러그인에 포함된 'Android Plugin Project'를 이용합니다. Eclipse ADT에서 해당 샘플 프로젝트를 추가한 후 /src 및 /gen 아래에 있는 패키지를 모두 현재 적용 중인 게임의 패키지로 변경합니다. 그리고 위의 AndroidManifest.xml 파일 내용 중 'YOUR.PACKAGE.NAME' 표시된 패키지명도 함께 변경해야 합니다.
 
 2) CustomGCMIntentService 클래스 구현하기
@@ -306,24 +306,11 @@ void Start ()
 
 3) AppController.mm 코드 적용하기 
 
-```mm
-#import <AdFresca/AdFrescaView.h>
-
+```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  ....
-  if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-    UIUserNotificationType types = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    [application registerUserNotificationSettings:notificationSettings];
-    [application registerForRemoteNotifications];
-  } else {
-    [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
-  }
-
+  ...
   NSDictionary* userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-  if (userInfo != nil) {
-    [self application:application didReceiveRemoteNotification:userInfo];
-  }
+  if (userInfo != nil) [self application:application didReceiveRemoteNotification:userInfo];
 } 
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -336,6 +323,8 @@ void Start ()
   }
 } 
 ```
+
+만약 푸시 노티피케이션 기능을 처음 적용하는 경우 [샘플 코드](https://gist.github.com/sunku/791f1ff2d7d1b37ca9f8#file-gistfile1-m)를 확인하여 필요한 모든 코드를 확인합니다.
 
 이로써 푸시 메시징 기능을 위한 적용 작업이 모두 완료되었습니다.
 

@@ -293,24 +293,11 @@ void Start ()
 
 3. Add the following codes to AppController.mm in Xcode Project. 
 
-```mm
-#import <AdFresca/AdFrescaView.h>
-
+```objective-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  ....
-  if ([application respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-    UIUserNotificationType types = (UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound);
-    UIUserNotificationSettings *notificationSettings = [UIUserNotificationSettings settingsForTypes:types categories:nil];
-    [application registerUserNotificationSettings:notificationSettings];
-    [application registerForRemoteNotifications];
-  } else {
-    [application registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
-  }
-
+  ...
   NSDictionary* userInfo = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
-  if (userInfo != nil) {
-    [self application:application didReceiveRemoteNotification:userInfo];
-  }
+  if (userInfo != nil) [self application:application didReceiveRemoteNotification:userInfo];
 } 
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
@@ -323,6 +310,8 @@ void Start ()
   }
 } 
 ```
+
+If you haven't implemented any push notification before, please refer to the [full sample code](https://gist.github.com/sunku/791f1ff2d7d1b37ca9f8#file-gistfile1-m)
 
 ### Test Device Registration
 

@@ -106,7 +106,7 @@ Install iOS SDK by referring to the following ['iOS SDK Installation'](https://g
 
 ### Start Session
 
-You need to start putting simple SDK codes in your app. You first need to call startSession() method with your API Key. To get your API Key, go to our [Dashboard](https://dashboard.nudge.do) and then click 'Settings - API Keys' button in your app's 'Overview' page.
+You need to put simple SDK codes in your app. You first call startSession() method with your API Key. To get your API Key, go to our [Dashboard](https://dashboard.nudge.do) and then click 'Settings - API Keys' button in your app's 'Overview' page.
 
 #### Android
 
@@ -399,8 +399,8 @@ Method | Description
 WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
 WithItemName(string) | Set the name of item. It will be shown in our dashboard. 
 WithCurrencyCode(string) | Set the current code of ISO 4217 standard. For Google Play, use the currency code of 'default price' in your account. For Amazon, set 'USD' value since Amazon only supports USD.
-WithPrice(double) | Set the item price. You may use the price value from store billing library or manually set the value from your server.
-WithPurchaseDate(date) | Set the date of purchase. You may use the data value from store billing library. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
+WithPrice(double) | Set the item price. You may use the price value from store billing library or from your server.
+WithPurchaseDate(date) | Set the date of purchase. You may use the date value from store billing library. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 WithReceipt(string, string, string) | Set the receipt property of purchase object (Google Play only). We will use it to verify the receipt in the future. 
 
 ### Soft Currency Item Tracking
@@ -536,17 +536,17 @@ Our SDK never calls itemRewarded event more than once per campaign by checking i
 
 ### Sales Promotion
 
-You can  in-app item to your users. When users tap on an action button of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
+You can display personalized offers using in-app items to your users on a specific moment. When users tap on an action button (BUY) of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
 
-To apply our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message in a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
+To use our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message of a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
 
 For Hard Currency Items, you should use your in-app billing library codes to show the purchase UI. You can get the SKU value from ItemId property of promotionPurchase object.
 
 For Soft Currency Items, you should use your own purchase UI which might be already implemented in your store page. Also there are discount options for soft currency item sales promotion campaigns. You can check the discount type using discountType property of promotionPurchase object
 
-1. **Discount Price**: Users can buy a promotion item at a specific discounted price. You can get the price from Price property.
+1. **Discount Price**: Users can buy a promotion item at a specified discount price. You can get the price from Price property.
 
-2. **Discount Rate**: Users can buy a promotion item at a discount rate. You will calculate the discounted price applying the discount rate which can be earned from DiscountRate property.
+2. **Discount Rate**: Users can buy a promotion item at a discount rate. You will calculate the discount price applying the discount rate which can be earned from DiscountRate property.
 
 **Implement AFPromotionDelegate for iOS**
 
@@ -631,11 +631,11 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ### Custom Parameter
 
-Our SDK can collect user specific profiles such as level, stage, maximum score, etc. We use it to deliver a personalized and targeted message in real time to specific user segments that you can define.
+Our SDK can collect user-specific profiles such as level, stage, maximum score, etc. We use them to deliver a personalized and targeted message in real-time to specific user segments that you can define.
 
 To implement codes, simply call SetCustomParameter method with passing parameter's unique key and its value.
 
-You will call the method after your app is launched and the values have changed. (if you can't set the values without user sign in, you may set them right after users sign in.)
+You will call the method after your app is launched and when the values have changed. Iif you can't set the values without user sign-in, you may set them right after a user signs in.)
 
 ```cs
 void Start() {
@@ -657,7 +657,7 @@ void onUserLevelChanged(int level) {
 }
 ```
 
-After you write the codes, you will be able to see a list of custom parameters you added on [Dashboard](https://dashboard.nudge.do). 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+After you write the codes and set the values, you will be able to see a list of custom parameters you added on [Dashboard](https://dashboard.nudge.do). 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
@@ -967,13 +967,13 @@ If you use Proguard to protect your APK, you need to add exception configuration
 
 ## Troubleshooting
 
-For specific Unity Android environment, when a user touches our in-app messaging view, a touch event is also forwarded to game UI behind of the messaging view. In this case, you should use IsVisible to check if our view is visible, and ignore the touch events to game UI while the view is visible.
+On Unity Android environment, when a user touches our in-app messaging view, a touch event is also forwarded to game UI behind the messaging view. You should use IsVisible to check if our view is visible, then your game UI should ignore the touch events if it is visible.
 
-In other cases, if you can't see our in-app messaging view or any problem, you can debug by the following methods.
+If you can't see our in-app messaging view, you can debug by the following methods.
 
 **Android**
 
-Android Plugin is automatically printing exception logs to device console. You can search tag 'AdFresca' to see exceptions.
+Android Plugin prints exception logs to device console. You can search tag 'AdFresca' to see exceptions.
 
 **iOS**
 

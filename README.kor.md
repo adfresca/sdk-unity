@@ -11,6 +11,7 @@
   - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
+  - [Stickiness Custom Parameter](#stickiness-custom-parameter)
   - [Marketing Moment](#marketing-moment)
 - [Advanced](#advanced)
   - [Timeout Interval](#timeout-interval) 
@@ -108,7 +109,7 @@ iOS 플랫폼의 경우는 Native SDK와 동일한 설치 작업을 진행합니
 
 ### Start Session
 
-이제 플러그인을 적용을 시작하기 위해 몇 가지 간단한 코드를 적용합니다. 첫 번째로 API Key를 설정하고 앱의 실행을 기록하는 StartSession() 메소드를 적용합니다. API Key는 [Dashboard](https://admin.adfresca.com) 사이트에서 등록한 앱을 선택한 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다. 
+이제 플러그인을 적용을 시작하기 위해 몇 가지 간단한 코드를 적용합니다. 첫 번째로 API Key를 설정하고 앱의 실행을 기록하는 StartSession() 메소드를 적용합니다. API Key는 [Dashboard](https://dashboard.nudge.do) 사이트에서 등록한 앱을 선택한 후 Overview 메뉴의 Settings - API Keys 버튼을 클릭하여 확인이 가능합니다. 
 
 #### Android
 
@@ -168,7 +169,7 @@ void Start ()
 
 #### Android
 
-SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/console) 사이트에서 프로젝트를 생성하고, [Dashboard](https://admin.adfresca.com) 사이트에 설정할 GCM API Key 및 SDK 적용에 필요한 GCM_SENDER_ID (Project Number) 값을 얻어야 합니다.
+SDK를 적용하기 이전에 [Google API Console](https://cloud.google.com/console) 사이트에서 프로젝트를 생성하고, [Dashboard](https://dashboard.nudge.do) 사이트에 설정할 GCM API Key 및 SDK 적용에 필요한 GCM_SENDER_ID (Project Number) 값을 얻어야 합니다.
 
 '[Android Push Notification 설정 및 적용하기 (GCM)](https://adfresca.zendesk.com/entries/28526764)' 가이드를 참고하여 필요한 값들을 얻습니다.
 
@@ -295,7 +296,7 @@ void Start ()
 #### iOS
 
 1) APNS 인증서 파일(.p12)을 Dashboard에 등록하기
-  - Keychain 툴을 이용하여 .cer 인증서 파일을 .p12로 변환하고 [Dashboard](https://admin.adfresca.com) 사이트에 등록합니다.
+  - Keychain 툴을 이용하여 .cer 인증서 파일을 .p12로 변환하고 [Dashboard](https://dashboard.nudge.do) 사이트에 등록합니다.
   - 보다 자세한 설명은 [iOS Push Notification 인증서 설정 및 적용하기](https://adfresca.zendesk.com/entries/21714780) 가이드를 통하여 확인이 가능합니다.
 
 2) Info.plast 확인하기 / Provision 확인하기
@@ -370,7 +371,7 @@ plugin.Load();
 plugin.Show();
 ```
 
-테스트 디바이스 아이디를 확인한 이후에는, [Dashboard](https://admin.adfresca.com)를 접속하여 'Test Device' 메뉴를 통해 디바이스 등록이 가능합니다.
+테스트 디바이스 아이디를 확인한 이후에는, [Dashboard](https://dashboard.nudge.do)를 접속하여 'Test Device' 메뉴를 통해 디바이스 등록이 가능합니다.
 
 * * *
 
@@ -395,7 +396,7 @@ Nudge의 In-App-Purchase Tracking은 2가지 유형이 있습니다.
 
 Hard Currency Item의 결제는 각 앱스토어별 인-앱 결제 라이브러리를 통해 이루어집니다. 각 결제 라이브러리에서 _'결제 성공'_ 이벤트가 발생 할 시에 Purchase 객체를 생성하고 LogPurchase(purchase) 메소드를 호출합니다. 그리고 _'결제 실패'_ 이벤트가 발생 할 시에는 CancelPromotionPurchase() 메소드를 호출합니다.
 
-적용 예제 1: 유니티 환경에서 결제 성공 이벤트 발생 시
+적용 예제: 유니티 환경에서 결제 성공 이벤트 발생 시
 ```cs
 private void OnHardItemPurchased() 
 {
@@ -681,29 +682,55 @@ SDK가 사용자의 실제 구매 여부를 트랙킹하기 위해서는 [In-App
 
 Nudge SDK는 기본적으로 '국가, 언어, 앱 버전, 실행 횟수 등'의 디바이스 고유 데이터를 수집하며, 동시에 각 앱 내에서 고유하게 사용되는 특수한 상태 값들(예: 캐릭터 레벨, 보유 포인트, 스테이지 등)을 커스텀 파라미터로 정의하고 수집하여 분석 및 타겟팅 기능을 제공합니다.
 
-커스텀 파라미터 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
+Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, **SetCustomParameter** 메소드를 사용하여 각 고유 키 값에 맞게 상태 값을 설정합니다.
 
-SDK 적용을 위해서는 Dashboard에서 지정된 각 커스텀 파라미터의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
-
-Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, *SetCustomParameter** 메소드를 사용하여 각 인덱스 값에 맞게 상태 값을 설정합니다. 앱이 실행되는 시점에 한 번 설정하고, 해당 파라미터 값이 변경될 때 마다 최신 값을 설정하여 줍니다.
+앱이 실행되는 시점에 한 번 값을 설정하고, 이후에는 값이 새로 갱신되는 이벤트마다 새로운 값을 설정합니다.
 
 ```cs
 void Start() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.Init(API_KEY);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
+  plugin.SetCustomParameter("level", User.Level);
+  plugin.SetCustomParameter("stage", User.Stage);
+  plugin.SetCustomParameter("facebook_flag", User.HasFacebookAccount);
   plugin.StartSession();
 }
 
-  .....
+.....
 
 void onUserLevelChanged(int level) {
   User.level = level
   
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
+  plugin.SetCustomParameter("level", User.Level);
+}
+```
+
+코드가 적용되었으면 [Dashboard](https://dashboard.nudge.do)에 접속하여 등록된 커스텀 파라미터 리스트를 확인하고 활성화('Activate')해야 합니다. 커스텀 파라미터 리스트는 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
+
+<img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
+
+이제 각 커스텀 파라미터의 'Name' 값을 입력하여 활성화합니다. 최대 20개까지 가능하며 활성화된 이후부터 데이터 수집 및 타겟팅이 가능합니다.
+
+* * *
+
+### Stickiness Custom Parameter
+
+(Stickiness 커스텀 파라미터 기능은 현재 베타 서비스로 제공되고 있습니다. 이용을 위해서는 [고객지원팀](mailto:support@nudge.do)으로 문의하여 주세요.)
+
+스테이지형 게임에서 게임 플레이 횟수와 같이 사용자의 Stickiness 지표를 측정할 수 있는 값이 있다면, Stickiness 커스텀 파라미터 등록하여 '최근 1주일간 30회 이상 플레이한 사용자', '오늘 5회 이상 플레이한 사용자'와 같은 사용자 세그먼트를 등록하고 관리할 수 있습니다.
+
+먼저 누적 플레이 횟수와 같은 값을 커스텀 파라미터로 등록하고 Stickiness 모드로 지정합니다. (현재 Stickiness 지정은 Nudge 팀을 통해서만 가능합니다.)
+
+코드 적용 시에는 해당 값이 증가하는 이벤트가 발생할 때 IncrCustomParameter 메소드를 이용하여 증가되는 값을 기록합니다. SDK는 자동으로 누적값을 계산함과 동시에 일별 증가 수치를 계산하여 해당 사용자의 프로화일을 업데이트합니다.
+
+이후 대쉬보드에서 '오늘의 플레이 횟수', '최근 1주일간의 플레이 횟수', '최근 1주일간의 평균 플레이 횟수'와 같은 조건을 사용자 세그먼트 정의에 이용할 수 있습니다.
+
+```cs
+void OnFinishGame()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.IncrCustomParameter("play_count", 1);
 }
 ```
 
@@ -715,7 +742,7 @@ void onUserLevelChanged(int level) {
 
 마케팅 모멘트 기능을 사용하여 지정된 상황에 알맞는 캠페인이 노출되도록 할 수 있습니다.
 
-마케팅 모멘트 설정은 [Dashboard](https://admin.adfresca.com) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Marketing Moments 버튼을 클릭하여 확인할 수 있습니다.
+마케팅 모멘트 설정은 [Dashboard](https://dashboard.nudge.do) 사이트를 접속하여 앱의 Overview 메뉴 -> Settings - Marketing Moments 버튼을 클릭하여 확인할 수 있습니다.
 
 SDK 적용을 위해서는 Dashboard에서 지정된 각 마케팅 모멘트의 '인덱스' 값이 필요합니다. 인덱스 값은 1,2,3,4 와 같은 Integer 형태의 고유 값이며 소스코드에 Constant 형태로 지정하여 이용하는 것을 권장합니다.
 
@@ -934,7 +961,7 @@ Incentivized CPI & CPA 캠페인 기능을 사용하여, 사용자가 Media App�
 - Medial App: 다른 앱의 광고를 노출하고, 광고 대상의 앱을 설치한 사용자들에게 보상을 지급하는 앱
 - Advertising: Media App에 광고가 노출되는 앱.
 
-Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://admin.adfresca.com) 사이트에서의 설정 방법은 [크로스 프로모션 캠페인 이해하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
+Incentivized CPI & CPA 캠페인에 대한 보다 자세한 설명 및 [Dashboard](https://dashboard.nudge.do) 사이트에서의 설정 방법은 [크로스 프로모션 캠페인 이해하기](https://adfresca.zendesk.com/entries/22033960) 가이드를 참고하여 주시기 바랍니다.
 
 SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media App에서의 Reward Item 지급 기능을 구현해야 합니다.
 
@@ -955,7 +982,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
   </manifest>
   ```
 
-  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
+  위 경우 [Dashboard](https://dashboard.nudge.do) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
 
   2. iOS
 
@@ -965,7 +992,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
 
   <img src="https://adfresca.zendesk.com/attachments/token/n3nvdacyizyzvu0/?name=Screen+Shot+2013-02-07+at+6.51.09+PM.png"/>
 
-  위 경우 [Dashboard](https://admin.adfresca.com) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
+  위 경우 [Dashboard](https://dashboard.nudge.do) 사이트에서 Advertising App의 CPI Identifier 값을 'myapp://' 으로 설정하게 됩니다. 
   iOS 플랫폼의 경우 URL Schema 값이 다른 앱과 중복될 수 있습니다. 정상적인 캠페인 진행을 위해서는 최대한 Unique한 값을 선택해야 합니다.
   
   마지막으로, Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 CPI Identifier 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치가 필요하며 보상 조건으로 지정한 마케팅 모멘트르 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 모멘트 호출합니다.
@@ -1005,24 +1032,17 @@ Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드�
 
 ## Troubleshooting
 
-콘텐츠가 화면에 제대로 출력되지 않거나, 에러가 발생하는 경우 SDK에서 에러 정보를 확인할 수 있습니다. 현재 Unity 코드로 에러 정보를 출력하는 방법은 아직 지원되지 않고 있으며, 각 플랫폼 코드에서 직접 로그를 출력할 수 있습니다.
+특정 개발 환경의 안드로이드 플랫폼에서 간혹 인-앱 메시징 뷰 터치 시 뷰 뒷면의 게임 UI가 터치되는 사례가 있습니다. 이 경우 IsVisible() 메소드를 이용하여 현재 뷰가 보여지는 상태인지 검사한 후 터치 이벤트를 무시하도록 적용하여 문제를 해결할 수 있습니다.
+
+그 외에 콘텐츠가 화면에 제대로 출력되지 않거나, 에러가 발생하는 경우 SDK에서 에러 로그를 출력할 수 있습니다.
 
 **Android**
 
-UnityPlayerActivity 클래스를 오버라이드해서 사용하고 있거나, 다른 자바 플러그인을 이용하는 있는 경우 아래 코드를 적용하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
-
-```java
-AdFresca.setExceptionListener(new AFExceptionListener(){
-  @Override
-  public void onExceptionCaught(AFException e) {
-    Log.w("TAG", e.getCode() + ":" + e.getLocalizedMessage());
-  }
-});
-```
+안드로이드 플러그인의 경우는 exception 로그를 자동으로 출력하도록 구현되어 있습니다. "AdFresca" 라는 tag가 설정된 로그를 검색하여 확인이 가능합니다.
 
 **iOS**
 
-Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
+iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
 
 ```objective-c
 // UnityAppController.h
@@ -1037,7 +1057,7 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-  [AdFrescaView startSession:@"YOUR_API_KEY"];
+  ....
   AdFrescaView *view = [AdFrescaView shardAdView];
   view.delegate = self;
 }
@@ -1050,7 +1070,11 @@ Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력�
 * * *
 
 ## Release Notes
-- **v2.2.4 _(2015/01/29 Updated)_**
+- **v2.2.5 _(2015/02/13 Updated)_**
+    - [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
+    - [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
+    - IsVisible() 메소드가 추가되었습니다.
+- v2.2.4 _(2015/01/29 Updated)
     - [Android SDK 2.4.6](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.5.2](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
 - v2.2.3 _(2014/12/05 Updated)_

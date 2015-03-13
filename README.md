@@ -11,6 +11,7 @@
   - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Parameter](#custom-parameter)
+  - [Stickiness Custom Parameter](#stickiness-custom-parameter)
   - [Marketing Moment](#marketing-moment)
 - [Advanced](#advanced)
   - [Timeout Interval](#timeout-interval) 
@@ -128,7 +129,7 @@ void Start ()
 
 #### iOS
 
-You need to put native SDK codes in your Xcode project. Open AppController.mm file and modify didFinishLaunchingWithOptions() event as follows.
+You need to put native SDK code in your Xcode project. Open AppController.mm file and modify didFinishLaunchingWithOptions() event as follows.
 
 ```objective-c
 #import <AdFresca/AdFrescaView.h>
@@ -363,8 +364,6 @@ You can register your test device with the test device ID to [Dashboard](https:/
 
 ### In-App Purchase Tracking
 
-_**(Unity plugin supports in-app-purchase tracking feature only with Android platform. iOS support will be available soon)**_
-
 With in-app purchase tracking, you can track all the in-app purchases, and use them for targeting specific user segments to display your campaigns.
 
 There are two types of purchases you can track with our SDK.
@@ -380,12 +379,12 @@ Let's get started by implementing SDK codes with the examples below.
 
 You will use app stores' billing library such as Google Play Billing for purchases of 'Hard Currency Item.' When users purchase an item successfully, simply create Purchase object and use LogPurchase() method. Also, call cancelPromotionPurchase() method when a user cancelled or failed to purchase.
 
-Example 1: Implementing 'purchase succeeded' event in Unity 
 ```cs
 private void OnHardItemPurchased() 
 {
     AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.HARD_ITEM)
       .WithItemId("gold100")
+      .WithItemName("100 Gold")
       .WithCurrencyCode("USD") // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
       .WithPrice(0.99)
       .WithPurchaseDate(purchaseDateTime) // purchaseDateTime from In-app billing library
@@ -402,54 +401,6 @@ private void OnPurchaseHardItemFailure()
 }
 ```
 
-Example 2: Implementing Google Billing Library in the native Android codes.
-
-```java
-// Callback for when a purchase is finished
-IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
-  public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-    Log.d(TAG, "Purchase finished: " + result + ", purchase: " + purchase);
-
-    if (mHelper == null || result.isFailure() || !verifyDeveloperPayload(purchase)) {
-      ......
-      AdFresca.getInstance(MainActivity.this).cancelPromotionPurchase();
-      return;
-    }
-
-    Log.d(TAG, "Purchase successful.");
-    if (purchase.getPurchaseState() == 0) {
-      final SkuDetails detail = currentInventory.getSkuDetails(purchase.getSku());
-      final Purchase purchase0 = purchase;
-      
-      UnityPlayer.currentActivity.runOnUiThread(new Runnable(){
-        @Override
-        public void run() {
-          String itemId = purchase0.getSku();
-          String currencyCode = "KRW"; // The currencyCode must be specified in the ISO 4217 standard. (ex: USD, KRW, JPY)
-          Double price =  parsePrice(detail.getPrice()); // For Google Play, you can get the price value from SkuDetails
-          Date purhcaseDate = new Date(purchase0.getPurchaseTime());
-          String orderId = purchase0.getOrderId();
-          String receiptData = purchase0.getOriginalJson();
-          String signature = purchase0.getSignature();
-
-          AFPurchase hardPurchase = new AFPurchase.Builder(AFPurchase.Type.HARD_ITEM)
-                                .setItemId(itemId)
-                                .setCurrencyCode(currencyCode)
-                                .setPrice(price)
-                                .setPurchaseDate(purhcaseDate)
-                                .setReceipt(orderId, receiptData, signature)
-                                .build();
-
-          AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(hardPurchase);
-        }
-      });
-    }
-    
-    ......
-    }
-};
-```
-
 The above example is written for Google Play. You can also get the required values from other billing libraries such as Amazon.
 
 For more details of Purchase object with hard currency items, check the table below.
@@ -457,9 +408,10 @@ For more details of Purchase object with hard currency items, check the table be
 Method | Description
 ------------ | ------------- | ------------
 WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
+WithItemName(string) | Set the name of item. It will be shown in our dashboard. 
 WithCurrencyCode(string) | Set the current code of ISO 4217 standard. For Google Play, use the currency code of 'default price' in your account. For Amazon, set 'USD' value since Amazon only supports USD.
-WithPrice(double) | Set the item price. You may use SkuDetails's value or manually set the value from your server.
-WithPurchaseDate(date) | Set the date of purchase. You may use purchase.getPurchaseTime() value. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
+WithPrice(double) | Set the item price. You may use the price value from store billing library or manually set the value from your server.
+WithPurchaseDate(date) | Set the date of purchase. You may use the data value from store billing library. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
 WithReceipt(string, string, string) | Set the receipt property of purchase object (Google Play only). We will use it to verify the receipt in the future. 
 
 ### Soft Currency Item Tracking
@@ -471,6 +423,7 @@ private void OnSoftItemPurchased()
 {
     AdFresca.Purchase purchase = new AdFresca.PurchaseBuilder(AdFresca.Purchase.Type.SOFT_ITEM)
       .WithItemId("long_sword")
+      .WithItemName("Long Sword")
       .WithCurrencyCode("gold") 
       .WithPrice(100)
       .WithPurchaseDate(purchaseDateTime);
@@ -491,6 +444,7 @@ For more details of Purchase object with soft currency items, check the table be
 Method | Description
 ------------ | ------------- | ------------
 WithItemId(string) | Set the unique identifier of your item. This value may not be different per os platform or app store. We recommend that you make this value unique for all platforms and stores. Our service distinguishes each item by this value.
+WithItemName(string) | Set the name of item. It will be shown in our dashboard. 
 WithCurrencyCode(string) | Set the item's soft currency code. (ex: 'gold', 'gas')
 WithPrice(double) | Set the item price. You may get this value from your server. (ex: 100 of gold)
 WithPurchaseDate(date) | Set the date of purchase. If you set Null value, it will be automatically recorded by our SDK and our server. Please don't use the local time of a user's device.
@@ -593,8 +547,6 @@ Our SDK never calls itemRewarded event more than once per campaign by checking i
 
 ### Sales Promotion
 
-_**(Unity plugin supports promotion feature only with Android platform. iOS support will be available soon)**_
-
 You can  in-app item to your users. When users tap on an action button of an image message, a purchase UI will appear to proceed with the user's purchase. Our SDK will automatically detect if users made a purchase or not, and then will update the campaign performance to our dashboard in real time.
 
 To apply our promotion features, you should implement AFPromotionDelegate. onPromotion event is automatically called when users tap on an action button of an image message in a sales promotion campaign. You just need to show the purchase UI of the promotion item using 'promotionPurchase' object. 
@@ -606,6 +558,32 @@ For Soft Currency Items, you should use your own purchase UI which might be alre
 1. **Discount Price**: Users can buy a promotion item at a specific discounted price. You can get the price from Price property.
 
 2. **Discount Rate**: Users can buy a promotion item at a discount rate. You will calculate the discounted price applying the discount rate which can be earned from DiscountRate property.
+
+**Implement AFPromotionDelegate for iOS**
+
+```objective-c
+// UnityAppController.h
+@interface UnityAppController : NSObject<UIApplicationDelegate, AFPromotionDelegate>
+{
+  ...
+}
+
+...
+
+// UnityAppController.mm
+- (void)applicationDidBecomeActive:(UIApplication *)application 
+{
+  AdFrescaView *fresca = [AdFrescaView sharedAdView];
+  [fresca setPromotionDelegate:self];
+}
+
+- (void)onPromotion:(AFPurchase *)promotionPurchase
+{
+  UnitySendMessage("YourGameObject", "OnPromotion", [[promotionPurchase JSONForUnity] UTF8String]);
+}
+```
+
+**Unity Code**
 
 ```cs
 void Start ()
@@ -664,36 +642,59 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ### Custom Parameter
 
-Our SDK can collect user-specific profiles such as level, stage, maximum score, etc. We can use them to deliver a personalized and targeted message in real-time to specific user segments that you can define.
+Our SDK can collect user specific profiles such as level, stage, maximum score, etc. We use it to deliver a personalized and targeted message in real time to specific user segments that you can define.
 
-To implement codes, simply call SetCustomParameter method with parameter's index and value. You can get the custom parameter's index in our [Dashboard](https://dashboard.nudge.do): 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters.'
+To implement codes, simply call SetCustomParameter method with passing parameter's unique key and its value.
 
-You will call the method after the app is launched and when the values have changed. (If you can't set the values without user sign in, you may set them right after a user signs in.)
+You will call the method after your app is launched and the values have changed. (if you can't set the values without user sign in, you may set them right after users sign in.)
 
 ```cs
 void Start() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.Init(API_KEY);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, User.level);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_AGE, User.age);
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_HAS_FB_ACCOUNT, User.hasFacebookAccount);
+  plugin.SetCustomParameter("level", User.Level);
+  plugin.SetCustomParameter("stage", User.Stage);
+  plugin.SetCustomParameter("facebook_flag", User.HasFacebookAccount);
   plugin.StartSession();
 }
 
 .....
 
-void OnUserLevelChanged(int level) {
+void onUserLevelChanged(int level) {
+  User.level = level
+  
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_LEVEL, level);
-}
-
-void OnUserStageChanged(int stage) {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter(CUSTOM_PARAM_INDEX_STAGE, stage);
+  plugin.SetCustomParameter("level", User.Level);
 }
 ```
 
-After you write the codes and set values, you will be able to see a list of custom parameters you added on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+After you write the codes, you will be able to see a list of custom parameters you added on [Dashboard](https://dashboard.nudge.do). 1) Select a App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+
+<img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
+
+You need to set 'Name' value of each custom parameter to activate. You can activate custom parameters up to 20. Nudge only allows activated custom parameters to collect data and provide targeting features.
+
+* * *
+
+### Stickiness Custom Parameter
+
+(Stickiness Custom Parameter is currently in beta. To use this feature, contact our [support team](mailto:support@nudge.do))
+
+If your app has any value to measure user stickiness such as ‘play count’ in a stage based game, you can use it to create a  'Stickiness Custom Parameter' with Nudge. ou can define user segments such as 'users who played 30 times in a week' and 'Users who played 5 times today'.
+
+To begin, you first need to set a new custom parameter such as 'play count’, and then configure it to a stickiness mode (stickiness mode can only be configured by Nudge team currently).
+
+To implement codes, simply pass the value to **IncrCustomParameter(key, amount)** method whenever the stickiness value is increased. Our SDK will automatically calculate the accumulated value and daily increased value and update user profiles.
+
+After you write the code, you can now use 'Today's play count, 'Average play count in a week', and 'Total play count in a week' conditions to define your user segments in our dashboard.
+
+```cs
+void OnFinishGame()
+{
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.IncrCustomParameter("play_count", 1);
+}
+```
 
 * * *
 
@@ -977,24 +978,17 @@ If you use Proguard to protect your APK, you need to add exception configuration
 
 ## Troubleshooting
 
-If our SDK does not show any message or raise errors, you can debug by the following methods.
+For specific Unity Android environment, when a user touches our in-app messaging view, a touch event is also forwarded to game UI behind of the messaging view. In this case, you should use IsVisible to check if our view is visible, and ignore the touch events to game UI while the view is visible.
+
+In other cases, if you can't see our in-app messaging view or any problem, you can debug by the following methods.
 
 **Android**
 
-If you can write your own java codes in UnityPlayerActivity, you can implement setExceptionListener() to print logs, or send error messages using UnitySendMessage();
-
-```java
-AdFresca.setExceptionListener(new AFExceptionListener(){
-  @Override
-  public void onExceptionCaught(AFException e) {
-    Log.w("TAG", e.getLocalizedMessage());
-  }
-});
-```
+Android Plugin is automatically printing exception logs to device console. You can search tag 'AdFresca' to see exceptions.
 
 **iOS**
 
-You can implement AdFrescaViewDelegate in a Xcode project to check error messages.
+For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error messages.
 
 ```objective-c
 // UnityAppController.h
@@ -1021,9 +1015,16 @@ You can implement AdFrescaViewDelegate in a Xcode project to check error message
 * * *
 
 ## Release Notes
-- **v2.2.3 _(2014/12/05 Updated)_**
+- **v2.2.5 _(2015/02/13 Updated)_**
+    - Added [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
+    - Added [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
+    - Added IsVisible().
+- v2.2.4 _(2015/01/29 Updated)
+    - Added [Android SDK 2.4.6](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
+    - Added [iOS SDK 1.5.2](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
+- v2.2.3 _(2014/12/05 Updated)
   - HARD_ITEM and SOFT_ITEM enums are added to Purchase class to replace ACTUAL_ITEM and VIRTUAL_ITEM which will be deprecated. Please refer to [In-App Purchase Tracking](#in-app-purchase-tracking) section.
-- **v2.2.2 (2014/09/30 Updated)**
+- v2.2.2 (2014/09/30 Updated)
     - Support A/B test feature for iOS platform. (No coding is required)
     - Added [iOS SDK 1.4.6](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
 - v2.2.1 _(8/15/2014 Updated)_

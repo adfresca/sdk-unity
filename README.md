@@ -1004,7 +1004,9 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.2.5 _(2015/02/13 Updated)_**
+- **v2.2.6 _(2015/03/20 Updated)_**
+    - Added [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
+- v2.2.5 _(2015/02/13 Updated)
     - Added [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
     - Added IsVisible().

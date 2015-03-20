@@ -1059,6 +1059,8 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 * * *
 
 ## Release Notes
+- **v2.2.6 _(2015/03/20 Updated)_**
+    - [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
 - **v2.2.5 _(2015/02/13 Updated)_**
     - [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.

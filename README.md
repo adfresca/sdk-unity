@@ -5,6 +5,7 @@
     - [In-App Messaging](#in-app-messaging)
     - [Push Messaging](#push-messaging)
     - [Test Device Registration](#test-device-registration)
+    - [Test Mode](#test-mode)
 - [IAP, Reward and Sales Promotion](#iap-reward-and-sales-promotion)
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
@@ -154,7 +155,7 @@ void Start ()
 }
 ```
 
-When you call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test mode configuration later.
+When you call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test campaign mode configuration later.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;
@@ -315,7 +316,7 @@ If you haven't implemented any push notification before, please refer to the [fu
 
 ### Test Device Registration
 
-Nudge supports a test mode feature. With the test mode feature, you can deliver your test message only to registred test devices. 
+Nudge supports a test campaign feature. With the test campaign feature, you can deliver your test message only to registred test devices. 
 
 To register your test device to our dashboard, you need your test device ID from our SDK. Our SDK provides two ways to show a test device ID.
  
@@ -346,6 +347,20 @@ plugin.Show();
 ```
 
 You can register your test device with the test device ID to [Dashboard](https://dashboard.nudge.do) under 'Test Device' menu.
+
+### Test Mode
+
+Nudge SDK supports a test mode feature. With the test mode feature, you can verify your SDK codes. When you add **SetTestMode(true)** code, SDK will print a log message with a result for each your SDK code. 
+
+```cs
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
+plugin.SetTestMode(true);
+```
+
+<img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/android_sdk_test_mode.png" width="900" />
+<img src="http://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/ios_sdk_test_mode.png" width="900" />
+
+The test mode currently provides 'Start Session', 'Push Messaging', 'In-App Purchase Tracking', 'Custom Parameter', and 'Stickiness Custom Parameter' logs. Other feature support will be available soon.
 
 * * *
 
@@ -1004,6 +1019,10 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
+- **v2.2.7 _(2015/03/27 Updated)_**
+    - [Test Mode](#test-mode) is added.
+    - Added [Android SDK 2.4.9](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
+    - Added [iOS SDK 1.5.4](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
 - **v2.2.6 _(2015/03/20 Updated)_**
     - Added [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
 - v2.2.5 _(2015/02/13 Updated)

@@ -306,9 +306,9 @@ void Start ()
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo {
-  if ([AdFrescaView isFrescaNotification:userInfo] && [application applicationState] != UIApplicationStateActive) {
+  if ([AdFrescaView isFrescaNotification:userInfo]) {
     [AdFrescaView handlePushNotification:userInfo];
-  }
+  }  
 } 
 ```
 
@@ -1019,11 +1019,13 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.2.7 _(2015/03/27 Updated)_**
+- **v2.2.8 _(2015/06/02 Updated)_**
+    - Added [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
+- v2.2.7 _(2015/03/27 Updated)
     - [Test Mode](#test-mode) is added.
     - Added [Android SDK 2.4.9](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.4](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
-- **v2.2.6 _(2015/03/20 Updated)_**
+- v2.2.6 _(2015/03/20 Updated)
     - Added [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
 - v2.2.5 _(2015/02/13 Updated)
     - Added [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)

@@ -667,45 +667,55 @@ SDK가 사용자의 실제 구매 여부를 트랙킹하기 위해서는 [In-App
 
 ### Custom Parameter
 
-커스텀 파라미터는 캠페인 진행 시, 타겟팅을 위해 사용할 사용자의 상태 값을 의미합니다.
+커스텀 파라미터는 마케팅 목적으로 사용자를 분류하기 위해 사용하는 속성을 말하며 마케터가 임의로 정의할 수 있습니다. (예. 사용자의 레벨, 스테이지, 플레이 횟수 등) 커스텀 파라미터를 이용하면 사용자의 특정 속성에 따라 세그먼트를 정의하고 실시간으로 모니터링할 수 있습니다. 또한 캠페인 실행 시에는 보다 더 정교한 타겟팅을 통해 높은 성과를 거둘 수 있습니다. (Nudge SDK에서 자동적으로 수집하는 단말 ID, 기본 언어, 국가, 앱 버전 등의 정보는 커스텀 파라미터로 설정할 필요가 없습니다.)
 
-Nudge SDK는 기본적으로 '국가, 언어, 앱 버전, 실행 횟수 등'의 디바이스 고유 데이터를 수집하며, 동시에 각 앱 내에서 고유하게 사용되는 특수한 상태 값들(예: 캐릭터 레벨, 보유 포인트, 스테이지 등)을 커스텀 파라미터로 정의하고 수집하여 분석 및 타겟팅 기능을 제공합니다.
+Nudge SDK는 트랙킹하려고 하는 커스텀 파라미터의 유형에 따라 아래 2가지 방법을 제공합니다.
 
-Integer, Boolean 형태의 데이터를 상태 값으로 설정할 수 있으며, **SetCustomParameter** 메소드를 사용하여 각 고유 키 값에 맞게 상태 값을 설정합니다.
+- 현재 상태 값을 트랙킹하는 경우
+  - 특정 속성의 현재 상태 값을 트랙킹할 때 사용합니다. 
+  - 예) 레벨, 최종 스테이지, 친구수 등
+  - 사용 코드: **SetCustomParameter** 메소드를 이용하여 현재 상태 값 (Integer, Boolean 지원)을 SDK에 전달합니다.
 
-앱이 실행되는 시점에 한 번 값을 설정하고, 이후에는 값이 새로 갱신되는 이벤트마다 새로운 값을 설정합니다.
+- 특정 이벤트의 횟수를 트랙킹하는 경우
+  - 특정 이벤트마다 증가하는 횟수를 트랙킹할 때 사용합니다.
+  - 예) 플레이 횟수, 가챠 이용 횟수 등
+  - 사용 코드: **IncrCustomParameter** 메소드를 이용하여 이벤트 발생시 증가된 횟수 (Integer)을 SDK에 전달합니다.
+
+먼저 커스텀 파라미터를 특정할 수 있는 문자열 형태의 Unique Key 값을 정합니다. (예: "level", "facebook_flag", "play_count") 앱을 처음 실행하는 시점 또는 사용자가 로그인하는 시점에 커스텀 파라미터의 현재 상태 값을 설정합니다.
 
 ```cs
 void Start() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.Init(API_KEY);
   plugin.SetCustomParameter("level", User.Level);
-  plugin.SetCustomParameter("stage", User.Stage);
   plugin.SetCustomParameter("facebook_flag", User.HasFacebookAccount);
   plugin.StartSession();
 }
-
 .....
 
-void onUserLevelChanged(int level) {
-  User.level = level
+커스텀 파라미터의 값이 변경되는 시점 (이벤트 발생 시)에 상태 값을 갱신하거나 횟수를 증가시킵니다.
   
+```java
+void onUserLevelChanged(int level) {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter("level", User.Level);
+  plugin.SetCustomParameter("level", level);
+}
+
+void OnFinishGame() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.IncrCustomParameter("play_count", 1);
 }
 ```
 
-코드가 적용되었으면 [Dashboard](https://dashboard.nudge.do)에 접속하여 등록된 커스텀 파라미터 리스트를 확인하고 활성화('Activate')해야 합니다. 커스텀 파라미터 리스트는 Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하여 확인할 수 있습니다.
+위와 같이 코딩을 마치고 앱을 실행하면 SDK는 저장한 커스텀 파라미터 값을 Nudge 서버로 전송합니다.  Nudge 서버는 활성화된 커스텀 파라미터의 값만을 저장하기 때문에 반드시 [Dashboard](https://dashboard.nudge.do)에 접속하여 해당 커스텀 파라미터를 활성화 (Activate)해야 합니다.
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
-이제 각 커스텀 파라미터의 'Name' 값을 입력하여 활성화합니다. 최대 20개까지 가능하며 활성화된 이후부터 데이터 수집 및 타겟팅이 가능합니다.
+Overview 메뉴 -> Settings - Custom Parameters 버튼을 클릭하면 커스텀 파라미터 목록이 표시됩니다. 해당 커스텀 파라미터의 Unique Key를 찾은 다음, 이름 ('Name')을 입력하고 활성화 (Activate)합니다.
 
 * * *
 
 ### Stickiness Custom Parameter
-
-(Stickiness 커스텀 파라미터 기능은 현재 베타 서비스로 제공되고 있습니다. 이용을 위해서는 [고객지원팀](mailto:support@nudge.do)으로 문의하여 주세요.)
 
 스테이지형 게임에서 게임 플레이 횟수와 같이 사용자의 Stickiness 지표를 측정할 수 있는 값이 있다면, Stickiness 커스텀 파라미터 등록하여 '최근 1주일간 30회 이상 플레이한 사용자', '오늘 5회 이상 플레이한 사용자'와 같은 사용자 세그먼트를 등록하고 관리할 수 있습니다.
 
@@ -716,8 +726,7 @@ void onUserLevelChanged(int level) {
 이후 대쉬보드에서 '오늘의 플레이 횟수', '최근 1주일간의 플레이 횟수', '최근 1주일간의 평균 플레이 횟수'와 같은 조건을 사용자 세그먼트 정의에 이용할 수 있습니다.
 
 ```cs
-void OnFinishGame()
-{
+void OnFinishGame() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.IncrCustomParameter("play_count", 1);
 }

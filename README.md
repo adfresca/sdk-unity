@@ -143,9 +143,9 @@ You need to put native SDK code in your Xcode project. Open AppController.mm fil
 
 ```
 
-### Sign in & Sign Out
+### Sign In & Sign Out
 
-You can track a user’s sign in or sign out actions using these Sign In and Sign Out functions. Nudge will use a string passed using SignIn or SignOut method as a user identifier and track users with multiple devices, which makes statistics more accurate and campaigns will recognize users, not devices to run more effectively. (Users can not claim the same rewards multiple times by using different devices.)
+You can track a user’s sign in or sign out actions using these Sign In and Sign Out functions. Nudge will use a string passed using SignIn or SignOut method as a user identifier and track users with multiple devices, which makes statistics more accurate and campaigns will recognize users, not devices so they will run more effectively. (Users will no longer claim the same rewards multiple times by using different devices.)
 
 You need to pass a user identifier (string) to **SignIn()** method when a user signs in to your server (including auto sign-in). You also need to put **SignOut()** method when a user signs out.
 
@@ -161,16 +161,16 @@ void OnSignOut() {
 }
 ```
 
-If you have ‘guest sign in’ function in you app, you should use **SignInAsGuest()** method.
+Nudge also supports 'guest sign in' with SignInAsGuest() method.
 
 ```cs
 void OnGuestSignIn() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SignInAsGuest(“guset_user_id”);
+  plugin.SignInAsGuest("guest_user_id");
 }
 ```
 
-You can check a user’s current sign-in status by calling **SignedUserId()** method. This method returns an user identifier used in last sign in, and device identifier after the user signed out. Please use this method to test your codes.
+You can check a user’s current sign-in status by calling **GetSignedUserId()** method. This method which returns an user identifier used in last sign in, and device identifier after the user signed out. Please use this method to test your codes.
 
 ### In-App Messaging
 

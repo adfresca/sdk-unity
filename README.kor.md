@@ -2,9 +2,11 @@
 - [Basic Integration](#basic-integration)
   - [Installation](#installation)
   - [Start Session](#start-session)
+  - [Sign In & Sign Out](#sign-in--sign-out)  
   - [In-App Messaging](#in-app-messaging)
   - [Push Messaging](#push-messaging)
   - [Test Device Registration](#test-device-registration)
+  - [Test Mode](#test-mode)
 - [IAP, Reward and Sales Promotion](#iap-reward-and-sales-promotion)
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
@@ -140,8 +142,36 @@ iOS 플랫폼의 경우는 Xocde에서 메소드를 실행해야 합니다. AppC
   [AdFrescaView startSession:@"YOUR_API_KEY"];
   ....
 } 
-
 ```
+
+### Sign In & Sign Out
+
+Sign In, Sign Out 기능은 사용자의 로그인, 로그아웃 액션을 트랙킹합니다. 이를 통해 넛지는 회원 ID를 이용하여 사용자를 구분합니다. 회원ID를 통해 사용자를 구분하면 1명의 회원이 복수 개의 디바이스를 이용하는경우 중복으로 캠페인을 노출하거나 리워드를 지급하는 경우를 방지할 수 있습니다. 또한, 현재 사용자의 로그인 / 비로그인 여부를 트랙킹하여 현재 로그인하거나 로그인하지 않은 사용자를 대상으로 캠페인을 진행할 수 있습니다. 
+
+로그인 이벤트 (자동 로그인 포함) 발생 시 SignIn(string) 메소드에 회원 ID (문자열) 값을 인자로 넘겨 호출합니다. 로그아웃 이벤트 발생 시에는 SignOut() 메소드를 호출합니다.
+
+```cs
+void OnSignIn() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SignIn(“user_id”);
+}
+
+void OnSignOut() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SignOut();
+}
+```
+
+넛지는 게스트 로그인 기능도 지원합니다. 게스트 ID 로그인 시에는 SignInAsGuest(string) 메소드를 호출합니다
+
+```cs
+void OnGuestSignIn() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SignInAsGuest("guest_user_id");
+}
+```
+
+GetSignedUserId() 메소드를 사용하면 가장 최근 로그인한 유저의 ID를 리턴합니다. 로그아웃이 된 경우에는 디바이스 ID 값이 리턴됩니다. 이 메소드를 사용하여 정상적으로 로그인이 기록되어 있는지 테스트할 수 있습니다.
 
 ### In-App Messaging
 
@@ -357,6 +387,20 @@ plugin.Show();
 ```
 
 테스트 디바이스 아이디를 확인한 이후에는, [Dashboard](https://dashboard.nudge.do)를 접속하여 'Test Device' 메뉴를 통해 디바이스 등록이 가능합니다.
+
+### Test Mode
+
+Nudge SDK는 테스트 모드 기능을 지원합니다. 테스트 모드를 활성화하면 현재 실행되는 SDK 메소드와 그 실행 결과가 로그 메시지로 출력됩니다. 이를 통하여 본인이 올바른 코드와 인자 값을 설정하고 있는지 검증할 수 있습니다.
+
+```cs
+AdFresca.Plugin plugin = AdFresca.Plugin.Instance
+plugin.SetTestMode(true);
+```
+
+<img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/android_sdk_test_mode.png" width="900" />
+<img src="http://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/ios_sdk_test_mode.png" width="900" />
+
+현재 테스트 모드는 'Start Session', 'Push Messaging', 'In-App Purchase Tracking', 'Custom Parameter', 'Stickiness Custom Parameter' 항목에 대한 로그를 지원합니다. 다른 항목의 경우는 추후 제공할 예정에 있습니다.
 
 * * *
 

@@ -164,7 +164,7 @@ void onAppStart() {
 }
 ```
 
-**GetSignedUserId()** method will return a user_id for a signed-in user, guest_id for a signed-in guest user, or a device identifier for a guest user without guest_id. You can use this method to test your codes.
+**GetSignedUserId()** method will return a user_id for a signed-in user, a guest_id for a signed-in guest user, or a device identifier for a guest user without guest_id. You can use this method to test your codes.
 
 ### In-App Messaging
 

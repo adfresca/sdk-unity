@@ -2,7 +2,7 @@
 - [Basic Integration](#basic-integration)
   - [Installation](#installation)
   - [Start Session](#start-session)
-  - [Sign In & Sign Out](#sign-in--sign-out)
+  - [Sign In](#sign-in)
   - [In-App Messaging](#in-app-messaging)
   - [Push Messaging](#push-messaging)
   - [Test Device Registration](#test-device-registration)
@@ -143,34 +143,26 @@ You need to put native SDK code in your Xcode project. Open AppController.mm fil
 
 ```
 
-### Sign In & Sign Out
+### Sign In
 
-You can track a user’s sign in or sign out actions using these Sign In and Sign Out functions. Nudge will use a string passed using SignIn or SignOut method as a user identifier and track users with multiple devices, which makes statistics more accurate and campaigns will recognize users, not devices so they will run more effectively. (Users will no longer claim the same rewards multiple times by using different devices.)
+Sign In feature allows you to track a user’s sign in or sign out actions. Nudge identifies a user with user_id, a string passed by signIn method so Nudge can recognize a user with multiple devices as a single user, not as multiple users, which is a more accurate way and also prevents a user from claiming multiple rewards by using different devices. You can also launch a campaign targeting users based on their signed-in status. (ie. signed-in users or guest users)
 
-You need to pass a user identifier (string) to **SignIn()** method when a user signs in to your server (including auto sign-in). You also need to put **SignOut()** method when a user signs out.
+A user should be signed in at all times, either as a member or as a guest. If another user signs in, the signed-in user will be signed out automatically. You need to pass a user identifier (string) to **signIn()** method when a user signs in to your server (including auto sign-in). You also need to put **signInAsGuest()** for a guest user who has not signed up or signed in with existing accounts yet.
 
-```cs
-void OnSignIn() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SignIn(“user_id”);
-}
-
-void OnSignOut() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SignOut();
-}
-```
-
-Nudge also supports 'guest sign in' with SignInAsGuest() method.
-
-```cs
-void OnGuestSignIn() {
-  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SignInAsGuest("guest_user_id");
+```java
+public onAppStart() {
+  if(isSignedIn) {
+    // It should be called on both auto sign-in and manual sign-in events
+    AdFresca.getInstance(currentActivity).signIn("user_id");
+  } else {
+  // If you use a separate guest_id to track a guest user, you can pass it into an argument 
+  // If you don’t use a separate identifier to track a guest user, you don’t need to set guest_id
+  AdFresca.getInstance(currentActivity).signInAsGuest(“guest_id);
+  }
 }
 ```
 
-You can check a user’s current sign-in status by calling **GetSignedUserId()** method. This method which returns an user identifier used in last sign in, and device identifier after the user signed out. Please use this method to test your codes.
+**getSignedUserId()** method will return current signed-in user’s user_id for a signed-in user or a device identifier for a guest user. You can use this method to test your codes.
 
 ### In-App Messaging
 

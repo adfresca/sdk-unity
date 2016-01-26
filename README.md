@@ -147,22 +147,24 @@ You need to put native SDK code in your Xcode project. Open AppController.mm fil
 
 Sign In feature allows you to track a user’s sign in or sign out actions. Nudge identifies a user with user_id, a string passed by signIn method so Nudge can recognize a user with multiple devices as a single user, not as multiple users, which is a more accurate way and also prevents a user from claiming multiple rewards by using different devices. You can also launch a campaign targeting users based on their signed-in status. (ie. signed-in users or guest users)
 
-A user should be signed in at all times, either as a member or as a guest. If another user signs in, the signed-in user will be signed out automatically. You need to pass a user identifier (string) to **signIn()** method when a user signs in to your server (including auto sign-in). You also need to put **signInAsGuest()** for a guest user who has not signed up or signed in with existing accounts yet.
+A user should be signed in at all times, either as a member or as a guest. If another user signs in, the signed-in user will be signed out automatically. You need to pass a user identifier (string) to **SignIn()** method when a user signs in to your server (including auto sign-in). You also need to put **SignInAsGuest()** for a guest user who has not signed up or signed in with existing accounts yet.
 
-```java
-public onAppStart() {
+```cs
+void onAppStart() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+
   if(isSignedIn) {
     // It should be called on both auto sign-in and manual sign-in events
-    AdFresca.getInstance(currentActivity).signIn("user_id");
+    plugin.SignIn(“user_id”);
   } else {
-  // If you use a separate guest_id to track a guest user, you can pass it into an argument 
+  // If you use a separate guest_id to track a guest user, you can pass it as an argument 
   // If you don’t use a separate identifier to track a guest user, you don’t need to set guest_id
-  AdFresca.getInstance(currentActivity).signInAsGuest(“guest_id);
+    plugin.SignInAsGuest("guest_id");
   }
 }
 ```
 
-**getSignedUserId()** method will return current signed-in user’s user_id for a signed-in user or a device identifier for a guest user. You can use this method to test your codes.
+**GetSignedUserId()** method will return a user_id for a signed-in user, guest_id for a signed-in guest user, or a device identifier for a guest user without guest_id. You can use this method to test your codes.
 
 ### In-App Messaging
 

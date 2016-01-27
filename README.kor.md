@@ -517,7 +517,7 @@ AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPu
 1. 리워드 지급 요청: 사용자에게 지급해야 할 리워드가 있는 경우 SDK에서 리워드 지급 요청 이벤트를 발생시킵니다. 해당 이벤트 발생 시에 게임 서버를 통해 사용자에게 리워드를 지급합니다.
 2. 리워드 지급 완료: 사용자에게 리워드를 지급한 후 SDK에서 지급 완료 사실을 알립니다.
 
-먼저 지급 요청을 위한 코드를 구현합니다. 사용자에게 지급해야 할 리워드가 있는 경우 onRewardClaim 이벤트가 발생됩니다. 인자로 넘어온 아이템 정보를 이용하여 사용자에게 아이템을 지급합니다.
+먼저 지급 요청을 위한 코드를 구현합니다. 사용자에게 지급해야 할 리워드가 있는 경우 onRewardClaim 이벤트가 발생됩니다. 인자로 넘어온 아이템 정보를 이용하여 사용자에게 아이템을 지급합니다. iOS에서는 아래의 코드를 구현해야 합니다.
 
 **iOS에서 AFRewardClaimDelegate 구현하기**
 
@@ -536,9 +536,12 @@ AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPu
 }
 
 - (void)onRewardClaim:(AFRewardItem *)item {
+  // iOS에서 onRewardClaim 이벤트를 호출하도록 설정
   UnitySendMessage("YourGameObject", "onRewardClaim", [[item JSON] UTF8String]);
 }
 ```
+
+아래 코드는 iOS와 Android 모두 적용해야 합니다. 안드로이드 플랫폼에서는 추가적으로 플러그인의 SetAndroidRewardItemListener() 메소드를 사용하여 지급 요청 이벤트를 호출하도록 설정합니다.
 
 **Unity 코드 적용하기**
 
@@ -550,6 +553,7 @@ void Start ()
   plugin.SetGCMSenderId(GCM_SENDER_ID);    
   plugin.StartSession();
 
+  // Android에서 onRewardClaim 이벤트를 호출하도록 설정
   plugin.SetAndroidRewardItemListener("YourGameObject", "onRewardClaim");
   plugin.CheckRewardItems();
 }
@@ -568,7 +572,7 @@ public void onRewardClaim(string json)
 }
 ```
 
-사용자에게 아이템을 지급한 후 finishRewardClaim() 메소드를 호출하여 넛지에 리워드 지급 완료를 통보해야 합니다. 넛지는 리워드 지급 완료 기록을 전달 받아야만 리워드가 정상적으로 지급된 것으로 처리합니다. 즉 게임서버나 클라이언트에서 에러가 발생하여 리워드 지급이 실패한 경우 넛지 SDK에서는 다시 리워드 지급 요청을 합니다. 넛지 SDK에서는 3분 이상 지급 확인 기록이 전달되지 않은 경우 다음 번 마케팅 모멘트가 실행될 때 다시 리워드 지급 요청을 합니다. 이는 지급 처리 중에 다시 지급요청을 해서 중복 지급되는 것을 막기 위함입니다.
+사용자에게 리워드를 지급한 후 finishRewardClaim() 메소드를 호출하여 넛지에 리워드 지급 완료를 통보해야 합니다. 넛지는 리워드 지급 완료 기록을 전달 받아야만 리워드가 정상적으로 지급된 것으로 처리합니다. 즉 게임서버나 클라이언트에서 에러가 발생하여 리워드 지급이 실패한 경우 넛지 SDK에서는 다시 리워드 지급 요청을 합니다. 넛지 SDK에서는 3분 이상 지급 확인 기록이 전달되지 않은 경우 다음 번 마케팅 모멘트가 실행될 때 다시 리워드 지급 요청을 합니다. 이는 기존 리워드 지급 처리 중에 다시 지급요청을 해서 리워드를 중복 지급하는 것을 막기 위함입니다.
 
 ```cs
 public void onRewardClaimSuccess(RewardItem rewardItem)

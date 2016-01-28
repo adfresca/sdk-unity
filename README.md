@@ -484,41 +484,37 @@ If you don't see any data in our dashboard, your Purchase object may be invalid.
 
 ### Give Reward
 
-When you set 'Reward Item' in in-app messaging or 'Incentive item' in incentivized CPI & CPA campaign, you should implement this 'reward item' code to give a reward item to users.
+You can reward a free item to a user with a reward campaign or an incentivised CPI/CPA campaign.
 
-With implementing reward item codes, you can check if users have any reward to receive, and then will be notified with a reward item information.
+There are two steps of reward claim process:
 
-Use the two codes as shown below:
-- CheckRewardItems(): This method checks if any item is available to receive. We recommend to put this code when the app becomes active. 
-- SetAndroidRewardItemListener(): When there is a reward available for a user, onReward event is automatically called with an item value from our Android SDK. For iOS, you need to add codes in Xcode, as shown below. Then you can give an item to the user with RewardItem object.
+1. Reward Claim Request: Nudge SDK triggers a reward claim event when the current user is matched for reward campaign. On this event, you need to claim a reward for the user.
+2. Finish Reward Claim: When you finish to claim a reward,  you should inform it to Nudge SDK. 
 
-**Implement AFRewardItemDelegate for iOS**
+If there is a reward item for a user, onRewardClaim event is triggered and the item information is passed along, which you will use to give the item to a user.
+
+**Implementing AFRewardClaimDelegate for iOS only**
 
 ```objective-c
-// UnityAppController.h
+// AppDelegate.h
 
-@interface UnityAppController : NSObject<UIApplicationDelegate, AFRewardItemDelegate>
-{
+@interface AppDelegate : UIResponder <UIApplicationDelegate, AFRewardClaimDelegate> {
   ...
 }
 
-```
 
-```objective-c
-// UnityAppController.mm
+// AppDelegate.m
 
-- (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
-{
-  ...
-  [[AdFrescaView shardAdView] setRewardDelegate:self];
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  [[AdFrescaView shardAdView] setRewardClaimDelegate:self];
 }
 
-- (void)itemRewarded:(AFRewardItem *)item 
-{
-  UnitySendMessage("YourGameObject", "OnReward", [[item JSON] UTF8String]);
+- (void)onRewardClaim:(AFRewardItem *)item {
+  // Call onRewardClaim event for iOS
+  UnitySendMessage("YourGameObject", "onRewardClaim", [[item JSON] UTF8String]);
 }
-
 ```
+You need to apply the following code for iOS and Android. On Android, the plugin's SetAndroidRewardItemListener() is used to trigger onRewardClaim event.
 
 **Unity Code**
 
@@ -530,43 +526,47 @@ void Start ()
   plugin.SetGCMSenderId(GCM_SENDER_ID);    
   plugin.StartSession();
 
-  plugin.SetAndroidRewardItemListener("YourGameObject", "OnReward");
+  // Call onRewardClaim event for Android
+  plugin.SetAndroidRewardItemListener("YourGameObject", "onRewardClaim");
   plugin.CheckRewardItems();
 }
 
-public void OnReward(string json)
+public void onRewardClaim(string json)
 {
   RewardItem rewardItem = LitJson.JsonMapper.ToObject<RewardItem>(json);
- 
+  
   Debug.Log ("rewardItem.name: " + rewardItem.name);
+  Debug.Log ("rewardItem.quantity: " + rewardItem.quantity);
   Debug.Log ("rewardItem.uniqueValue: " + rewardItem.uniqueValue);
-
-  // give an item to the user using 'uniqueValue' of the item
-  SendItemToUser(rewardItem.uniqueValue);
+  Debug.Log ("rewardItem.securityToken: " + rewardItem.securityToken);
+  Debug.Log ("rewardItem.rewardClaimToken: " + rewardItem.rewardClaimToken);
+  
+  SendItemToUser("USER_ID", rewardItem);
 }
 ```
 
-You need to implement your own 'SendItemToUser()' method. This method may send the current user info and item's uniqueValue to your server, which willl give the item to the user.
+You need to inform Nudge SDK that you have given a reward to a user successfully by calling finishRewardClaim() method. Unless Nudge SDK receives the confirmation of the reward claim, Nudge SDK will assume the claim has failed due to some error on the client-side or the server-side then re-trigger onRewardClaim event. It won't happen until the next marketing moment is called and 3 mins has passed after the previous event was triggered, which prevents giving a reward multiple times by triggering onRewardClaim event again while the previous event is being handled.
 
-The onReward event is called when there is a reward available for the user.
+```cs
+public void onRewardClaimSuccess(RewardItem rewardItem)
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.FinishRewardClaim(rewardItem.rewardClaimToken);
+}
+```
 
-- Reward Campaign: event is called when a user sees the campaign content.
-- Incentivized CPI Campaign: event is called when our SDK confirms that the advertising app is installed.
-- Incentivized CPA Campaign: event is called after our SDK confirms that the advertising app is installed and the user completes the intended action (calling the specified marketing moment.)
+#### Implementing SendItemToUser()
 
-If a user has any network connectivity issues, our SDK stores the reward data in the app's local storage, and then deliver the reward when users run the app again. This guarantees that the user will always get the reward from our SDK.
-
-#### implementing SendItemToUser()
-
-You need to give a reward item to the user using your own client code or back-end server api. Your client may send an API request with an unique vale of item, quantity and security token values to your server. Then the server application will add a reward item to the user's item inventory.
+You need to give a reward item to the user using your own client code or back-end server API. Your client may send an API request with a unique value of a reward item, a quantity and a security token to your server. Then the server application will add a reward item to the user's item inventory or inbox.
 
 #### Hack Proof Code
 
-Our SDK never calls itemRewarded event more than once per campaign by checking it with device identifiers to avoid abuse. However it is still possible for hackers to hijack your API request between your client and back-end server. If yuo want more security, you can use a security token, which is a unique value generated per a reward campaign. You can generate the token while you're creating a reward campaign. You can hack proof by using the security token as noted below:
+You can prevent client-side hacking using a security token and a reward claim limit count for a campaign. A security token is automatically created when a campaign is created using our dashboard and you can set it manually if needed. You can set a reward claim limit count for a campaign via our dashboard.
 
-1. You will store a security token to your own database before starting a reward campaign. You should reject any reward requests with an invalid token value.
-2. If some users request rewards with the same token value more than once, you should reject those requests.
-3. If you think your security token is exposed to hackers, you can always change it in our dashboard.
+1. You can store a security token on your own database and compare it with a security token passed from a client.
+2. If you think a security token is exposed, you can create a new one or change it on our dashboard.
+3. If a user requests a reward item more than the reward claim limit count, the server should reject the request.
+
+If you want Nudge to send a security token and a reward claim limit count for a campaign to your server via RESTful API automatically, please email us at support@nudge.do
 
 * * *
 

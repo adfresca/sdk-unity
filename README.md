@@ -1040,7 +1040,9 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.2.8 _(2015/06/02 Updated)_**
+- **v2.3.0 _(2016/01/23 Updated)_**
+  - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.
+- 2.2.8
     - Added [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
 - v2.2.7 _(2015/03/27 Updated)
     - [Test Mode](#test-mode) is added.

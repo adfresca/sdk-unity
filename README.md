@@ -1041,7 +1041,7 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 
 ## Release Notes
 - **v2.3.0 _(2016/01/23 Updated)_**
-  - Please refer to [Give Reward](#give-reward)이 개선되어 지급 완료 확인이 가능해졌습니다. 기존의 OnReward 메소드가 deprecated 되었기 때문에 반드시 새로운 가이드를 참고하여 코드를 변경해야 합니다.
+  - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.
 - 2.2.8
     - Added [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
 - v2.2.7 _(2015/03/27 Updated)

@@ -1018,18 +1018,18 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 ## Release Notes
 - **v2.3.0 _(2016/01/23 Updated)_**
   - [리워드 지급 기능](#give-reward)이 개선되어 지급 완료 확인이 가능해졌습니다. 기존의 OnReward 메소드가 deprecated 되었기 때문에 반드시 새로운 가이드를 참고하여 코드를 변경해야 합니다.
-- 2.2.8
+- 2.2.8 (2015/06/02 Updated)
     - [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- **v2.2.6 _(2015/03/20 Updated)_**
+- v2.2.6 (2015/03/20 Updated)
     - [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- **v2.2.5 _(2015/02/13 Updated)_**
+- v2.2.5 (2015/02/13 Updated)
     - [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
     - IsVisible() 메소드가 추가되었습니다.
-- v2.2.4 _(2015/01/29 Updated)
+- v2.2.4 (2015/01/29 Updated)
     - [Android SDK 2.4.6](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.5.2](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.2.3 _(2014/12/05 Updated)_
+- v2.2.3 (2014/12/05 Updated)
   - Purchase 객체에 HARD_ITEM, SOFT_ITEM purchase type이 추가되고 ACTUAL_ITEM, SOFT_ITEM 값이 deprecated 되었습니다. 자세한 내용은 [In-App Purchase Tracking](#in-app-purchase-tracking) 항목을 참고하여 주세요.
 - v2.2.3 (2014/11/11 Updated)
     - iOS 플랫폼에서의 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능을 지원합니다.
@@ -1040,7 +1040,7 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
     - iOS 플랫폼의 A/B 테스트 기능을 지원합니다. 해당 기능은 별도의 코딩 작업 없이 이용 가능합니다.
     - [Android SDK 2.4.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.4.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.2.1 _(8/15/2014 Updated)_
+- v2.2.1 (8/15/2014 Updated)
     - 리워드 지급 시에 시큐리티 토큰값을 이용하여 보안 이슈를 해결할 수 있습니다. 자세한 내용은 [Give Reward](#give-reward) 항목을 참고하여 주세요.
     - Sales Promotion 캠페인 기능을 이용하여 아이템의 프로모션 기능을 지원합니다. 자세한 내용은 [Sales Promotion](#sales-promotion) 항목을 참고하여 주세요.
     - [In-App Purchase Tracking](#in-app-purchase-tracking) 기능에서 cancelPromotionPurchase() 메소드가 추가되었습니다. 
@@ -1048,47 +1048,47 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
     - Android SDK가 캠페인 매칭 시에 여러 개의 캠페인이 동시에 매칭될 수 있도록 지원합니다.. 새로운 SDK는 순차적으로 매칭된 캠페인들의 메시지를 표시합니다.
     - iap beta 버전이 2.2.1부터 통합되었습니다. 
     - [Android SDK 2.4.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.2.0-beta3 _(4/6/2014 Updated)_
+- v2.2.0-beta3 (4/6/2014 Updated)
     - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#installation) 항목을 참고하여 주세요.
     - v2.1.8에서 적용된 '인-앱 메시징 캠페인을 통한 Reward Item 지급 기능'을 지원합니다.
     - v2.1.8에서 적용된 Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요
     - v2.1.8에서 개선된 [Reward Item](#reward-item) 기능이 적용되었습니다. 
     - [Android SDK 2.4.0-beta4](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.2.0-beta2 _(1/31/2014 Updated)_ 
+- v2.2.0-beta2 (1/31/2014 Updated)
     - [Android SDK 2.4.03](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.2.0-beta1 _(1/14/2014 Updated)_ 
+- v2.2.0-beta1 (1/14/2014 Updated) 
     - 앱 내에서 발생하는 In-App Purchase 데이터를 트랙킹할 수 있는 기능이 추가되었습니다. 자세한 내용은 [In-App Purchase Tracking](#in-app-purchase-tracking) 항목을 참고하여 주세요.
     - [Android SDK 2.4.02](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.8 _(4/6/2014 Updated)_
+- v2.1.8 (4/6/2014 Updated)
    - iOS SDK 설치 과정에서 AdSupport framework 추가가 필수항목에서 제외됩니다. IFA 수집을 하지 않아도 SDK 이용이 가능하도록 수정되었습니다. 보다 자세한 내용은 [iOS SDK - Installation](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#installation) 항목을 참고하여 주세요.
    - 인-앱 메시징 캠페인을 통한 Reward Item 지급 기능을 지원합니다.
    - Incentivized CPA 캠페인 기능을 지원합니다. 자세한 내용은 [CPI Identifier](#cpi-identifier) 항목을 참고하여 주세요
    - SetAndroidRewardItemListener 구현 기능이 추가되어, 지급 가능한 아이템이 발생할 시에 자동으로 이벤트가 발생합니다. 보다 자세한 내용은 [Reward Item](#reward-item) 항목을 참고하여 주세요.
     - [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - [iOS SDK 1.3.5](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.7 _(1/31/2014 Updated)_
+- v2.1.7 (1/31/2014 Updated)
     - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.6 _(1/10/2014 Updated)_ 
+- v2.1.6 (1/10/2014 Updated) 
     - [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - Unity 4.3.x for Android 버전에서 ForwardNativeEventsToDalvik 옵션이 설정되지 않은 경우 터치 이벤트가 동작하지 않습니다. 이를 해결하기 위한 자세한 적용 방법은 [Installation](#installation) 항목을 참고하여 주세요.
-- v2.1.5 _(12/01/2013 Updated)_ 
+- v2.1.5 (12/01/2013 Updated)
     - [iOS SDK 1.3.4](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.
-- v2.1.4 _(11/27/2013 Updated)_ 
+- v2.1.4 (11/27/2013 Updated) 
     - [iOS SDK 1.3.3](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.
     - [Android SDK 2.3.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.3 _(10/01/2013 Updated)_ 
+- v2.1.3 (10/01/2013 Updated) 
     - [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.2 _(08/19/2013 Updated)_ 
+- v2.1.2 (08/19/2013 Updated) 
     - [iOS SDK 1.3.2](https://adfresca.zendesk.com/entries/21346861#release-notes) 버전을 지원합니다.
 - v2.1.1
     - [Android SDK 2.2.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
-- v2.1.0 _(08/08/2013 Updated)_
+- v2.1.0 (08/08/2013 Updated)
     - [Android SDK 2.2.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes) 버전을 지원합니다.
     - Android Platform 에서는 TestDeviceId() 메소드 대신 PrintTestDeviceIdByLog() 메소드를 사용하여 연결된 디바이스의 아이디를 확인하도록 변경 되었습니다.
-- v2.0.1 _(07/26/2013 Updated)_
+- v2.0.1 (07/26/2013 Updated)
     - Plugin에 포함된 GCMIntentService 클래스를 이용하는 경우, 앱이 완전히 종료된 상황에서 푸시 메시지 수신 시 에러 메시지가 발생하는 버그를 수정하였습니다.
     - AndroidPlugin.cs 파일의 기본 매개변수 설정을 삭제하였습니다. 
     - 포함된 Android SDK를 2.1.3 버전으로 업데이트하였습니다.
-- v2.0.0 _(07/10/2013 Updated)_
+- v2.0.0 (07/10/2013 Updated)
     - _Incentivized CPI_캠페인을 위한 API 가 추가되었습니다.

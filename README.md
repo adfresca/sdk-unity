@@ -1042,9 +1042,9 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 ## Release Notes
 - **v2.3.0 _(2016/01/23 Updated)_**
   - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.
-- 2.2.8
+- 2.2.8 (2015/06/02 Updated)
     - Added [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
-- v2.2.7 _(2015/03/27 Updated)
+- v2.2.7 (2015/03/27 Updated)
     - [Test Mode](#test-mode) is added.
     - Added [Android SDK 2.4.9](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.4](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
@@ -1062,42 +1062,42 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 - v2.2.2 (2014/09/30 Updated)
     - Support A/B test feature for iOS platform. (No coding is required)
     - Added [iOS SDK 1.4.6](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
-- v2.2.1 _(8/15/2014 Updated)_
+- v2.2.1 (8/15/2014 Updated)
     - Support sales promotion campaign. Please refer to [Sales Promotion](#sales-promotion) section.
     - Support security token of reward campaign's hack proof. Please refer to [Give Reward](#give-  reward) section.
     - Add cancelPromotionPurchase() method to [In-App Purchase Tracking](#in-app-purchase-tracking)
     - Support tap area feature.
     - SDK will match multiple campaigns and show multiple messages in one marketing moment request.
     - Added [Android SDK 2.4.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-- v2.2.0 _(1/14/2014 Updated)_ 
+- v2.2.0 (1/14/2014 Updated) 
     - [In-App Purchase Tracking](#in-app-purchase-tracking) is added.
-- v2.1.8 _(4/6/2014 Updated)_
+- v2.1.8 (4/6/2014 Updated)
     - SDK supports '[Reward Item](#reward-item)' feature of the In-App Messaging campaign.
     - SDK supports 'Incentivized CPA Campaign'. Please refer to 'CPI Identifier' section for detail. 
     - Added [iOS SDK 1.3.5](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
     - Added [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-- v2.1.7 _(1/31/2014 Updated)_
+- v2.1.7 (1/31/2014 Updated)
     - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
-- v2.1.6 _(1/10/2014 Updated)_ 
+- v2.1.6 (1/10/2014 Updated) 
     - Added [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
     - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option is required to enable a touch event. Please refer to [Installation](#installation) section for detailed installation guide.
-- v2.1.4 _(12/01/2013 Updated)_ 
+- v2.1.4 (12/01/2013 Updated) 
     - Added [iOS SDK 1.3.4](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
-- v2.1.4 _(11/27/2013 Updated)_ 
+- v2.1.4 (11/27/2013 Updated) 
     - Added [iOS SDK 1.3.3](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
     - Added [Android SDK 2.3.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-- v2.1.3 _(10/01/2013 Updated)_ 
+- v2.1.3 (10/01/2013 Updated) 
     - Added [Android SDK 2.2.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-- v2.1.2 _(08/19/2013 Updated)_ 
+- v2.1.2 (08/19/2013 Updated) 
     - Added [iOS SDK 1.3.2](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
 - v2.1.1
     - Added [Android SDK 2.2.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
-- v2.1.0 _(08/08/2013 Updated)_
+- v2.1.0 (08/08/2013 Updated)
     - Added [Android SDK 2.2.1](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
     - For Android, use PrintTestDeviceIdByLog() method to print a test device id in log
-- v2.0.1 _(07/26/2013 Updated)_
+- v2.0.1 (07/26/2013 Updated)
     - Fix a bug that a default GCMIntentService shows an error message when a push message is received in 'stopped' application state 
     - Removed some default argument codes of AndroidPlugin.cs 
     - Added Android SDK v2.1.3
-- v2.0.0 _(07/10/2013 Updated)_
+- v2.0.0 (07/10/2013 Updated)
     - Added some API for _Incentivized CPI_ Campaign

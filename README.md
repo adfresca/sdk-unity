@@ -371,7 +371,7 @@ You can register your test device with the test device ID to [Dashboard](https:/
 
 ### Test Mode
 
-Nudge SDK supports a test mode feature. With the test mode feature, you can verify your SDK codes. When you add **SetTestMode(true)** code, SDK will print a log message with a result for each your SDK code. 
+Nudge SDK supports a test mode feature. With the test mode feature, you can verify your SDK codes. When you add **SetTestMode(true)** code, SDK will print a log message with a result for each SDK code. 
 
 ```cs
 AdFresca.Plugin plugin = AdFresca.Plugin.Instance
@@ -545,7 +545,7 @@ public void onRewardClaim(string json)
 }
 ```
 
-You need to inform Nudge SDK that you have given a reward to a user successfully by calling finishRewardClaim() method. Unless Nudge SDK receives the confirmation of the reward claim, Nudge SDK will assume the claim has failed due to some error on the client-side or the server-side then re-trigger onRewardClaim event. It won't happen until the next marketing moment is called and 3 mins has passed after the previous event was triggered, which prevents giving a reward multiple times by triggering onRewardClaim event again while the previous event is being handled.
+You need to inform Nudge SDK that you have given a reward to a user successfully by calling finishRewardClaim() method. Unless Nudge SDK receives the confirmation of the reward claim, Nudge SDK will assume the claim has failed due to some error on the client-side or the server-side then re-trigger onRewardClaim event. It won't happen until the next marketing moment is called and 3 minutes have passed after the previous event was triggered, which prevents giving a reward multiple times by triggering onRewardClaim event again while the previous event is being handled.
 
 ```cs
 public void onRewardClaimSuccess(RewardItem rewardItem)
@@ -1048,16 +1048,16 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
     - [Test Mode](#test-mode) is added.
     - Added [Android SDK 2.4.9](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.4](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
-- v2.2.6 _(2015/03/20 Updated)
+- v2.2.6 (2015/03/20 Updated)
     - Added [Android SDK 2.4.8](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
-- v2.2.5 _(2015/02/13 Updated)
+- v2.2.5 (2015/02/13 Updated)
     - Added [Android SDK 2.4.7](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.3](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
     - Added IsVisible().
-- v2.2.4 _(2015/01/29 Updated)
+- v2.2.4 (2015/01/29 Updated)
     - Added [Android SDK 2.4.6](https://github.com/adfresca/sdk-android-sample/blob/master/README.kor.md#release-notes)
     - Added [iOS SDK 1.5.2](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)
-- v2.2.3 _(2014/12/05 Updated)
+- v2.2.3 (2014/12/05 Updated)
   - HARD_ITEM and SOFT_ITEM enums are added to Purchase class to replace ACTUAL_ITEM and VIRTUAL_ITEM which will be deprecated. Please refer to [In-App Purchase Tracking](#in-app-purchase-tracking) section.
 - v2.2.2 (2014/09/30 Updated)
     - Support A/B test feature for iOS platform. (No coding is required)
@@ -1077,7 +1077,7 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
     - Added [iOS SDK 1.3.5](https://github.com/nudge-now/sdk-ios/blob/master/README.md#release-notes)
     - Added [Android SDK 2.3.4](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
 - v2.1.7 (1/31/2014 Updated)
-    - [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes) 버전을 지원합니다.
+    - Added [Android SDK 2.3.3](https://github.com/adfresca/sdk-android-sample/blob/master/README.md#release-notes)
 - v2.1.6 (1/10/2014 Updated) 
     - Added [Android SDK 2.3.2](https://github.com/adfresca/sdk-android-sample/blob/master/README.eng.md#release-notes)
     - for Unity 4.3.x for Android, 'ForwardNativeEventsToDalvik option is required to enable a touch event. Please refer to [Installation](#installation) section for detailed installation guide.

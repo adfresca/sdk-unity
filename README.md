@@ -496,14 +496,14 @@ If there is a reward item for a user, onRewardClaim event is triggered and the i
 **Implementing AFRewardClaimDelegate for iOS only**
 
 ```objective-c
-// AppDelegate.h
+// UnityAppController.h
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, AFRewardClaimDelegate> {
+@interface UnityAppController : UIResponder <UIApplicationDelegate, AFRewardClaimDelegate> {
   ...
 }
 
 
-// AppDelegate.m
+// UnityAppController.mm
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [[AdFrescaView shardAdView] setRewardClaimDelegate:self];
@@ -541,7 +541,7 @@ public void onRewardClaim(string json)
   Debug.Log ("rewardItem.securityToken: " + rewardItem.securityToken);
   Debug.Log ("rewardItem.rewardClaimToken: " + rewardItem.rewardClaimToken);
   
-  SendItemToUser("USER_ID", rewardItem);
+  SendItemToUser("user_id", rewardItem);
 }
 ```
 
@@ -549,6 +549,7 @@ You need to inform Nudge SDK that you have given a reward to a user successfully
 
 ```cs
 public void onRewardClaimSuccess(RewardItem rewardItem)
+{
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.FinishRewardClaim(rewardItem.rewardClaimToken);
 }
@@ -586,8 +587,9 @@ For Soft Currency Items, you should use your own purchase UI which might be alre
 
 **Implement AFPromotionDelegate for iOS**
 
-```objective-c
+```cs
 // UnityAppController.h
+
 @interface UnityAppController : NSObject<UIApplicationDelegate, AFPromotionDelegate>
 {
   ...
@@ -596,6 +598,7 @@ For Soft Currency Items, you should use your own purchase UI which might be alre
 ...
 
 // UnityAppController.mm
+
 - (void)applicationDidBecomeActive:(UIApplication *)application 
 {
   AdFrescaView *fresca = [AdFrescaView sharedAdView];

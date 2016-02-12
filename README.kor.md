@@ -555,7 +555,6 @@ void Start ()
 
   // Android에서 onRewardClaim 이벤트를 호출하도록 설정
   plugin.SetAndroidRewardItemListener("YourGameObject", "onRewardClaim");
-  plugin.CheckRewardItems();
 }
 
 public void onRewardClaim(string json)

@@ -528,7 +528,6 @@ void Start ()
 
   // Call onRewardClaim event for Android
   plugin.SetAndroidRewardItemListener("YourGameObject", "onRewardClaim");
-  plugin.CheckRewardItems();
 }
 
 public void onRewardClaim(string json)

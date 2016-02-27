@@ -168,7 +168,7 @@ void onAppStart() {
 
 ### In-App Messaging
 
-With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iFrame webpage. The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
+With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iFrame webpage. You can also reward an item to a user with in-app messaging. (Please refer to the [Give Reward](#give-reward) section.) The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
 
 ```cs
 void Start ()
@@ -667,59 +667,58 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ## Dynamic Targeting
 
-### Custom Parameter
+Nudge SDK provides two tracking methods for custom user profile: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user;s specific event in the app. (ex: play count, a number of gacha count).
 
-Custom Parameter is a user attribute used to classify users for marketing purpose. You can use any custom values (e.g. user level, stage, and play count) to define a user segment and monitor it in real time. You can achieve better campaign performance when targeting users with higher accuracy. (Nudge SDK automatically collects default values such as device id, language, country, app version, and others so you don’t need to define those values as custom parameters.)
+You can use custom paramters and/or event counters to create and target segments, or monitor them in real time. You can achieve better campaign performance when targeting users with more filters. (Nudge SDK automatically collects default values such as device id, language, country, app version, run_count, purchase_count so you don’t need to define those values as custom parameters or event counters.)
 
-Nudge SDK provides two tracking methods by types of custom parameters. 
+### Custom Parameters
 
-- To track the current status of a user
-  - It is used to track the current value of specific user attributes
-  - ex: level, current stage, facebook sign-in flag
-  - SDK Code: Use **SetCustomParameter** method to pass the current status (Integer, Boolean type) to SDK.
-
-- To track specific event count
-  - It is used to track count for a specific event.
-  - ex: play count, a number of gacha count
-  - SDK Code: Use **IncrCustomParameter** method to pass increased value (Integer) to SDK after an event occurred.
-
-First, you need to define ‘Unique Key’ string value to define a custom parameter. (e.g. "level", "facebook_flag", "play_count") Then write the tracking codes when an user launches your app or signs in to your server.
+Set custom parameter with a ‘Unique Key’ string value (e.g. "level", "facebook_flag") and a current value (integer or boolean) using **SetCustomParameter** method. Please make sure to set Custom Parameters with the values stored in the game server when a user signs in, which can prevent data discrepancy in the situation that a game client was killed or paused on one device before finishing the sync between Nudge SDK and Nudge servers then she runs the game on other device.
 
 ```cs
-void Start() {
+void onSignIn() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.Init(API_KEY);
   plugin.SetCustomParameter("level", User.Level);
   plugin.SetCustomParameter("facebook_flag", User.HasFacebookAccount);
-  plugin.StartSession();
+  plugin.signIn("user_id");
 }
 ```
 
-Then you need to put tracking codes whenever its value changes.
+Please use the same method to update the value whenever its value changes.
 
 ```cs
 void onUserLevelChanged(int level) {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.SetCustomParameter("level", level);
 }
+```
 
-void OnFinishGame() {
+### Event Counters
+
+Call **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.) to count a specific event.
+
+```cs
+void OnFinishStage() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.IncrCustomParameter("play_count", 1);
+  plugin. IncrEventCounter("play_count");
+  plugin. IncrEventCounter("winning_streak", 2); // you can pass multiple counts (integer) using the 2nd parameter
 }
 ```
 
-If you successfully writes codes and set custom parameters, you will see a list of custom parameters you added on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+### Manage Custom Parameters and Event Counters
+
+You will see a list of custom parameters and event counters which you passed to Nudge SDK on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
-In order to activate a custom parameter, you need to set ‘Name’.. (You can activate custom parameters up to 20.) Nudge only stores data of activated custom parameters and use them for targeting.
+In order to activate a custom parameter or an event counter, you need to set ‘Name’.. (You can activate them up to 20.) Nudge only stores data of activated ones and use them for targeting.
 
-#### Stickiness Custom Parameter
+### Stickiness Event Counters
 
-Stickiness custom parameter is a special custom parameter to measure a user’s stickiness. For example, if you set ‘play count’ as stickiness custom parameter in a stage-based game, You can define user segments with filters like ‘Today’s play count, ‘Play count in a week’, and ‘Average play count in a week’. Stickiness custom parameter will help you to classify user groups by their loyalty and to monitor their activities in real time. 
+A stickiness event counter is a special event counter to measure a user’s stickiness to your app. For example, if you set ‘play count’ as a stickiness custom parameter in a stage-based game, You can define user segments with filters like ‘Today’s play count, ‘Total Play count in a week’, and ‘Average play count in a week’. Stickiness event counters will help you to classify user groups by their loyalty and to monitor their activities in real time. 
 
-You must use **IncrCustomParameter* method for stickiness custom parameters. If you want to use stickiness custom parameters, please send an email to support@nudge.do after you activate your custom parameter in your dashboard.
+If you want to use stickiness event counters, please send an email to support@nudge.do after you activate your event counter in your dashboard.
+
 
 * * *
 

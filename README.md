@@ -12,8 +12,7 @@
   - [Give Reward](#give-reward)
   - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
-  - [Custom Parameter](#custom-parameter)
-  - [Stickiness Custom Parameter](#stickiness-custom-parameter)
+  - [Custom User Profile](#custom-user-profile)
   - [Marketing Moment](#marketing-moment)
 - [Advanced](#advanced)
   - [Timeout Interval](#timeout-interval) 
@@ -667,13 +666,16 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ## Dynamic Targeting
 
-Nudge SDK provides two tracking methods for custom user profile: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user;s specific event in the app. (ex: play count, a number of gacha count).
 
-You can use custom paramters and/or event counters to create and target segments, or monitor them in real time. You can achieve better campaign performance when targeting users with more filters. (Nudge SDK automatically collects default values such as device id, language, country, app version, run_count, purchase_count so you don’t need to define those values as custom parameters or event counters.)
+### Custom User Profile
 
-### Custom Parameters
+Nudge SDK provides two tracking methods for custom user profile attributes: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user's specific event in the app. (ex: play count, a number of gacha count).
 
-Set custom parameter with a ‘Unique Key’ string value (e.g. "level", "facebook_flag") and a current value (integer or boolean) using **SetCustomParameter** method. Please make sure to set Custom Parameters with the values stored in the game server when a user signs in, which can prevent data discrepancy in the situation that a game client was killed or paused on one device before finishing the sync between Nudge SDK and Nudge servers then she runs the game on other device.
+You can use custom paramters and/or event counters to create and target segments, or monitor their activities in real time. Also you can achieve better campaign performance when targeting users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, so you don’t need to define those values as custom parameters or event counters.)
+
+#### Custom Parameters
+
+Set a custom parameter with a ‘Unique Key’ string value (e.g. "level", "facebook_flag") and a current value (integer or boolean) using **SetCustomParameter** method. When your app supports signing in to multiple devices, Please make sure to set Custom Parameters with the values stored in your server when a user signs in, which can prevent data discrepancy in the situation that a game client was killed or paused on one device before finishing the sync between Nudge SDK and Nudge servers then she runs the app on other device.
 
 ```cs
 void onSignIn() {
@@ -689,11 +691,11 @@ Please use the same method to update the value whenever its value changes.
 ```cs
 void onUserLevelChanged(int level) {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin.SetCustomParameter("level", level);
+  plugin.SetCustomParameter("level", User.level);
 }
 ```
 
-### Event Counters
+#### Event Counters
 
 Call **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.) to count a specific event.
 
@@ -705,7 +707,7 @@ void OnFinishStage() {
 }
 ```
 
-### Manage Custom Parameters and Event Counters
+#### Manage Custom User Profile
 
 You will see a list of custom parameters and event counters which you passed to Nudge SDK on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
 
@@ -713,7 +715,7 @@ You will see a list of custom parameters and event counters which you passed to 
 
 In order to activate a custom parameter or an event counter, you need to set ‘Name’.. (You can activate them up to 20.) Nudge only stores data of activated ones and use them for targeting.
 
-### Stickiness Event Counters
+#### Stickiness Event Counters
 
 A stickiness event counter is a special event counter to measure a user’s stickiness to your app. For example, if you set ‘play count’ as a stickiness custom parameter in a stage-based game, You can define user segments with filters like ‘Today’s play count, ‘Total Play count in a week’, and ‘Average play count in a week’. Stickiness event counters will help you to classify user groups by their loyalty and to monitor their activities in real time. 
 
@@ -1041,7 +1043,9 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.3.0 _(2016/01/23 Updated)_**
+- **v2.4.0 _(2016/02/27 Updated)_**
+  - Added incrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom User Profile](#custom-user-profile) section.
+- v2.3.0 (2016/01/23 Updated)
   - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.
 - 2.2.8 (2015/06/02 Updated)
     - Added [iOS SDK 1.5.6](https://github.com/adfresca/sdk-ios/edit/master/README.kor.md#release-notes)

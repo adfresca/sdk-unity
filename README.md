@@ -1042,8 +1042,8 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.4.0 _(2016/02/27 Updated)_**
-  - Added incrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom User Profile](#custom-user-profile) section.
+- **v2.3.1 _(2016/02/27 Updated)_**
+  - Added IncrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom User Profile](#custom-user-profile) section.
 - v2.3.0 (2016/01/23 Updated)
   - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.
 - 2.2.8 (2015/06/02 Updated)

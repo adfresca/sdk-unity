@@ -1019,8 +1019,8 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 * * *
 
 ## Release Notes
-- **v2.4.0 _(2016/02/27 Updated)_**
-  - incrEventCounter 메소드가 추가되었고 IncrCustomParameter를 더 이상 지원하지 않습니다. [Custom User Profile](#custom-user-profile) 섹션을 참고하세요.
+- **v2.3.1 _(2016/02/27 Updated)_**
+  - IncrEventCounter 메소드가 추가되었고 IncrCustomParameter를 더 이상 지원하지 않습니다. [Custom User Profile](#custom-user-profile) 섹션을 참고하세요.
 - v2.3.0 (2016/01/23 Updated)
   - [리워드 지급 기능](#give-reward)이 개선되어 지급 완료 확인이 가능해졌습니다. 기존의 OnReward 메소드가 deprecated 되었기 때문에 반드시 새로운 가이드를 참고하여 코드를 변경해야 합니다.
 - 2.2.8 (2015/06/02 Updated)

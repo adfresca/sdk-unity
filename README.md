@@ -670,7 +670,7 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 Nudge SDK provides two tracking methods for custom user profile attributes: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user's specific event in the app. (ex: play count, a number of gacha count).
 
-You can create segements using custom paramters and/or event counters then target them for campaigns and/or monitor their activities in real time. You can achieve better campaign performance when targeting specific users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, so you don’t need to define those values as custom parameters or event counters.)
+You can create segements using custom paramters and/or event counters then target them for campaigns and/or monitor their activities in real time. You can achieve better campaign performance when targeting specific users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, etc so you don’t need to define those values as custom parameters or event counters.)
 
 #### Custom Parameters
 
@@ -708,11 +708,11 @@ void OnFinishStage() {
 
 #### Manage Custom User Profile
 
-You will see a list of custom parameters and event counters which you passed to Nudge SDK on [Dashboard](https://admin.adfresca.com). 1) Select an App 2) In 'Overview' menu, click 'Settings - Custom Parameters' button.
+Nudge SDK transfers custom parameters and event counter to Nudge servers whenever necessary. But Nudge server will store actived custom parameters and event counters only so you need to activate them using [Dashboard](https://admin.adfresca.com) (You can activate up-to 20 custom parameters and event counters in total.)
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
-In order to activate custom parameters or event counters, you need to set ‘Name’. (You can activate them up to 20.) Nudge only stores data of activated ones and let you use them for targeting.
+Under 'Overview' tab, click 'Settings - Custom Parameters' menu. Locate the unique key of custom parameter or event counter and set 'Name' then you can activate it by clicking "Activate" button.
 
 #### Stickiness Event Counters
 

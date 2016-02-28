@@ -735,11 +735,11 @@ void OnFinishStage() {
 
 #### Manage Custom User Profile
 
-Nudge SDK는 전달 받은 커스텀 파라미터와 이벤트 카운터 정보를 Nudge 서버로 전송합니다. 하지만 Nudge 서버는 활성화된 커스텀 파라미터와 이벤트 카운터의 값만을 저장하기 때문에 반드시 [Dashboard](https://dashboard.nudge.do)에 접속하여 커스텀 파라미터와 이벤트 카운터를 활성화 (Activate)해야 합니다. (커스텀 파라미터와 이벤트 카운터를 합쳐서 최대 20개까지 활성화할 수 있습니다.)
+Nudge SDK는 전달 받은 커스텀 파라미터와 이벤트 카운터 정보를 Nudge 서버로 전송합니다. 하지만 Nudge 서버는 활성화 (activate)된 커스텀 파라미터와 이벤트 카운터의 값만을 저장하기 때문에 반드시 [Dashboard](https://dashboard.nudge.do)에 접속하여 커스텀 파라미터와 이벤트 카운터를 활성화해야 합니다. (커스텀 파라미터와 이벤트 카운터를 합쳐서 최대 20개까지 활성화할 수 있습니다.)
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
-Overview 메뉴 -> Settings - Custom Parameters 메뉴를 선택하면 커스텀 파라미터 목록이 표시됩니다. 해당 커스텀 파라미터의 Unique Key를 찾은 다음, 이름 ('Name')을 입력하고 활성화 (Activate)합니다.
+Overview 메뉴 -> Settings - Custom Parameters 메뉴를 선택하면 커스텀 파라미터 목록이 표시됩니다. 해당 커스텀 파라미터의 Unique Key를 찾은 다음 이름 ('Name')을 입력하고 "Activate" (활성화) 버튼을 클릭합니다.
 
 #### Stickiness Event Counters
 

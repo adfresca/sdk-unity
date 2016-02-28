@@ -668,7 +668,7 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ### Custom User Profile
 
-Nudge SDK provides two tracking methods for custom user profile attributes: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user's specific event in the app. (ex: play count, a number of gacha count).
+Nudge SDK provides two tracking methods for custom user profile attributes: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user's specific event in the app. (ex: play count, a number of gacha count)
 
 You can create segements using custom paramters and/or event counters then target them for campaigns and/or monitor their activities in real time. You can achieve better campaign performance when targeting specific users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, etc so you don’t need to define those values as custom parameters or event counters.)
 
@@ -708,7 +708,7 @@ void OnFinishStage() {
 
 #### Manage Custom User Profile
 
-Nudge SDK transfers custom parameters and event counters to Nudge servers whenever necessary. But Nudge server will only store actived custom parameters and event counters so you need to activate them using [Dashboard](https://admin.adfresca.com). (You can activate up-to 20 custom parameters and event counters in total.)
+Nudge SDK transfers custom parameters and event counters to Nudge servers whenever necessary. But Nudge server will only store activated custom parameters and event counters so you need to activate them using [Dashboard](https://admin.adfresca.com). (You can activate up-to 20 custom parameters and event counters in total.)
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
@@ -719,7 +719,6 @@ Under 'Overview' tab, click 'Settings - Custom Parameters' menu. Locate the uniq
 A stickiness event counter is a special event counter to measure a user’s stickiness to your app. For example, if you set ‘play count’ as a stickiness custom parameter in a stage-based game, You can define user segments with 3 additional filters: ‘Today’s play count, ‘Total Play count in a week’, and ‘Average play count in a week’. Stickiness event counters will help you to classify user groups by their loyalty and to monitor their activities in real time. 
 
 If you want to use stickiness event counters, please send an email to support@nudge.do after you activate your event counter in your dashboard.
-
 
 * * *
 

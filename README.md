@@ -716,7 +716,7 @@ Under 'Overview' tab, click 'Settings - Custom Parameters' menu. Locate the uniq
 
 #### Stickiness Event Counters
 
-A stickiness event counter is a special event counter to measure a user’s stickiness to your app. For example, if you set ‘play count’ as a stickiness custom parameter in a stage-based game, You can define user segments with filters like ‘Today’s play count, ‘Total Play count in a week’, and ‘Average play count in a week’. Stickiness event counters will help you to classify user groups by their loyalty and to monitor their activities in real time. 
+A stickiness event counter is a special event counter to measure a user’s stickiness to your app. For example, if you set ‘play count’ as a stickiness custom parameter in a stage-based game, You can define user segments with 3 additional filters: ‘Today’s play count, ‘Total Play count in a week’, and ‘Average play count in a week’. Stickiness event counters will help you to classify user groups by their loyalty and to monitor their activities in real time. 
 
 If you want to use stickiness event counters, please send an email to support@nudge.do after you activate your event counter in your dashboard.
 

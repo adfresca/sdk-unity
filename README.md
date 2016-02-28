@@ -167,7 +167,7 @@ void onAppStart() {
 
 ### In-App Messaging
 
-With in-app messaging, you can deliver a message to your users in real-time. Simply put 'Load()' and 'Show()' methods where and when you want to deliver a message. The type of message can be an interstitial image, text, and iFrame webpage. You can also reward an item to a user with in-app messaging. (Please refer to the [Give Reward](#give-reward) section.) The message is only shown when users match the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
+With in-app messaging, you can deliver a message to targeted users. Simply put 'Load()' and 'Show()' methods where and when you want to display a message. The type of message can be an interstitial image, text, and iFrame webpage. You can also reward an item to a user with in-app messaging. (Please refer to the [Give Reward](#give-reward) section.) The message is only displayed when a user's profile matches the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
 
 ```cs
 void Start ()
@@ -666,12 +666,11 @@ Our SDK will detect if users made a purchase using our [In-App Purchase Tracking
 
 ## Dynamic Targeting
 
-
 ### Custom User Profile
 
 Nudge SDK provides two tracking methods for custom user profile attributes: Custom Parameter and Event Counter. Custom Parameter is used to track the current value of specific user attributes. (ex: level, current stage, facebook sign-in flag) while Event Counter is used to count a user's specific event in the app. (ex: play count, a number of gacha count).
 
-You can use custom paramters and/or event counters to create and target segments, or monitor their activities in real time. Also you can achieve better campaign performance when targeting users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, so you don’t need to define those values as custom parameters or event counters.)
+You can create segements using custom paramters and/or event counters then target them for campaigns and/or monitor their activities in real time. You can achieve better campaign performance when targeting specific users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, so you don’t need to define those values as custom parameters or event counters.)
 
 #### Custom Parameters
 
@@ -697,13 +696,13 @@ void onUserLevelChanged(int level) {
 
 #### Event Counters
 
-Call **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.) to count a specific event.
+Use **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.) to count a specific event.
 
 ```cs
 void OnFinishStage() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
-  plugin. IncrEventCounter("play_count");
-  plugin. IncrEventCounter("winning_streak", 2); // you can pass multiple counts (integer) using the 2nd parameter
+  plugin.IncrEventCounter("play_count");
+  plugin.IncrEventCounter("winning_streak", 2); // you can pass multiple counts (integer) using the 2nd parameter
 }
 ```
 
@@ -713,7 +712,7 @@ You will see a list of custom parameters and event counters which you passed to 
 
 <img src="https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/guide/sdk/custom_parameter_index.png">
 
-In order to activate a custom parameter or an event counter, you need to set ‘Name’.. (You can activate them up to 20.) Nudge only stores data of activated ones and use them for targeting.
+In order to activate custom parameters or event counters, you need to set ‘Name’. (You can activate them up to 20.) Nudge only stores data of activated ones and let you use them for targeting.
 
 #### Stickiness Event Counters
 

@@ -167,7 +167,7 @@ void onAppStart() {
 
 ### In-App Messaging
 
-With in-app messaging, you can deliver a message to targeted users. Simply put 'Load()' and 'Show()' methods where and when you want to display a message. The type of message can be an interstitial image, text, and iFrame webpage. You can also reward an item to a user with in-app messaging. (Please refer to the [Give Reward](#give-reward) section.) The message is only displayed when a user's profile matches the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
+With in-app messaging, you can deliver a message to targeted users. Simply put 'Load()' and 'Show()' methods where and when you want to display a message. The type of message can be an interstitial image, text, or iFrame webpage. You can also reward an item to a user with in-app messaging. (Please refer to the [Give Reward](#give-reward) section.) The message is only displayed when a user's profile matches the in-app messaging campaign's target logics. We will discuss more details of the dynamic targeting features in the [Dynamic Targeting](#dynamic-targeting) section.
 
 ```cs
 void Start ()

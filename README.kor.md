@@ -12,7 +12,7 @@
   - [Give Reward](#give-reward)
   - [Sales Promotion](#sales-promotion)
 - [Dynamic Targeting](#dynamic-targeting)
-  - [Custom Parameter](#custom-parameter)
+  - [Custom User Profile](#custom-user-profile)
   - [Marketing Moment](#marketing-moment)
 - [Advanced](#advanced)
   - [Timeout Interval](#timeout-interval) 
@@ -180,7 +180,7 @@ void Start ()
 }
 ```
 
-첫 번째로 인-앱 메시징 코드를 적용한 경우, 아래와 같이 테스트 이미지 메시지가 표시됩니다. 해당 이미지를 터치하면 앱스토어 페이지로 이동합니다. 현재 보고 있는 테스트 메시지는 이후 테스트 모드 설정을 변경하여 더이상 보이지 않도록 설정할 수 있습니다.
+처음 인-앱 메시징 코드를 적용한 경우, 아래와 같이 테스트 이미지 메시지가 표시됩니다. 해당 이미지를 터치하면 앱스토어 페이지로 이동합니다. 현재 보고 있는 테스트 메시지는 이후 테스트 모드 설정을 변경하여 더이상 보이지 않도록 설정할 수 있습니다.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;

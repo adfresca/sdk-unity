@@ -178,7 +178,7 @@ void Start ()
 }
 ```
 
-When you call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can hide this test message by changing the test campaign mode configuration later.
+When you call in-app messaging methods, you will see the test message as shown below. If you tap on the image, it will redirect users to the product page of the app on the app store. You can deactivate this test message by changing the test campaign mode configuration later.
 
 <img src="https://adfresca.zendesk.com/attachments/token/ans53bfy6mwq2e9/?name=4444.png" width="240" />
 &nbsp;

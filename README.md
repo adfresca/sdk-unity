@@ -712,7 +712,7 @@ void onResetWinningStreak() {
 
 #### Event Counters
 
-Event Counters stores a total count of specific events. Use **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.)
+Event Counters stores a total count of specific events. Use **IncrEventCounter** method with a ‘Unique Key’ string value and an increment if necessary.
 
 ```cs
 void onFinishStage() {
@@ -1058,7 +1058,7 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 ## Release Notes
 - **v2.3.2 _(2016/03/10 Updated)_**
   - Revived the deprecated **incrCustomParameterValue** method.
-- **v2.3.1 _(2016/02/27 Updated)_**
+- v2.3.1 (2016/02/27 Updated)
   - Added IncrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom Profile Attributes](#custom-profile-attributes) section.
 - v2.3.0 (2016/01/23 Updated)
   - Added OnRewardClaim and finishRewardClaim methods and OnReward has been deprecated. Please refer to [Give Reward](#give-reward) section.

@@ -723,7 +723,7 @@ void onUserLevelChanged() {
 }
 ```
 
-또는 **IncrCustomParameter** 메소드를 이용하여 값을 증가시킬 수 있습니다. 파라미터로는 키 스트링 (Unique Key), 증가된 횟수(옵션, 정수값) 등이 있습니다.
+또는 **IncrCustomParameter** 메소드를 이용하여 값을 증가시킬 수 있습니다. 파라미터로는 키 스트링 (Unique Key), 증가된 횟수 (옵션, 정수값) 등이 있습니다.
 
  
 ```cs

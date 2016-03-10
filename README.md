@@ -672,7 +672,7 @@ Nudge SDK provides two tracking methods for custom profile attributes: Custom Pa
 
 You can create segements using custom paramters and/or event counters then target them for campaigns and/or monitor their activities in real time. You can achieve better campaign performance when targeting specific users with more filters. (Nudge SDK collect values of default filters such as device id, language, country, app version, run_count, purchase_count, etc so you don’t need to define those values as custom parameters or event counters.)
 
-**NOTICE**: Please make sure that you set custom parmeters or increase event counters after a user signs in.
+**NOTICE**: Please make sure that you set/increase custom parameters or increase event counters after a user signs in.
 
 #### Custom Parameters
 
@@ -690,21 +690,34 @@ void onSignIn() {
 Please use the same method to update the value whenever its value changes.
 
 ```cs
-void onUserLevelChanged(int level) {
+void onUserLevelChanged() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.SetCustomParameter("level", User.level);
 }
 ```
 
-#### Event Counters
-
-Use **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.) to count a specific event.
+Or you can increase the value of a custom parameter using **IncrCustomParameter** method with a ‘Unique Key’ string value and an increment if necessary.
 
 ```cs
-void OnFinishStage() {
+void onWinningStreak() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.IncrCustomParameter("winning_streak");
+}
+
+void onResetWinningStreak() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetCustomParameter("winning_streak", 0);
+}
+```
+
+#### Event Counters
+
+Event Counters stores a total count of specific events. Use **IncrEventCounter** method with a ‘Unique Key’ string value (and an increment if necessary.)
+
+```cs
+void onFinishStage() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.IncrEventCounter("play_count");
-  plugin.IncrEventCounter("winning_streak", 2); // you can pass multiple counts (integer) using the 2nd parameter
 }
 ```
 
@@ -1043,6 +1056,8 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
+- **v2.3.2 _(2016/03/10 Updated)_**
+  - Revived the deprecated **incrCustomParameterValue** method.
 - **v2.3.1 _(2016/02/27 Updated)_**
   - Added IncrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom Profile Attributes](#custom-profile-attributes) section.
 - v2.3.0 (2016/01/23 Updated)

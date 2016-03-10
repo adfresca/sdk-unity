@@ -714,24 +714,38 @@ void onSignIn() {
 }
 ```
 
-또한 커스텀 파라미터의 값이 변경되면 동일한 방법으로 변경된 값을 설정해 주세요.
+커스텀 파라미터의 값이 변경되면 동일한 방법으로 변경된 값을 설정해 주세요.
 
 ```cs
-void onUserLevelChanged(int level) {
+void onUserLevelChanged() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.SetCustomParameter("level", User.level);
 }
 ```
 
+또는 **IncrCustomParameter** 메소드를 이용하여 값을 증가시킬 수 있습니다. 파라미터로는 키 스트링 (Unique Key), 증가된 횟수(옵션, 정수값) 등이 있습니다.
+
+ 
+```cs
+void onWinningStreak() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.IncrCustomParameter("winning_streak");
+}
+
+void onResetWinningStreak() {
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.SetCustomParameter("winning_streak", 0);
+}
+```
+
 #### Event Counters
 
-**IncrEventCounter** 메소드를 이용해서 특정 이벤트의 횟수를 셀 수 있습니다. 파라미터로는 키 스트링 (Unique Key, 예. "play_count", "winning_streak" 등), 증가된 횟수(옵션. 정수값) 등이 있습니다.
+이벤트 카운터는 특정 이벤트의 횟수를 세어 총 누적값을 저장합니다. **IncrEventCounter** 메소드를 이용하며 파라미터로는 키 스트링 (Unique Key), 증가된 횟수 (옵션, 정수값) 등이 있습니다.
 
 ```cs
-void OnFinishStage() {
+void onFinishStage() {
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.IncrEventCounter("play_count");
-  plugin.IncrEventCounter("winning_streak", 2); // 증가된 횟수를 2번째 파라미터로 전달할 수 있습니다.
 }
 ```
 
@@ -1021,7 +1035,9 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 * * *
 
 ## Release Notes
-- **v2.3.1 _(2016/02/27 Updated)_**
+- **v2.3.2 _(2016/03/10 Updated)_**
+  - 지원하지 않기로 했던 **IncrCustomParameter** 메소드가 다시 제공됩니다.
+- v2.3.1 (2016/02/27 Updated)
   - IncrEventCounter 메소드가 추가되었고 IncrCustomParameter를 더 이상 지원하지 않습니다. [Custom Profile Attributes](#custom-profile-attributes) 섹션을 참고하세요.
 - v2.3.0 (2016/01/23 Updated)
   - [리워드 지급 기능](#give-reward)이 개선되어 지급 완료 확인이 가능해졌습니다. 기존의 OnReward 메소드가 deprecated 되었기 때문에 반드시 새로운 가이드를 참고하여 코드를 변경해야 합니다.

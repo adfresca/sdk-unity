@@ -32,7 +32,8 @@
 
 아래 링크를 통해 _Unity Plugin_을 다운로드 합니다.
 
-[Unity Plugin 다운로드](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
+[Unity Plugin 다운로드](http://file.nudge.do/distribution/sdk/nudge-sdk-for-Unity.zip) 
+
 
 Unity 프로젝트를 열고 AdFrescaUnityPlugin.package 파일을 실행합니다.
 

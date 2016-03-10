@@ -31,7 +31,7 @@
 
 Download _Unity Plugin_ at the following link.
 
-[Unity Plugin Download](https://s3-ap-northeast-1.amazonaws.com/file.adfresca.com/distribution/sdk-for-Unity.zip) 
+[Unity Plugin Download](http://file.nudge.do/distribution/sdk/nudge-sdk-for-Unity.zip) 
 
 Open your Unity Project and run AdFrescaUnityPlugin.package. It will install the following components below.
 
@@ -1057,7 +1057,7 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 
 ## Release Notes
 - **v2.3.2 _(2016/03/10 Updated)_**
-  - Revived the deprecated **incrCustomParameterValue** method.
+  - Revived the deprecated **IncrCustomParameter** method.
 - v2.3.1 (2016/02/27 Updated)
   - Added IncrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom Profile Attributes](#custom-profile-attributes) section.
 - v2.3.0 (2016/01/23 Updated)

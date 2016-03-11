@@ -681,14 +681,14 @@ You can retreieve information of active limited time offers with **CheckActiveLi
 public void Start ()
 {
  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
- plugin.CheckActiveLimitedTimeOffers("YourGameObject", "onActiveLimitedTimeOffers);
+ plugin.CheckActiveLimitedTimeOffers("YourGameObject", "onActiveLimitedTimeOffers");
 }
 
 public void onActiveLimitedTimeOffers(string json)
 {
    if (json != "null") {
       // Parse JSON strings in the returned array and use them to display the remaining time and the number of active limited time offers if neccessary.
-      // JSON example: [{\"remaining_time_in_seconds\":1184,\"item_unique_value\":\"item_03\"},{\"remaining_time_in_seconds\":1784,\"item_unique_value\":\"item_03\"},{\"remaining_time_in_seconds\":2384,\"item_unique_value\":\"item_03\"}]
+      // JSON example: [{"remaining_time_in_seconds":1184, "item_unique_value":"item_03"}, ...]      
    } else {
  	   // Nudge SDK will return nil when it fails to retrieve information of active limited time offers. You can re-try or display an error message to a user.
    }

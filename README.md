@@ -11,6 +11,7 @@
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
   - [Sales Promotion](#sales-promotion)
+  - [Limited Time Offer](#limited-time-offer)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Profile Attributes](#custom-profile-attributes)
   - [Marketing Moment](#marketing-moment)
@@ -660,7 +661,50 @@ public void OnPromotion(string json)
 }
 ```
 
-Our SDK will detect if users made a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) features. Therefore, you should implement it to complete this promotion feature. Please make sure that you implement 'CancelPromotionPurchase()' method when the users cancelled or failed to purchase items.
+Nudge SDK detects if a user makes a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) feature. For better measurement, you need to implement **CancelPromotionPurchase()** method when the user cancelled during the purchase process or the transaction has faield. 
+* * *
+
+### Limited Time Offer
+
+You can draw more attention from customers and create a sense of urgency with a limited time offer, which is a special sales promotion of **hard currency items for a limited time period only**. Nudge SDK will display an interstitial with the remaining time on the top bar and will hide the intersitial when the time is over.
+
+
+<< insert a sample interstitial >>
+
+**Notice:** For iOS, please don't forget to add a nudge-icon font definition to Info.plist. (Please refer to [Installation](#installation) for more detail.)
+
+Once a limited time offer is displayed in a marketing moment, it will be no longer available in any marketing moment. You need to use the folllowing code to retreive information on acitve limited time offers and display their interstitials again.
+
+You can retreieve information of active limited time offers with **CheckActiveLimitedTimeOffers**, which will return an array of JSON strings with a remaining time and a unique value of the promotion item, sorted by remaining time in ascending order. With these information, you can display the shortest remaining time of an offer (and the number of active limited time offers if neccessary) in the game UI.
+
+```cs
+
+public void Start ()
+{
+ AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+ plugin.CheckActiveLimitedTimeOffers("YourGameObject", "onActiveLimitedTimeOffers);
+}
+
+public void onActiveLimitedTimeOffers(string json)
+{
+   if (json != "null") {
+      // Parse JSON strings in the returned array and use them to display the remaining time and the number of active limited time offers if neccessary.
+      // JSON example: [{\"remaining_time_in_seconds\":1184,\"item_unique_value\":\"item_03\"},{\"remaining_time_in_seconds\":1784,\"item_unique_value\":\"item_03\"},{\"remaining_time_in_seconds\":2384,\"item_unique_value\":\"item_03\"}]
+   } else {
+ 	   // Nudge SDK will return nil when it fails to retrieve information of active limited time offers. You can re-try or display an error message to a user.
+   }
+}
+
+```
+
+You can display one or more interstitials of active limited time offers using **DisplayActiveLimitedTimeOffers** method and control how many interstitials to display with a count parameter. Nudge SDK will display interstitials of the offers unless their remaining time is over.
+
+```cs
+
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.DisplayActiveLimitedTimeOffers(count);
+
+```
 
 * * *
 
@@ -1056,7 +1100,9 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.3.2 _(2016/03/10 Updated)_**
+- **v2.3.3 _(2016/03/11 Updated)_**
+  - Added [Limited Time Offer](#limited-time-offer) feature.
+- v2.3.2 (2016/03/10 Updated)
   - Revived the deprecated **IncrCustomParameter** method.
 - v2.3.1 (2016/02/27 Updated)
   - Added IncrEventCounter method and deprecated IncrCustomParameter. Please refer to [Custom Profile Attributes](#custom-profile-attributes) section.

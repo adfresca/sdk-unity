@@ -661,7 +661,7 @@ public void OnPromotion(string json)
 }
 ```
 
-Nudge SDK detects if a user makes a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) feature. For better measurement, you need to implement **CancelPromotionPurchase()** method when the user cancelled during the purchase process or the transaction has faield. 
+Nudge SDK detects if a user makes a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) feature. For better measurement, you need to implement **CancelPromotionPurchase()** method when the user cancelled during the purchase process or the transaction has failed. 
 * * *
 
 ### Limited Time Offer
@@ -769,7 +769,7 @@ void onFinishStage() {
 
 Nudge SDK transfers custom profile attributes to Nudge servers whenever necessary. But Nudge server will only store activated custom profile attributes so you need to activate them using [Dashboard](https://admin.adfresca.com). (You can activate up to 20 custom parameters and event counters in total.)
 
-<img src="https://s3.amazonaws.com/file.nudge.do/guide/sdk/manage_custom_profile_attributes.jpg">
+<img src="http://file.nudge.do/guide/sdk/manage_custom_profile_attributes.jpg">
 
 Under 'Overview' tab, click 'Settings - Custom Profile Attrs' menu. Locate the unique key of a custom parameter or an event counter and set its 'Name' then you can activate it by clicking "Activate" button.
 

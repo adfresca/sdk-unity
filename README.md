@@ -1099,8 +1099,10 @@ For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error 
 * * *
 
 ## Release Notes
-- **v2.3.3 _(2016/03/11 Updated)_**
-  - Added [Limited Time Offer](#limited-time-offer) feature.
+- **v2.3.4 _(2016/03/13 Updated)_**
+  - Added [Limited Time Offer](#limited-time-offer) feature for Android/Unity.
+- v2.3.3 (2016/03/11 Updated)
+  - Added [Limited Time Offer](#limited-time-offer) feature for iOS/Unity.
 - v2.3.2 (2016/03/10 Updated)
   - Revived the deprecated **IncrCustomParameter** method.
 - v2.3.1 (2016/02/27 Updated)

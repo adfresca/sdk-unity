@@ -662,6 +662,7 @@ public void OnPromotion(string json)
 ```
 
 Nudge SDK detects if a user makes a purchase using our [In-App Purchase Tracking](#in-app-purchase-tracking) feature. For better measurement, you need to implement **CancelPromotionPurchase()** method when the user cancelled during the purchase process or the transaction has failed. 
+
 * * *
 
 ### Limited Time Offer
@@ -670,7 +671,7 @@ You can draw more attention from customers and create a sense of urgency with a 
 
 <img src="http://file.nudge.do/guide/sdk/LTO_interstitial_landscape_sample.jpg">
 
-**Notice:** For iOS, please don't forget to add a nudge-icon font definition to Info.plist. (Please refer to [Installation](#installation) for more detail.)
+**Notice:** For iOS, please don't forget to add a 'nudge-icon' font definition to Info.plist. (Please refer to [Installation](#installation) for more detail.)
 
 Once a limited time offer is displayed in a marketing moment, it will be no longer available in any marketing moment. You need to use the folllowing code to retreive information on acitve limited time offers and display their interstitials again.
 

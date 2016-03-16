@@ -506,7 +506,7 @@ If there is a reward item for a user, onRewardClaim event is triggered and the i
 // UnityAppController.mm
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [[AdFrescaView shardAdView] setRewardClaimDelegate:self];
+  [[AdFrescaView sharedAdView] setRewardClaimDelegate:self];
 }
 
 - (void)onRewardClaim:(AFRewardItem *)item {
@@ -984,11 +984,13 @@ For iOS, it is much easier to use a custom url since there is only one event met
 Both example codes shown above have passed a url string to 'OnCustomURL' method of 'Fresca' game object. Now you can handle url values in Unity.
 
 ```java
+
 public void OnCustomURL(string url)
 {
   Debug.Log("OnCustomURL = " + url); 
   //ex) if myapp://com.adfresca.custom?item=abc is passed, parse 'item=abc' string to give item to users
 }
+
 ```
 
 * * *
@@ -1011,9 +1013,11 @@ To integrate our SDK with this feature, you should set URL Schema value for the 
   You can find the package name in AndroidManifest.xml
 
   ```xml
+  
   <manifest package="com.adfresca.demo">
     ...
   </manifest>
+  
   ```
 
   In this case, you should set CPI Identifier value of the advertising app to "com.adfresca.demo" in our dashboard.
@@ -1033,12 +1037,14 @@ To integrate our SDK with this feature, you should set URL Schema value for the 
   However, if you use an Incentivized CPA Campaign, you need to integrate our SDK in the advertising app and also implement a 'Marketing Moment' to use for a reward condition. For example, when you set a reward condition as'Tutorial Complete' marketing event, you should call the marketing moment method to inform that the user hit the condition (goal).
 
   ```cs
+  
   void OnUserFinishTutorial() 
   {
     AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
     plugin.Load(MOMENT_INDEX_TUTORIAL);  
     plugin.Show();
   }
+  
   ```
 
 #### Media App Configuration:
@@ -1052,11 +1058,13 @@ To integrate our SDK with this feature, you should set URL Schema value for the 
 If you use Proguard to protect your APK, you need to add exception configurations for our Android SDK. Add the following lines of codes to ignore our SDK, OpenUDID, and Google Gson. 
 
 ```java
+
 -keep class com.adfresca.** {*;} 
 -keep class com.google.gson.** {*;} 
 -keep class org.openudid.** {*;} 
 -keep class sun.misc.Unsafe { *; }
 -keepattributes Signature 
+
 ```
 
 * * *
@@ -1076,25 +1084,29 @@ Android Plugin prints exception logs to device console. You can search tag 'AdFr
 For iOS, you can implement AdFrescaViewDelegate in a Xcode project to see error messages.
 
 ```objective-c
+
 // UnityAppController.h
 @interface UnityAppController : NSObject<UIApplicationDelegate, AdFrescaViewDelegate>
 {
   .....
 }
+
 ```
 
 ```objective-c
+
 // UnityAppController.mm
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
   ...
-  [[AdFrescaView shardAdView] setDelegate:self];
+  [[AdFrescaView sharedAdView] setDelegate:self];
 }
 
 - (void)fresca:(AdFrescaView *)fresca didFailToReceiveAdWithException:(AdException *)error {  
   NSLog(@"AdException message : %@", [error message]);
 }
+
 ```
 
 * * *

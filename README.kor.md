@@ -1074,15 +1074,6 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 
 ```
 ```objective-c
-
-// UnityAppController.h
-@interface UnityAppController : NSObject<UIApplicationDelegate, AdFrescaViewDelegate>
-{
-  .....
-}
-```
-
-```objective-c
 // UnityAppController.mm
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions

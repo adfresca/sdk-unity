@@ -11,6 +11,7 @@
   - [In-App Purchase Tracking](#in-app-purchase-tracking)
   - [Give Reward](#give-reward)
   - [Sales Promotion](#sales-promotion)
+  - [Limited Time Offer](#limited-time-offer)
 - [Dynamic Targeting](#dynamic-targeting)
   - [Custom Profile Attributes](#custom-profile-attributes)
   - [Marketing Moment](#marketing-moment)
@@ -614,6 +615,7 @@ Soft Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상점
 **iOS에서 AFPromotionDelegate 구현하기**
 
 ```cs
+
 // UnityAppController.h
 
 @interface UnityAppController : NSObject<UIApplicationDelegate, AFPromotionDelegate>
@@ -635,11 +637,13 @@ Soft Currency 아이템의 경우는 앱이 기존에 사용하고 있는 상점
 {
   UnitySendMessage("YourGameObject", "OnPromotion", [[promotionPurchase JSONForUnity] UTF8String]);
 }
+
 ```
 
 **Unity 코드 적용하기**
 
 ```cs
+
 void Start ()
 {
 	AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
@@ -686,9 +690,53 @@ public void OnPromotion(string json)
 
 	Debug.Log(LogMessage);
 }
+
 ```
 
-SDK가 사용자의 실제 구매 여부를 트랙킹하기 위해서는 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능이 미리 구현되어 있어야 합니다. 특히 사용자가 아이템을 구매를 하지 않거나 실패한 경우를 트랙킹 하기 위하여 CancelPromotionPurchase() 메소드가 반드시 적용되어 있어야 합니다.
+Nudge SDK는 [In-App Purchase Tracking](#in-app-purchase-tracking) 기능을 이용하여 사용자가 특정 캠페인을 통해서 아이템을 구매했는지를 추적합니다. 보다 정확한 측정을 위해, 사용자가 구매를 취소하거나 구매에 실패한 경우를 처리하는 **CancelPromotionPurchase()** 메소드를 구현해 주세요.
+
+* * *
+
+### Limited Time Offer
+
+제한 시간 동안만 구매할 수 있는 '시간 한정 판매' (Limited Time Offer)를 이용해서 사용자들의 관심을 끌거나 긴박감을 조성할 수 있습니다. Nudge SDK는 이미지 상단 바에 잔여 구매 가능 시간을 표시해 주고 시간이 종료하면 자동으로 이미지를 사라지게 합니다.
+
+<img src="http://file.nudge.do/guide/sdk/LTO_interstitial_landscape_sample.jpg">
+
+**Notice:** iOS 지원을 위해서 Info.plist에 'nudge-icon' 폰트의 정의를 추가해야 합니다. (보다 자세한 사항은 [Installation](#installation)을 참고하세요.)
+
+마케팅 모먼트에서 시간 한정 판매가 한번 노출되면 다른 마케팅 모먼트에서 더 이상 노출되지 않습니다. 따라서 아래 코드를 이용하여 현재 유효한 시간 한정 판매의 정보를 조회하거나 이미지를 노출해야 합니다.
+
+**CheckActiveLimitedTimeOffers**를 이용하여 활성화된 시간 한정 판매에 대한 정보를 조회할 수 있습니다. 결과값은 잔여 시간, 프로모션 아이템의 유니크 값으로 구성된 JSON 스트링이며 잔여 시간 오름차순으로 소팅되어 있습니다. 이 정보를 이용하여 게임 UI 상에 가장 짧은 잔여 시간, 활성화된 시간 한정 판매의 수 등을 표시할 수 있습니다.
+ 
+```cs
+
+public void Start ()
+{
+ AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+ plugin.CheckActiveLimitedTimeOffers("YourGameObject", "onActiveLimitedTimeOffers");
+}
+
+public void onActiveLimitedTimeOffers(string json)
+{
+   if (json != "null") {
+      // Parse JSON strings in the returned array and use them to display the remaining time and the number of active limited time offers if neccessary.
+      // JSON example: [{"remaining_time_in_seconds":1184, "item_unique_value":"item_03"}, ...]      
+   } else {
+ 	   // Nudge SDK will return nil when it fails to retrieve information of active limited time offers. You can re-try or display an error message to a user.
+   }
+}
+
+```
+
+**DisplayActiveLimitedTimeOffers** 메소드를 이용해서 활성화된 시간 한정 판매 이미지를 표시할 수 있으며 카운트 파라미터를 이용해서 몇 개를 표시할지 설정할 수 있습니다. 잔여 구매 가능 시간이 남아 있는 시간 한정 판매의 이미지가 노출됩니다.
+
+```cs
+
+  AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
+  plugin.DisplayActiveLimitedTimeOffers(count);
+
+```
 
 * * *
 
@@ -1036,7 +1084,11 @@ iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로�
 * * *
 
 ## Release Notes
-- **v2.3.2 _(2016/03/10 Updated)_**
+- **v2.3.4 _(2016/03/13 Updated)_**
+  - [Limited Time Offer](#limited-time-offer) 기능이 Android/Unity 플랫폼을 지원합니다.
+- v2.3.3 (2016/03/11 Updated)
+  - [Limited Time Offer](#limited-time-offer) 기능이 iOS/Unity 플랫폼을 지원합니다.
+- v2.3.2 (2016/03/10 Updated)
   - 지원하지 않기로 했던 **IncrCustomParameter** 메소드가 다시 제공됩니다.
 - v2.3.1 (2016/02/27 Updated)
   - IncrEventCounter 메소드가 추가되었고 IncrCustomParameter를 더 이상 지원하지 않습니다. [Custom Profile Attributes](#custom-profile-attributes) 섹션을 참고하세요.

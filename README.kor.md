@@ -534,7 +534,7 @@ AdFresca.getInstance(UnityPlayer.currentActivity).logPurchase(purchase, new AFPu
 // UnityAppController.mm
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [[AdFrescaView shardAdView] setRewardClaimDelegate:self];
+  [[AdFrescaView sharedAdView] setRewardClaimDelegate:self];
 }
 
 - (void)onRewardClaim:(AFRewardItem *)item {
@@ -987,6 +987,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
   AndroidManifest.xml 파일을 열어 패키지 이름을 확인합니다.
 
   ```xml
+  
   <?xml version="1.0" encoding="utf-8"?>
 
   <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.adfresca.demo">
@@ -994,6 +995,7 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
     .....
     </application>
   </manifest>
+  
   ```
 
   위 경우 [Dashboard](https://dashboard.nudge.do) 사이트에서 Advertising App의 CPI Identifier 값을 'com.adfresca.demo' 으로 설정하게 됩니다. 
@@ -1012,10 +1014,12 @@ SDK 적용을 위해서는 Advertising App에서의 URL Schema 설정 및 Media 
   마지막으로, Incentivized CPI 캠페인을 진행할 경우, Advertising App의 SDK 설치는 필수가 아니며 CPI Identifier 설정만 진행되면 됩니다. 하지만 Incentivized CPA 캠페인을 진행할 경우 반드시 SDK 설치가 필요하며 보상 조건으로 지정한 마케팅 모멘트르 발생되어야 합니다. 사용자가 보상 조건을 완료한 이후 아래와 같이 유니티 코드로 지정한 마케팅 모멘트 호출합니다.
 
   ```cs
+  
   // 튜토리얼 완료 이벤트를 보상 조건으로 지정한 경우
   AdFresca.Plugin plugin = AdFresca.Plugin.Instance;
   plugin.Load(EVENT_INDEX_TUTORIAL);  
   plugin.Show(EVENT_INDEX_TUTORIAL);
+  
   ```
 
 #### Media App SDK 적용하기:
@@ -1035,11 +1039,13 @@ Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드�
 안드로이드에서 Proguard 툴을 이용하여 APK 파일을 보호하는 경우 몇 가지 예외 처리 작업을 진행해야 합니다. Nudge SDK와 SDK에 포함된 OpenUDID 및 Google Gson에 대한 예외 처리를 아래와 같이 적용합니다.
 
 ```java
+
 -keep class com.adfresca.** {*;} 
 -keep class com.google.gson.** {*;} 
 -keep class org.openudid.** {*;} 
 -keep class sun.misc.Unsafe { *; }
 -keepattributes Signature 
+
 ```
 
 * * *
@@ -1059,26 +1065,27 @@ Image Push Notification 기능 적용에 대한 내용은 Android SDK 가이드�
 iOS의 경우 Xcode 프로젝트에서 AdFrescaViewDelegate를 구현하여 로그를 출력할 수 있습니다. (혹은 UnitySendMessage 메소드를 이용하여 유니티로 이벤트를 전달할 수 있습니다.)
 
 ```objective-c
+
 // UnityAppController.h
 @interface UnityAppController : NSObject<UIApplicationDelegate, AdFrescaViewDelegate>
 {
   .....
 }
-```
 
+```
 ```objective-c
 // UnityAppController.mm
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
-  ....
-  AdFrescaView *view = [AdFrescaView shardAdView];
-  view.delegate = self;
+  ...
+  [[AdFrescaView sharedAdView] setDelegate:self];
 }
 
 - (void)fresca:(AdFrescaView *)fresca didFailToReceiveAdWithException:(AdException *)error {  
   NSLog(@"AdException message : %@", [error message]);
 }
+
 ```
 
 * * *
